@@ -1,3 +1,0 @@
-This is a test.  Wrote this in nano ;)
-
-Test whitespace char
