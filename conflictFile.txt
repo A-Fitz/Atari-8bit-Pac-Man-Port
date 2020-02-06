@@ -1,1 +1,1 @@
-This is a git conflict.
+This is a git conflict.  Now, now it is a conflict.  It wasn't a conflict before.
