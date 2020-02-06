@@ -1,1 +1,1 @@
-This is a git conflict.
+This is a git conflict.  I am adding this text just to make this a conflict.
