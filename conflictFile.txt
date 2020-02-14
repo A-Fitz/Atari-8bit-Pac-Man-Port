@@ -1,5 +1,0 @@
-<<<<<< HEAD
-yThis is a git conflict.  I am adding this text just to make this a conflict.
-=======
-sThis is a git conflict.  Now, now it is a conflict.  It wasn't a conflict before.  I am now fixing the conflict.
->>>>>>> 88d12c47eff0f1f6277a34d28c4ba1a459ced9ff
