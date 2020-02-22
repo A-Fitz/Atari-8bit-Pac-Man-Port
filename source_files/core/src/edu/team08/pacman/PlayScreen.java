@@ -1,6 +1,5 @@
 package edu.team08.pacman;
 
-import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -12,15 +11,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 
 public class PlayScreen implements Screen {
-    private final float WIDTH = 19.0f;
-    private final float HEIGHT = 19.0f;
-
-    private final PacManGame game;
     private SpriteBatch batch;
 
     private FitViewport viewport;
@@ -31,25 +24,24 @@ public class PlayScreen implements Screen {
 
     private Sprite pacmanSprite;
 
-    public PlayScreen(PacManGame game)
+    public PlayScreen(SpriteBatch batch)
     {
-        this.game = game;
-        this.batch = game.batch;
+        this.batch = batch;
     }
 
     @Override
     public void show() {
         camera = new OrthographicCamera();
-        viewport = new FitViewport(WIDTH, HEIGHT, camera);
-        camera.translate(WIDTH / 2, HEIGHT / 2);
+        viewport = new FitViewport(DisplayConstants.TILEDMAP_WIDTH, DisplayConstants.TILEDMAP_HEIGHT, camera);
+        camera.translate(DisplayConstants.TILEDMAP_WIDTH / 2, DisplayConstants.TILEDMAP_HEIGHT / 2);
         camera.update();
 
-        tiledMap = new TmxMapLoader().load("map/map.tmx");
+        tiledMap = new TmxMapLoader().load(FilePathConstants.TILEDMAP_PATH);
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 1 / 16f, batch);
 
-        TextureAtlas textureAtlas = GameManager.instance.assetManager.get("sprites/actors.atlas", TextureAtlas.class);
+        TextureAtlas textureAtlas = GameManager.instance.assetManager.get(FilePathConstants.SPRITES_PATH, TextureAtlas.class);
         pacmanSprite = new Sprite(new TextureRegion(textureAtlas.findRegion("pacman"), 16, 0, 16, 16));
-        pacmanSprite.setBounds(8f, 21.5f, 16 / GameManager.PPM, 16 / GameManager.PPM);
+        pacmanSprite.setBounds(8f, 21.5f, 1, 1);
     }
 
     @Override
@@ -63,7 +55,7 @@ public class PlayScreen implements Screen {
         tiledMapRenderer.render();
 
         batch.begin();
-        pacmanSprite.setPosition(9, 9);
+        pacmanSprite.setPosition(9, 5);
         pacmanSprite.draw(batch);
         batch.end();
     }
