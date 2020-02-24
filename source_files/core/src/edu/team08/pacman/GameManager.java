@@ -20,7 +20,7 @@ public class GameManager implements Disposable {
     public boolean playerIsAlive = true;
     private boolean gameOver = false;
 
-    private GameManager() {
+    GameManager() {
         assetManager = new AssetManager();
         assetManager.load("sprites/actors.atlas", TextureAtlas.class);
 
