@@ -36,11 +36,16 @@ public class InputManager implements InputProcessor {
         public KeyState(int key){ this.key = key; }
     }
 
+    private static final InputManager instance = new InputManager();
     public ArrayList<KeyState> keyStates = new ArrayList<KeyState>();
 
     public InputManager() {
         for(int i = 0; i < 256; i++) keyStates.add(new KeyState(i));
-}
+    }
+
+    public static InputManager getInstance(){
+        return instance;
+    }
 
     /**
      * keyDown: Gets called once when an event is fired. Store the key being held down as well
