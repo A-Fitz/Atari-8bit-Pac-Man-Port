@@ -1,4 +1,4 @@
-package edu.team08.pacman;
+package edu.team08.pacman.constants;
 
 public class DisplayConstants {
     public static final float TILEDMAP_WIDTH = 19.0f;

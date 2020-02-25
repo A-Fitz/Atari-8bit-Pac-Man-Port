@@ -1,4 +1,4 @@
-package edu.team08.pacman;
+package edu.team08.pacman.constants;
 
 public class FilePathConstants {
     public static final String TILEDMAP_PATH = "map/map.tmx";
