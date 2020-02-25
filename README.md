@@ -1,7 +1,7 @@
 
 ## SE 3860 - Software Maintenance and Reengineering
 
-Semester Project - Group 8 - Team Pac-Boys 
+Semester Project - Group 8 - Team Pac-Men 
 
 Austin F, Myles H, Nate B, Nate S
 
