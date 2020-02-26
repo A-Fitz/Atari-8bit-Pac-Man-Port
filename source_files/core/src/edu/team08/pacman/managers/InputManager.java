@@ -1,11 +1,11 @@
 /**
-  Class: InputManager
-
-  Purpose: This class will manage keyboard and mouse input form the user.
-
-  Resource used: https://www.sitepoint.com/handling-player-input-in-cross-platform-games-with-libgdx/
+ * Class: InputManager
+ * <p>
+ * Purpose: This class will manage keyboard and mouse input form the user.
+ * <p>
+ * Resource used: https://www.sitepoint.com/handling-player-input-in-cross-platform-games-with-libgdx/
  */
-package edu.team08.pacman;
+package edu.team08.pacman.managers;
 
 import com.badlogic.gdx.InputProcessor;
 
@@ -14,36 +14,14 @@ import java.util.ArrayList;
 
 public class InputManager implements InputProcessor {
 
-    /**
-     * Class: InputState
-     *
-     * Purpose: This class is the state for all input the user uses.
-     */
-    public static class InputState {
-        public boolean pressed = false;
-        public boolean down = false;
-        public boolean released = false;
-    }
-
-    /**
-     * Class: KeyState
-     *
-     * Purpose: Keyboard key states for the user.
-     */
-    public static class KeyState extends InputState {
-        public int key;
-
-        public KeyState(int key){ this.key = key; }
-    }
-
     private static final InputManager instance = new InputManager();
     public ArrayList<KeyState> keyStates = new ArrayList<KeyState>();
 
     public InputManager() {
-        for(int i = 0; i < 256; i++) keyStates.add(new KeyState(i));
+        for (int i = 0; i < 256; i++) keyStates.add(new KeyState(i));
     }
 
-    public static InputManager getInstance(){
+    public static InputManager getInstance() {
         return instance;
     }
 
@@ -70,6 +48,7 @@ public class InputManager implements InputProcessor {
     public boolean keyUp(int keycode) {
         keyStates.get(keycode).down = false;
         keyStates.get(keycode).released = true;
+        keyStates.get(keycode).pressed = false;
 
         return false;
     }
@@ -79,7 +58,7 @@ public class InputManager implements InputProcessor {
      * @param key int
      * @return boolean
      */
-    public boolean isKeyPressed(int key){
+    public boolean isKeyPressed(int key) {
         return keyStates.get(key).pressed;
     }
 
@@ -88,7 +67,7 @@ public class InputManager implements InputProcessor {
      * @param key int
      * @return boolean
      */
-    public boolean isKeyDown(int key){
+    public boolean isKeyDown(int key) {
         return keyStates.get(key).down;
     }
 
@@ -97,18 +76,18 @@ public class InputManager implements InputProcessor {
      * @param key int
      * @return boolean
      */
-    public boolean isKeyReleased(int key){
+    public boolean isKeyReleased(int key) {
         return keyStates.get(key).released;
     }
 
     /**
      * update: for every keyState, set pressed and released state to false.
      */
-    public void update(){
-        for(int i = 0; i < 256; i++){
+    public void update() {
+        for (int i = 0; i < 256; i++) {
             KeyState keyState = keyStates.get(i);
             keyState.pressed = false;
-            keyState. released = false;
+            keyState.released = false;
         }
     }
 
@@ -116,7 +95,6 @@ public class InputManager implements InputProcessor {
     public boolean mouseMoved(int screenX, int screenY) {
         return false;
     }
-
 
     // ----------------------------------------------------------------------------------
     //Most likely will not need to use these functions.
@@ -140,10 +118,33 @@ public class InputManager implements InputProcessor {
         return false;
     }
 
-
     @Override
     public boolean scrolled(int amount) {
         return false;
+    }
+
+    /**
+     * Class: InputState
+     *
+     * Purpose: This class is the state for all input the user uses.
+     */
+    public static class InputState {
+        public boolean pressed = false;
+        public boolean down = false;
+        public boolean released = false;
+    }
+
+    /**
+     * Class: KeyState
+     *
+     * Purpose: Keyboard key states for the user.
+     */
+    public static class KeyState extends InputState {
+        public int key;
+
+        public KeyState(int key) {
+            this.key = key;
+        }
     }
     // ----------------------------------------------------------------------------------
 

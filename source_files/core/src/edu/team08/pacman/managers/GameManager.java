@@ -1,4 +1,4 @@
-package edu.team08.pacman;
+package edu.team08.pacman.managers;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -8,6 +8,8 @@ public class GameManager implements Disposable {
 
     public static final GameManager instance = new GameManager();
     public AssetManager assetManager;
+
+    public int totalPills = 0;
 
     GameManager() {
         assetManager = new AssetManager();
