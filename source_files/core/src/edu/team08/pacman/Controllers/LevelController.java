@@ -1,12 +1,12 @@
-package edu.team08.pacman;
+package edu.team08.pacman.Controllers;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Disposable;
 
-public class GameManager implements Disposable {
+public class LevelController implements Disposable {
 
-    public static final GameManager instance = new GameManager();
+    public static final LevelController instance = new LevelController();
     public AssetManager assetManager;
 
     public int totalPills = 0;
@@ -20,7 +20,7 @@ public class GameManager implements Disposable {
     public boolean playerIsAlive = true;
     private boolean gameOver = false;
 
-    GameManager() {
+    LevelController() {
         assetManager = new AssetManager();
         assetManager.load("sprites/actors.atlas", TextureAtlas.class);
 

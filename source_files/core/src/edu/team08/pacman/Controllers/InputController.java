@@ -1,18 +1,17 @@
 /**
-  Class: InputManager
-
-  Purpose: This class will manage keyboard and mouse input form the user.
-
-  Resource used: https://www.sitepoint.com/handling-player-input-in-cross-platform-games-with-libgdx/
+ * Class: InputManager
+ *
+ * Purpose: This class will manage keyboard and mouse input form the user.
+ *
+ * Resource used: https://www.sitepoint.com/handling-player-input-in-cross-platform-games-with-libgdx/
  */
-package edu.team08.pacman;
+package edu.team08.pacman.Controllers;
 
 import com.badlogic.gdx.InputProcessor;
-
 import java.util.ArrayList;
 
 
-public class InputManager implements InputProcessor {
+public class InputController implements InputProcessor {
 
     /**
      * Class: InputState
@@ -38,7 +37,7 @@ public class InputManager implements InputProcessor {
 
     public ArrayList<KeyState> keyStates = new ArrayList<KeyState>();
 
-    public InputManager() {
+    public InputController() {
         for(int i = 0; i < 256; i++) keyStates.add(new KeyState(i));
 }
 

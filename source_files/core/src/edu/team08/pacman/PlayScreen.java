@@ -12,6 +12,9 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import edu.team08.pacman.Constants.DisplayConstants;
+import edu.team08.pacman.Constants.FilePathConstants;
+import edu.team08.pacman.Controllers.LevelController;
 
 public class PlayScreen implements Screen {
     private SpriteBatch batch;
@@ -39,7 +42,7 @@ public class PlayScreen implements Screen {
         tiledMap = new TmxMapLoader().load(FilePathConstants.TILEDMAP_PATH);
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, 1 / 16f, batch);
 
-        TextureAtlas textureAtlas = GameManager.instance.assetManager.get(FilePathConstants.SPRITES_PATH, TextureAtlas.class);
+        TextureAtlas textureAtlas = LevelController.instance.assetManager.get(FilePathConstants.SPRITES_PATH, TextureAtlas.class);
         pacmanSprite = new Sprite(new TextureRegion(textureAtlas.findRegion("pacman"), 16, 0, 16, 16));
         pacmanSprite.setBounds(8f, 21.5f, 1, 1);
     }
