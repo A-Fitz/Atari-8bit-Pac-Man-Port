@@ -34,19 +34,19 @@ public class PlayerControlSystem extends IteratingSystem {
         StateComponent state = sm.get(entity);
 
         // apply forces depending on controller input
-        if (inputManager.isKeyPressed(Input.Keys.DOWN)) {
+        if (inputManager.isKeyPressed(Input.Keys.DOWN)|| inputManager.isKeyPressed(Input.Keys.S)) {
             b2body.body.setLinearVelocity(0,
                     MathUtils.lerp(b2body.body.getLinearVelocity().y, -5f, 0.2f));
             state.set(EntityStates.MOVING_DOWN);
-        } else if (inputManager.isKeyPressed(Input.Keys.UP)) {
+        } else if (inputManager.isKeyPressed(Input.Keys.UP)|| inputManager.isKeyPressed(Input.Keys.W)) {
             b2body.body.setLinearVelocity(0,
                     MathUtils.lerp(b2body.body.getLinearVelocity().y, 5f, 0.2f));
             state.set(EntityStates.MOVING_UP);
-        } else if (inputManager.isKeyPressed(Input.Keys.LEFT)) {
+        } else if (inputManager.isKeyPressed(Input.Keys.LEFT)|| inputManager.isKeyPressed(Input.Keys.A)) {
             b2body.body.setLinearVelocity(MathUtils.lerp(b2body.body.getLinearVelocity().x, -5f, 0.2f),
                     0);
             state.set(EntityStates.MOVING_LEFT);
-        } else if (inputManager.isKeyPressed(Input.Keys.RIGHT)) {
+        } else if (inputManager.isKeyPressed(Input.Keys.RIGHT) || inputManager.isKeyPressed(Input.Keys.D)) {
             b2body.body.setLinearVelocity(MathUtils.lerp(b2body.body.getLinearVelocity().x, 5f, 0.2f),
                     0);
             state.set(EntityStates.MOVING_RIGHT);

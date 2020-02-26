@@ -17,9 +17,7 @@ import edu.team08.pacman.WorldBuilder;
 import edu.team08.pacman.constants.DisplayConstants;
 import edu.team08.pacman.constants.FilePathConstants;
 import edu.team08.pacman.managers.InputManager;
-import edu.team08.pacman.systems.PhysicsSystem;
-import edu.team08.pacman.systems.PlayerControlSystem;
-import edu.team08.pacman.systems.RenderSystem;
+import edu.team08.pacman.systems.*;
 
 public class PlayScreen implements Screen {
     private SpriteBatch batch;
@@ -58,7 +56,8 @@ public class PlayScreen implements Screen {
         engine.addSystem(new PhysicsSystem(world));
         engine.addSystem(new RenderSystem(batch, camera));
         engine.addSystem(new PlayerControlSystem());
-
+        engine.addSystem(new AnimationSystem());
+        engine.addSystem(new PillSystem());
         stageViewport = new FitViewport(DisplayConstants.TILEDMAP_WIDTH * 20, DisplayConstants.TILEDMAP_HEIGHT * 20);
         stage = new Stage(stageViewport, batch);
         // set the input controller

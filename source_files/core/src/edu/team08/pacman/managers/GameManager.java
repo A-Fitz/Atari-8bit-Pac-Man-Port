@@ -10,6 +10,7 @@ public class GameManager implements Disposable {
     public AssetManager assetManager;
 
     public int totalPills = 0;
+    private int score = 0;
 
     GameManager() {
         assetManager = new AssetManager();
@@ -18,6 +19,11 @@ public class GameManager implements Disposable {
         assetManager.finishLoading();
     }
 
+    public int getScore() { return score; }
+
+    public void AddScore(int scoreToAdd) { score =+ scoreToAdd; }
+
+    public void ResetScore() { score = 0; }
 
     @Override
     public void dispose() {

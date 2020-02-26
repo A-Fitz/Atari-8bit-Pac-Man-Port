@@ -22,4 +22,7 @@ public class StateComponent implements Component {
     public EntityStates get() {
         return state;
     }
+
+    public void AddTime(float delta){ time =+ delta; }
+
 }
