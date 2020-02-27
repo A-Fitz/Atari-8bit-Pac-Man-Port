@@ -4,7 +4,7 @@ import com.badlogic.ashley.core.Component;
 import edu.team08.pacman.EntityStates;
 
 public class StateComponent implements Component {
-    public float time = 0.0f;
+    private float time = 0.0f;
     private EntityStates state = EntityStates.IDLE_RIGHT;
 
     public StateComponent() {
@@ -23,6 +23,9 @@ public class StateComponent implements Component {
         return state;
     }
 
-    public void AddTime(float delta){ time =+ delta; }
+    public void addTime(float delta){ time =+ delta; }
 
+    public float getTime() {
+        return time;
+    }
 }

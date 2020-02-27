@@ -19,13 +19,13 @@ public class AnimationSystem extends IteratingSystem {
         tm = ComponentMapper.getFor(TextureComponent.class);
         am = ComponentMapper.getFor(AnimationComponent.class);
         sm = ComponentMapper.getFor(StateComponent.class);
-}
+    }
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
         TextureComponent texture = tm.get(entity);
         AnimationComponent animation = am.get(entity);
         StateComponent state = sm.get(entity);
-        // texture.region.setRegion(animation.animations.get(state.get()).getKeyFrame(state.time));
+        texture.region = animation.animations.get(state.get()).getKeyFrame(state.getTime(),true);
     }
 }

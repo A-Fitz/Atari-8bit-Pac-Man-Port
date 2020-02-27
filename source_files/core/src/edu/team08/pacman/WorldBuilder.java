@@ -2,6 +2,7 @@ package edu.team08.pacman;
 
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.PooledEngine;
+import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -12,6 +13,7 @@ import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.utils.Array;
 import edu.team08.pacman.components.*;
 import edu.team08.pacman.constants.DisplayConstants;
 import edu.team08.pacman.constants.FilePathConstants;
@@ -101,7 +103,7 @@ public class WorldBuilder {
         CircleShape circleShape = new CircleShape();
 
         if (big)
-            circleShape.setRadius(0.2f);
+            circleShape.setRadius(1f);
         else
             circleShape.setRadius(0.1f);
 
@@ -143,7 +145,7 @@ public class WorldBuilder {
         // set object position (x,y,z) z used to define draw order 0 first drawn
         position.position.set(rectangle.x, rectangle.y, 1);
         type.type = TypeComponent.PLAYER;
-        stateCom.set(EntityStates.IDLE_RIGHT);
+        //stateCom.set(EntityStates.IDLE_RIGHT);
         body.body.setUserData(entity);
 
         // add components to entity
@@ -154,9 +156,59 @@ public class WorldBuilder {
         entity.add(stateCom);
         entity.add(textComp);
 
+
+        AnimationComponent animationComponent = new AnimationComponent();
+        Animation animation;
+        Array<TextureRegion> keyFrames = new Array<>();
+
+        // idle
+        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 16, 0, 16, 16));
+        animation = new Animation(1f, keyFrames);
+        animationComponent.animations.put(EntityStates.IDLE_RIGHT, animation);
+        keyFrames.clear();
+
+        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 16 * 3, 0, 16, 16));
+        animation = new Animation(1f, keyFrames);
+        animationComponent.animations.put(EntityStates.IDLE_LEFT, animation);
+        keyFrames.clear();
+
+        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 16 * 5, 0, 16, 16));
+        animation = new Animation(1f, keyFrames);
+        animationComponent.animations.put(EntityStates.IDLE_UP, animation);
+        keyFrames.clear();
+
+        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 16 * 7, 0, 16, 16));
+        animation = new Animation(1f, keyFrames);
+        animationComponent.animations.put(EntityStates.IDLE_DOWN, animation);
+        keyFrames.clear();
+
+        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 16, 0, 16, 16));
+        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 2 * 16, 0, 16, 16));
+        animation = new Animation(0.1f, keyFrames, Animation.PlayMode.LOOP);
+        animationComponent.animations.put(EntityStates.MOVING_RIGHT, animation);
+        keyFrames.clear();
+
+        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 3* 16, 0, 16, 16));
+        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 4 * 16, 0, 16, 16));
+        animation = new Animation(1f, keyFrames, Animation.PlayMode.LOOP);
+        animationComponent.animations.put(EntityStates.MOVING_LEFT, animation);
+        keyFrames.clear();
+
+        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 5 * 16, 0, 16, 16));
+        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 6 * 16, 0, 16, 16));
+        animation = new Animation(1f, keyFrames, Animation.PlayMode.LOOP);
+        animationComponent.animations.put(EntityStates.MOVING_UP, animation);
+        keyFrames.clear();
+
+        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 7 * 16, 0, 16, 16));
+        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 8 * 16, 0, 16, 16));
+        animation = new Animation(1f, keyFrames, Animation.PlayMode.LOOP);
+        animationComponent.animations.put(EntityStates.MOVING_DOWN, animation);
+        keyFrames.clear();
+
+        entity.add(animationComponent);
         //add entity to engine
         engine.addEntity(entity);
-
     }
 
     private Body createOval(float x, float y, boolean dynamic) {
@@ -175,7 +227,6 @@ public class WorldBuilder {
         circleShape.dispose();
 
         return body;
-
     }
 }
 

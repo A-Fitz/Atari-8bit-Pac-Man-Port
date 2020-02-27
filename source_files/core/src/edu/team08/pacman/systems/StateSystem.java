@@ -18,7 +18,7 @@ public class StateSystem extends IteratingSystem {
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
         StateComponent state = sm.get(entity);
-        state.AddTime(deltaTime);
+        state.addTime(deltaTime);
 
     }
 }

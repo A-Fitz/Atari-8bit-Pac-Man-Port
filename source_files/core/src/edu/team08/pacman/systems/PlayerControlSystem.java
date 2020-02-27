@@ -30,7 +30,7 @@ public class PlayerControlSystem extends IteratingSystem {
     protected void processEntity(Entity entity, float deltaTime) {
         //get the entity body
         BodyComponent b2body = bodm.get(entity);
-        // get the entity state
+        // get the entity statew
         StateComponent state = sm.get(entity);
 
         // apply forces depending on controller input

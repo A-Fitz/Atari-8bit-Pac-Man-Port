@@ -3,19 +3,25 @@ package edu.team08.pacman.screens;
 import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import edu.team08.pacman.EntityStates;
 import edu.team08.pacman.WorldBuilder;
+import edu.team08.pacman.components.AnimationComponent;
 import edu.team08.pacman.constants.DisplayConstants;
 import edu.team08.pacman.constants.FilePathConstants;
+import edu.team08.pacman.managers.GameManager;
 import edu.team08.pacman.managers.InputManager;
 import edu.team08.pacman.systems.*;
 
@@ -32,7 +38,8 @@ public class PlayScreen implements Screen {
     private World world;
     private TiledMap tiledMap;
     private OrthogonalTiledMapRenderer tiledMapRenderer;
-
+    private Label scoreLabel;
+    private TextureAtlas textureAtlas;
     public PlayScreen(SpriteBatch batch) {
         this.batch = batch;
     }
@@ -43,7 +50,7 @@ public class PlayScreen implements Screen {
         viewport = new FitViewport(DisplayConstants.TILEDMAP_WIDTH, DisplayConstants.TILEDMAP_HEIGHT, camera);
         camera.translate(DisplayConstants.TILEDMAP_WIDTH / 2, DisplayConstants.TILEDMAP_HEIGHT / 2);
         camera.update();
-
+        textureAtlas = GameManager.instance.assetManager.get(FilePathConstants.SPRITES_PATH, TextureAtlas.class);
 
         float unitScale = 1.0f / DisplayConstants.ASSET_SIZE;
 
@@ -67,6 +74,14 @@ public class PlayScreen implements Screen {
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, unitScale, batch);
 
         new WorldBuilder(tiledMap, engine, world, batch).build();
+
+        BitmapFont font = new BitmapFont();
+        Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
+
+        scoreLabel = new Label("0", labelStyle);
+        scoreLabel.setPosition(100,70);
+        stage.addActor(scoreLabel);
+
     }
 
     @Override
@@ -76,6 +91,7 @@ public class PlayScreen implements Screen {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         batch.setProjectionMatrix(camera.combined);
         camera.update();
+        scoreLabel.setText(GameManager.instance.getScore());
         tiledMapRenderer.setView(camera);
         tiledMapRenderer.render();
         engine.update(delta);
@@ -107,4 +123,5 @@ public class PlayScreen implements Screen {
         tiledMap.dispose();
         tiledMapRenderer.dispose();
     }
+
 }
