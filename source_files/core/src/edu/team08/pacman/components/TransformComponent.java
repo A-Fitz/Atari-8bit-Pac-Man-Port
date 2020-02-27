@@ -10,8 +10,10 @@ public class TransformComponent implements Component {
     public final Vector2 scale = new Vector2(1.0f, 1.0f);
     public float rotation = 0.0f;
     public boolean isHidden = false;
+
     public TransformComponent() {
     }
+
     public TransformComponent(float x, float y, float z) {
         set(x, y, z);
     }

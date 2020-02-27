@@ -15,15 +15,21 @@ public class StateComponent implements Component {
     }
 
     public void set(EntityStates newState) {
-        state = newState;
-        time = 0.0f;
+        this.state = newState;
+        this.time = 0.0f;
     }
 
-    public EntityStates get() {
+    public EntityStates getState() {
         return state;
     }
 
-    public void addTime(float delta){ time =+ delta; }
+    public void addTime(float delta){
+        /*  LET IT BE KNOWN:
+            ON THE DATE 2/26/2020, NATE STELKEN ACCIDENTALLY WROTE "=+" INSTEAD OF "+=", AND THEN SPENT HOURS TRYING TO
+            FIGURE OUT WHY ANIMATIONS WERE NOT RENDERING CORRECTLY.
+         */
+        time += delta;
+    }
 
     public float getTime() {
         return time;

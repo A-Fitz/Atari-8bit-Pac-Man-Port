@@ -36,6 +36,7 @@ public class RenderSystem extends EntitySystem {
 
     @Override
     public void update (float deltaTime) {
+        super.update(deltaTime);
         TransformComponent position;
         TextureComponent visual;
 

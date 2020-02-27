@@ -44,9 +44,6 @@ public class WorldBuilder {
 
         MapLayer wall = mapLayers.get("wall");
         for (MapObject mapObject : wall.getObjects()) {
-            BodyDef bodyDef = new BodyDef();
-            bodyDef.type = BodyDef.BodyType.StaticBody;
-            Body body = world.createBody(bodyDef);
 
         }
 
@@ -135,18 +132,18 @@ public class WorldBuilder {
         PlayerComponent player = engine.createComponent(PlayerComponent.class);
         TypeComponent type = engine.createComponent(TypeComponent.class);
         StateComponent stateCom = engine.createComponent(StateComponent.class);
+        AnimationComponent animationComponent = engine.createComponent(AnimationComponent.class);
         TextureComponent textComp = engine.createComponent(TextureComponent.class);
         TextureAtlas textureAtlas = GameManager.instance.assetManager.get(FilePathConstants.SPRITES_PATH, TextureAtlas.class);
         textComp.region = new TextureRegion(textureAtlas.findRegion("pacman"), 16, 0, 16, 16);
 
 
         // set the components data
-        body.body = createOval(rectangle.x, rectangle.y, true);
+        body.body = createOval(rectangle.x, rectangle.y);
         // set object position (x,y,z) z used to define draw order 0 first drawn
         position.position.set(rectangle.x, rectangle.y, 1);
         type.type = TypeComponent.PLAYER;
-        //stateCom.set(EntityStates.IDLE_RIGHT);
-        body.body.setUserData(entity);
+
 
         // add components to entity
         entity.add(body);
@@ -156,62 +153,73 @@ public class WorldBuilder {
         entity.add(stateCom);
         entity.add(textComp);
 
-
-        AnimationComponent animationComponent = new AnimationComponent();
-        Animation animation;
-        Array<TextureRegion> keyFrames = new Array<>();
-
-        // idle
-        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 16, 0, 16, 16));
-        animation = new Animation(1f, keyFrames);
-        animationComponent.animations.put(EntityStates.IDLE_RIGHT, animation);
-        keyFrames.clear();
-
-        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 16 * 3, 0, 16, 16));
-        animation = new Animation(1f, keyFrames);
-        animationComponent.animations.put(EntityStates.IDLE_LEFT, animation);
-        keyFrames.clear();
-
-        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 16 * 5, 0, 16, 16));
-        animation = new Animation(1f, keyFrames);
-        animationComponent.animations.put(EntityStates.IDLE_UP, animation);
-        keyFrames.clear();
-
-        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 16 * 7, 0, 16, 16));
-        animation = new Animation(1f, keyFrames);
-        animationComponent.animations.put(EntityStates.IDLE_DOWN, animation);
-        keyFrames.clear();
-
-        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 16, 0, 16, 16));
-        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 2 * 16, 0, 16, 16));
-        animation = new Animation(0.1f, keyFrames, Animation.PlayMode.LOOP);
-        animationComponent.animations.put(EntityStates.MOVING_RIGHT, animation);
-        keyFrames.clear();
-
-        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 3* 16, 0, 16, 16));
-        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 4 * 16, 0, 16, 16));
-        animation = new Animation(1f, keyFrames, Animation.PlayMode.LOOP);
-        animationComponent.animations.put(EntityStates.MOVING_LEFT, animation);
-        keyFrames.clear();
-
-        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 5 * 16, 0, 16, 16));
-        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 6 * 16, 0, 16, 16));
-        animation = new Animation(1f, keyFrames, Animation.PlayMode.LOOP);
-        animationComponent.animations.put(EntityStates.MOVING_UP, animation);
-        keyFrames.clear();
-
-        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 7 * 16, 0, 16, 16));
-        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 8 * 16, 0, 16, 16));
-        animation = new Animation(1f, keyFrames, Animation.PlayMode.LOOP);
-        animationComponent.animations.put(EntityStates.MOVING_DOWN, animation);
-        keyFrames.clear();
+        createKeyFrames(animationComponent);
 
         entity.add(animationComponent);
         //add entity to engine
         engine.addEntity(entity);
+        body.body.setUserData(entity);
     }
 
-    private Body createOval(float x, float y, boolean dynamic) {
+    private void createKeyFrames(AnimationComponent animationComponent)
+    {
+        Array<TextureRegion> keyFrames = new Array<>();
+        Animation<TextureRegion> animation;
+        // idle
+        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 1 * 16, 0, 16, 16));
+        animation = new Animation<>(1f, keyFrames);
+        animationComponent.animations.put(EntityStates.IDLE_RIGHT, animation);
+        keyFrames.clear();
+
+        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 2 * 16, 0, 16, 16));
+        animation = new Animation<>(1f, keyFrames);
+        animationComponent.animations.put(EntityStates.IDLE_LEFT, animation);
+        keyFrames.clear();
+
+        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 3 * 16, 0, 16, 16));
+        animation = new Animation<>(1f, keyFrames);
+        animationComponent.animations.put(EntityStates.IDLE_UP, animation);
+        keyFrames.clear();
+
+        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 4 * 16, 0, 16, 16));
+        animation = new Animation<>(1f, keyFrames);
+        animationComponent.animations.put(EntityStates.IDLE_DOWN, animation);
+        keyFrames.clear();
+
+        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 0 * 16, 0, 16, 16));
+        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 1 * 16, 0, 16, 16));
+        animation = new Animation<>(0.1f, keyFrames, Animation.PlayMode.LOOP);
+        animationComponent.animations.put(EntityStates.MOVING_RIGHT, animation);
+        keyFrames.clear();
+
+        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 0 * 16, 0, 16, 16));
+        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 2 * 16, 0, 16, 16));
+        animation = new Animation<>(0.1f, keyFrames, Animation.PlayMode.LOOP);
+        animationComponent.animations.put(EntityStates.MOVING_LEFT, animation);
+        keyFrames.clear();
+
+        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 0 * 16, 0, 16, 16));
+        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 3 * 16, 0, 16, 16));
+        animation = new Animation<>(0.1f, keyFrames, Animation.PlayMode.LOOP);
+        animationComponent.animations.put(EntityStates.MOVING_UP, animation);
+        keyFrames.clear();
+
+        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 0 * 16, 0, 16, 16));
+        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 4 * 16, 0, 16, 16));
+        animation = new Animation<>(0.1f, keyFrames, Animation.PlayMode.LOOP);
+        animationComponent.animations.put(EntityStates.MOVING_DOWN, animation);
+        keyFrames.clear();
+
+        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 0 * 16, 0, 16, 16));
+        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 3 * 16, 0, 16, 16));
+        for(int i = 5; i <= 17; i++)
+            keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), i * 16, 0, 16, 16));
+        animation = new Animation<>(0.1f, keyFrames, Animation.PlayMode.LOOP);
+        animationComponent.animations.put(EntityStates.DYING, animation);
+        keyFrames.clear();
+    }
+
+    private Body createOval(float x, float y) {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(x, y);

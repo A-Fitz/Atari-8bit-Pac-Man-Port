@@ -7,5 +7,5 @@ import com.badlogic.gdx.utils.ArrayMap;
 import edu.team08.pacman.EntityStates;
 
 public class AnimationComponent implements Component {
-    public ArrayMap<EntityStates, Animation<TextureRegion>> animations = new ArrayMap();
+    public ArrayMap<EntityStates, Animation<TextureRegion>> animations = new ArrayMap<>();
 }
