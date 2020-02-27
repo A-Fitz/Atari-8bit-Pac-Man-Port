@@ -16,6 +16,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import edu.team08.pacman.GameContactListener;
 import edu.team08.pacman.WorldBuilder;
 import edu.team08.pacman.constants.DisplayConstants;
 import edu.team08.pacman.constants.FilePathConstants;
@@ -37,6 +38,7 @@ public class PlayScreen implements Screen {
     private TiledMap tiledMap;
     private OrthogonalTiledMapRenderer tiledMapRenderer;
     private Label scoreLabel;
+    private GameContactListener gameContactListener;
 
     public PlayScreen(SpriteBatch batch) {
         this.batch = batch;
@@ -87,6 +89,11 @@ public class PlayScreen implements Screen {
         scoreLabel = new Label("0", labelStyle);
         scoreLabel.setPosition(100, 70);
         stage.addActor(scoreLabel);
+
+        //setup contact listener
+        gameContactListener = new GameContactListener();
+        world.setContactListener(gameContactListener);
+
 
     }
 

@@ -41,7 +41,6 @@ public class WorldBuilder {
     private void buildMap() {
 
         MapLayers mapLayers = tiledMap.getLayers();
-
         MapLayer wall = mapLayers.get("wall");
         for (MapObject mapObject : wall.getObjects()) {
 
@@ -62,6 +61,7 @@ public class WorldBuilder {
         // player
         MapLayer playerLayer = mapLayers.get("player"); // player layer
         for (MapObject mapObject : playerLayer.getObjects()) {
+
             Rectangle rectangle = ((RectangleMapObject) mapObject).getRectangle();
 
             centerRectangle(rectangle);
@@ -127,7 +127,7 @@ public class WorldBuilder {
         //create an empty entity
         Entity entity = engine.createEntity();
         //add components
-        BodyComponent body = engine.createComponent(BodyComponent.class);
+        BodyComponent bodyComponent = engine.createComponent(BodyComponent.class);
         TransformComponent position = engine.createComponent(TransformComponent.class);
         PlayerComponent player = engine.createComponent(PlayerComponent.class);
         TypeComponent type = engine.createComponent(TypeComponent.class);
@@ -137,16 +137,15 @@ public class WorldBuilder {
         TextureAtlas textureAtlas = GameManager.instance.assetManager.get(FilePathConstants.SPRITES_PATH, TextureAtlas.class);
         textComp.region = new TextureRegion(textureAtlas.findRegion("pacman"), 16, 0, 16, 16);
 
-
         // set the components data
-        body.body = createOval(rectangle.x, rectangle.y);
+        bodyComponent.body = createOval(rectangle.x, rectangle.y);
+
         // set object position (x,y,z) z used to define draw order 0 first drawn
         position.position.set(rectangle.x, rectangle.y, 1);
         type.type = TypeComponent.PLAYER;
 
-
         // add components to entity
-        entity.add(body);
+        entity.add(bodyComponent);
         entity.add(position);
         entity.add(player);
         entity.add(type);
@@ -156,9 +155,11 @@ public class WorldBuilder {
         createKeyFrames(animationComponent);
 
         entity.add(animationComponent);
+
         //add entity to engine
         engine.addEntity(entity);
-        body.body.setUserData(entity);
+        bodyComponent.body.setUserData(entity);
+
     }
 
     private void createKeyFrames(AnimationComponent animationComponent)
