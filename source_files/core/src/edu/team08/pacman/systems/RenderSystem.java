@@ -56,11 +56,11 @@ public class RenderSystem extends EntitySystem {
             float originX = width / 2;
             float originY = height / 2;
             batch.draw(visual.region,
-                    position.position.x - originX, position.position.y - originY,
+                    position.getPosition().x - originX, position.getPosition().y - originY,
                     originX, originY,
                     width, height,
-                    position.scale.x, position.scale.y,
-                    position.rotation * MathUtils.radiansToDegrees);
+                    position.getScale().x, position.getScale().y,
+                    position.getRotation() * MathUtils.radiansToDegrees);
         }
 
         batch.end();

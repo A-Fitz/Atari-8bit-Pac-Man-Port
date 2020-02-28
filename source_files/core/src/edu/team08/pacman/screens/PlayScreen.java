@@ -85,7 +85,7 @@ public class PlayScreen implements Screen {
         Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
 
         scoreLabel = new Label("0", labelStyle);
-        scoreLabel.setPosition(100, 70);
+        scoreLabel.setPosition(DisplayConstants.TILEDMAP_WIDTH * 3, DisplayConstants.TILEDMAP_HEIGHT * 17.5f);
         stage.addActor(scoreLabel);
 
     }
@@ -95,9 +95,16 @@ public class PlayScreen implements Screen {
         // set background color, stop glitching on resize
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        StringBuilder stringBuilder = new StringBuilder();
 
         camera.update();
-        scoreLabel.setText(GameManager.instance.getScore());
+        stringBuilder.setLength(0);
+        stringBuilder.append("Score: ");
+        stringBuilder.append(GameManager.instance.getScore());
+        scoreLabel.setText(stringBuilder);
+
+
+
         tiledMapRenderer.setView(camera);
         tiledMapRenderer.render();
 

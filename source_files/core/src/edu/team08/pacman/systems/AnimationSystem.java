@@ -26,6 +26,6 @@ public class AnimationSystem extends IteratingSystem {
         TextureComponent texture = tm.get(entity);
         AnimationComponent animation = am.get(entity);
         StateComponent state = sm.get(entity);
-        texture.region.setRegion(animation.animations.get(state.getState()).getKeyFrame(state.getTime()));
+        texture.region.setRegion(animation.getAnimations().get(state.getState()).getKeyFrame(state.getTime()));
     }
 }

@@ -5,11 +5,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
 public class TransformComponent implements Component {
-    public final Vector3 position = new Vector3();
+    private final Vector3 position = new Vector3();
 
-    public final Vector2 scale = new Vector2(1.0f, 1.0f);
-    public float rotation = 0.0f;
-    public boolean isHidden = false;
+    private final Vector2 scale = new Vector2(1.0f, 1.0f);
+    private float rotation = 0.0f;
 
     public TransformComponent() {
     }
@@ -23,4 +22,12 @@ public class TransformComponent implements Component {
         this.position.y = y;
         this.position.z = z;
     }
+
+    public void setRotation(float rotation) { this.rotation = rotation; }
+
+    public float getRotation() { return rotation; }
+
+    public Vector2 getScale() { return scale; }
+
+    public Vector3 getPosition() { return position; }
 }

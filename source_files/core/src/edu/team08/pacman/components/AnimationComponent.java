@@ -3,9 +3,23 @@ package edu.team08.pacman.components;
 import com.badlogic.ashley.core.Component;
 import com.badlogic.gdx.graphics.g2d.Animation;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.utils.ArrayMap;
 import edu.team08.pacman.EntityStates;
 
+import java.util.HashMap;
+
 public class AnimationComponent implements Component {
-    public ArrayMap<EntityStates, Animation<TextureRegion>> animations = new ArrayMap<>();
+    private HashMap<EntityStates, Animation<TextureRegion>> animations;
+
+    public  AnimationComponent()
+    {
+        animations = new HashMap<>();
+    }
+    public HashMap<EntityStates, Animation<TextureRegion>> getAnimations() {
+        return animations;
+    }
+
+    public void addAnimation(EntityStates entityStates, Animation<TextureRegion> animation)
+    {
+        animations.put(entityStates, animation);
+    }
 }

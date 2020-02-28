@@ -1,13 +1,11 @@
 package edu.team08.pacman;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import edu.team08.pacman.screens.PlayScreen;
 
 public class PacManGame extends Game {
-    SpriteBatch batch;
-    Texture img;
+    private SpriteBatch batch;
 
     @Override
     public void create() {

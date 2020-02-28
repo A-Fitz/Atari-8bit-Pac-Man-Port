@@ -23,7 +23,7 @@ public class PillSystem extends IteratingSystem
     protected void processEntity(Entity entity, float deltaTime) {
         PillComponent pill = pm.get(entity);
         BodyComponent bodyComponent = bm.get(entity);
-        Body body = bodyComponent.body;
+        Body body = bodyComponent.getBody();
         if (pill.isEatan())
         {
             if (pill.isBig())
@@ -36,11 +36,13 @@ public class PillSystem extends IteratingSystem
                 // TODO  play sound
                 GameManager.instance.AddScore(100);
             }
+
+            // removes the entity from the world
+            getEngine().removeEntity(entity);
+            body.getWorld().destroyBody(body);
         }
 
-        // removes the entity from the world
-        getEngine().removeEntity(entity);
-        body.getWorld().destroyBody(body);
+
         GameManager.instance.totalPills--;
     }
 }

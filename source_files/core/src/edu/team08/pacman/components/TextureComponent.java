@@ -14,4 +14,8 @@ public class TextureComponent implements Component {
     public TextureComponent(TextureRegion textureRegion) {
         region = new TextureRegion(textureRegion);
     }
+
+    public void setRegion(TextureRegion region) {
+        this.region = region;
+    }
 }

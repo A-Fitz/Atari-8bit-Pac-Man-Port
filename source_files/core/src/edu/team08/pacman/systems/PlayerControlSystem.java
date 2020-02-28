@@ -13,9 +13,9 @@ import edu.team08.pacman.components.StateComponent;
 import edu.team08.pacman.managers.InputManager;
 
 public class PlayerControlSystem extends IteratingSystem {
-    ComponentMapper<PlayerComponent> pm; // gets player component of entity
-    ComponentMapper<BodyComponent> bodm; // gets body component
-    ComponentMapper<StateComponent> sm; // gets state component
+    private ComponentMapper<PlayerComponent> pm; // gets player component of entity
+    private ComponentMapper<BodyComponent> bodm; // gets body component
+    private ComponentMapper<StateComponent> sm; // gets state component
     private InputManager inputManager = InputManager.getInstance();
 
     public PlayerControlSystem() {
@@ -35,25 +35,25 @@ public class PlayerControlSystem extends IteratingSystem {
 
         // apply forces depending on controller input
         if (inputManager.isKeyPressed(Input.Keys.DOWN)|| inputManager.isKeyPressed(Input.Keys.S)) {
-            body.body.setLinearVelocity(0,
-                    MathUtils.lerp(body.body.getLinearVelocity().y, -5f, 0.2f));
+            body.getBody().setLinearVelocity(0,
+                    MathUtils.lerp(body.getBody().getLinearVelocity().y, -5f, 0.2f));
             if(state.getState() != EntityStates.MOVING_DOWN)
                 state.set(EntityStates.MOVING_DOWN);
         } else if (inputManager.isKeyPressed(Input.Keys.UP)|| inputManager.isKeyPressed(Input.Keys.W)) {
-            body.body.setLinearVelocity(0,
-                    MathUtils.lerp(body.body.getLinearVelocity().y, 5f, 0.2f));
+            body.getBody().setLinearVelocity(0,
+                    MathUtils.lerp(body.getBody().getLinearVelocity().y, 5f, 0.2f));
             if(state.getState() != EntityStates.MOVING_UP)
                 state.set(EntityStates.MOVING_UP);
         } else if (inputManager.isKeyPressed(Input.Keys.LEFT)|| inputManager.isKeyPressed(Input.Keys.A)) {
-            body.body.setLinearVelocity(MathUtils.lerp(body.body.getLinearVelocity().x, -5f, 0.2f),
+            body.getBody().setLinearVelocity(MathUtils.lerp(body.getBody().getLinearVelocity().x, -5f, 0.2f),
                     0);
             if(state.getState() != EntityStates.MOVING_LEFT)
                 state.set(EntityStates.MOVING_LEFT);
         } else if (inputManager.isKeyPressed(Input.Keys.RIGHT) || inputManager.isKeyPressed(Input.Keys.D)) {
-            body.body.setLinearVelocity(MathUtils.lerp(body.body.getLinearVelocity().x, 5f, 0.2f),
+            body.getBody().setLinearVelocity(MathUtils.lerp(body.getBody().getLinearVelocity().x, 5f, 0.2f),
                     0);
             if(state.getState() != EntityStates.MOVING_RIGHT)
                 state.set(EntityStates.MOVING_RIGHT);
-        }
+        } 
     }
 }

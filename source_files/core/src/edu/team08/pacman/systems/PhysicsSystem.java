@@ -46,11 +46,11 @@ public class PhysicsSystem extends IteratingSystem {
                 TransformComponent tfm = tm.get(entity);
                 BodyComponent bodyComp = bm.get(entity);
                 // get position from body
-                Vector2 position = bodyComp.body.getPosition();
+                Vector2 position = bodyComp.getBody().getPosition();
                 // update our transform to match body position
-                tfm.position.x = position.x;
-                tfm.position.y = position.y;
-                tfm.rotation = bodyComp.body.getAngle() * MathUtils.radiansToDegrees;
+                tfm.getPosition().x = position.x;
+                tfm.getPosition().y = position.y;
+                tfm.setRotation(bodyComp.getBody().getAngle() * MathUtils.radiansToDegrees);
             }
         }
         // empty queue
