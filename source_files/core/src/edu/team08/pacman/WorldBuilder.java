@@ -12,6 +12,7 @@ import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 import edu.team08.pacman.components.*;
@@ -43,7 +44,10 @@ public class WorldBuilder {
         MapLayers mapLayers = tiledMap.getLayers();
         MapLayer wall = mapLayers.get("wall");
         for (MapObject mapObject : wall.getObjects()) {
+            BodyDef wallBodyDef = new BodyDef();
+            wallBodyDef.position.set(new Vector2(0,2));
 
+            Body wallBody = world.createBody(wallBodyDef);
         }
 
         MapLayer pill = mapLayers.get("pill");
@@ -125,7 +129,7 @@ public class WorldBuilder {
 
     private void createPlayer(Rectangle rectangle) {
         //create an empty entity
-        Entity entity = engine.createEntity();
+        Entity entity = new Entity();
         //add components
         BodyComponent bodyComponent = engine.createComponent(BodyComponent.class);
         TransformComponent position = engine.createComponent(TransformComponent.class);
