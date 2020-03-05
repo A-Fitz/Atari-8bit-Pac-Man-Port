@@ -33,11 +33,10 @@ public class WorldBuilder {
         textureAtlas = GameManager.instance.assetManager.get(FilePathConstants.SPRITES_PATH, TextureAtlas.class);
     }
 
+    /**
+     * build builds a playable area for the player
+     */
     public void build() {
-        buildMap();
-    }
-
-    private void buildMap() {
         MapLayers mapLayers = tiledMap.getLayers();
         MapLayer wall = mapLayers.get("wall");
         MapLayer pill = mapLayers.get("pill");
@@ -45,16 +44,7 @@ public class WorldBuilder {
 
         this.addWalls(wall);
         this.addPills(pill);
-
-
-        for (MapObject mapObject : playerLayer.getObjects()) {
-
-            Rectangle rectangle = ((RectangleMapObject) mapObject).getRectangle();
-
-            centerRectangle(rectangle);
-
-            createPlayer(rectangle);
-        }
+        this.addPacMan(playerLayer);
     }
 
     /**
@@ -84,6 +74,18 @@ public class WorldBuilder {
             } else {
                 createPill(rectangle, false);
             }
+        }
+    }
+
+    /**
+     * addPlayer creates a player and adds it to the player layer.
+     * @param layer MapLayer
+     */
+    private void addPacMan(MapLayer layer){
+        for(MapObject mapObject : layer.getObjects()) {
+            Rectangle rectangle = ((RectangleMapObject) mapObject).getRectangle();
+            centerRectangle(rectangle);
+            createPlayer(rectangle);
         }
     }
 
