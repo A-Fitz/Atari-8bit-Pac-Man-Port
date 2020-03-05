@@ -8,17 +8,16 @@ import edu.team08.pacman.components.StateComponent;
 
 public class StateSystem extends IteratingSystem {
 
-    private final ComponentMapper<StateComponent> sm;
+    private final ComponentMapper<StateComponent> stateComponentComponentMapper;
 
     public StateSystem()
     {
         super(Family.all(StateComponent.class).get());
-        sm = ComponentMapper.getFor(StateComponent.class);
+        stateComponentComponentMapper = ComponentMapper.getFor(StateComponent.class);
     }
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
-        StateComponent state = sm.get(entity);
+        StateComponent state = stateComponentComponentMapper.get(entity);
         state.addTime(deltaTime);
-
     }
 }

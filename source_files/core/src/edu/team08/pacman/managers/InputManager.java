@@ -15,7 +15,7 @@ import java.util.ArrayList;
 public class InputManager implements InputProcessor {
 
     private static final InputManager instance = new InputManager();
-    public ArrayList<KeyState> keyStates = new ArrayList<KeyState>();
+    public ArrayList<KeyState> keyStates = new ArrayList<>();
 
     public InputManager() {
         for (int i = 0; i < 256; i++) keyStates.add(new KeyState(i));

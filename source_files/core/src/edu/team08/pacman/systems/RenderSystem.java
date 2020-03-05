@@ -15,8 +15,8 @@ public class RenderSystem extends EntitySystem {
     private SpriteBatch batch;
     private OrthographicCamera camera;
 
-    private ComponentMapper<TransformComponent> pm = ComponentMapper.getFor(TransformComponent.class);
-    private ComponentMapper<TextureComponent> vm = ComponentMapper.getFor(TextureComponent.class);
+    private ComponentMapper<TransformComponent> transformComponentComponentMapper = ComponentMapper.getFor(TransformComponent.class);
+    private ComponentMapper<TextureComponent> textureComponentComponentMapper = ComponentMapper.getFor(TextureComponent.class);
 
     public RenderSystem (SpriteBatch batch, OrthographicCamera camera) {
         this.batch = batch;
@@ -48,8 +48,8 @@ public class RenderSystem extends EntitySystem {
         for (int i = 0; i < entities.size(); ++i) {
             Entity e = entities.get(i);
 
-            position = pm.get(e);
-            visual = vm.get(e);
+            position = transformComponentComponentMapper.get(e);
+            visual = textureComponentComponentMapper.get(e);
 
             float width = visual.region.getRegionWidth() / DisplayConstants.ASSET_SIZE;
             float height = visual.region.getRegionHeight() / DisplayConstants.ASSET_SIZE;

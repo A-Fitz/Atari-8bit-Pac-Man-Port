@@ -23,12 +23,11 @@ public class PhysicsSystem extends IteratingSystem {
     private ComponentMapper<BodyComponent> bm = ComponentMapper.getFor(BodyComponent.class);
     private ComponentMapper<TransformComponent> tm = ComponentMapper.getFor(TransformComponent.class);
 
-    @SuppressWarnings("unchecked")
     public PhysicsSystem(World world) {
         // System for all Entities that have B2dBodyComponent and TransformComponent
         super(Family.all(BodyComponent.class, TransformComponent.class).get());
         this.world = world;
-        this.bodiesQueue = new Array<Entity>();
+        this.bodiesQueue = new Array<>();
     }
 
     @Override

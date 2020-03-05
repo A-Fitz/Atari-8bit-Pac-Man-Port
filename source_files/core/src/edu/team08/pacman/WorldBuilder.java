@@ -24,14 +24,12 @@ public class WorldBuilder {
     private final TiledMap tiledMap;
     private final World world;
     private final PooledEngine engine;
-    private SpriteBatch batch;
     private TextureAtlas textureAtlas;
 
     public WorldBuilder(TiledMap tiledMap, PooledEngine engine, World world, SpriteBatch batch) {
         this.tiledMap = tiledMap;
         this.engine = engine;
         this.world = world;
-        this.batch = batch;
         textureAtlas = GameManager.instance.assetManager.get(FilePathConstants.SPRITES_PATH, TextureAtlas.class);
     }
 
@@ -132,39 +130,34 @@ public class WorldBuilder {
         Entity entity = new Entity();
         //add components
         BodyComponent bodyComponent = engine.createComponent(BodyComponent.class);
-        TransformComponent position = engine.createComponent(TransformComponent.class);
-        PlayerComponent player = engine.createComponent(PlayerComponent.class);
+        TransformComponent transformComponent = engine.createComponent(TransformComponent.class);
+        PlayerComponent playerComponent = engine.createComponent(PlayerComponent.class);
         TypeComponent type = engine.createComponent(TypeComponent.class);
-        StateComponent stateCom = engine.createComponent(StateComponent.class);
+        StateComponent stateComponent = engine.createComponent(StateComponent.class);
         AnimationComponent animationComponent = engine.createComponent(AnimationComponent.class);
-        TextureComponent textComp = engine.createComponent(TextureComponent.class);
+        TextureComponent textureComponent = engine.createComponent(TextureComponent.class);
         TextureAtlas textureAtlas = GameManager.instance.assetManager.get(FilePathConstants.SPRITES_PATH, TextureAtlas.class);
-        textComp.region = new TextureRegion(textureAtlas.findRegion("pacman"), 16, 0, 16, 16);
 
-        // set the components data
+        textureComponent.region = new TextureRegion(textureAtlas.findRegion("pacman"), 16, 0, 16, 16);
 
-        bodyComponent.setBody(createOval(rectangle.x, rectangle.y));;
+        bodyComponent.setBody(createOval(rectangle.x, rectangle.y));
+        transformComponent.getPosition().set(rectangle.x, rectangle.y, 1);
 
-
-        // set object position (x,y,z) z used to define draw order 0 first drawn
-        position.getPosition().set(rectangle.x, rectangle.y, 1);
         type.type = TypeComponent.PLAYER;
 
-        // add components to entity
+        // add components
         entity.add(bodyComponent);
-        entity.add(position);
-        entity.add(player);
+        entity.add(transformComponent);
+        entity.add(playerComponent);
         entity.add(type);
-        entity.add(stateCom);
-        entity.add(textComp);
+        entity.add(stateComponent);
+        entity.add(textureComponent);
 
+        // create and add animations
         createKeyFrames(animationComponent);
-
         entity.add(animationComponent);
 
-        //add entity to engine
         engine.addEntity(entity);
-
         bodyComponent.getBody().setUserData(entity);
     }
 

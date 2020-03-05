@@ -54,8 +54,6 @@ public class PlayScreen implements Screen {
         camera.update();
 
         batch = new SpriteBatch();
-
-
         batch.setProjectionMatrix(camera.combined);
 
         // box2d
@@ -69,7 +67,6 @@ public class PlayScreen implements Screen {
         engine.addSystem(new AnimationSystem());
         engine.addSystem(new PillSystem());
         engine.addSystem(new StateSystem());
-
 
         // set the input controller
         Gdx.input.setInputProcessor(InputManager.getInstance());
@@ -93,8 +90,6 @@ public class PlayScreen implements Screen {
         //setup contact listener
         gameContactListener = new GameContactListener();
         world.setContactListener(gameContactListener);
-
-
     }
 
     @Override
@@ -109,8 +104,6 @@ public class PlayScreen implements Screen {
         stringBuilder.append("Score: ");
         stringBuilder.append(GameManager.instance.getScore());
         scoreLabel.setText(stringBuilder);
-
-
 
         tiledMapRenderer.setView(camera);
         tiledMapRenderer.render();
