@@ -38,18 +38,44 @@ public class WorldBuilder {
     }
 
     private void buildMap() {
-
         MapLayers mapLayers = tiledMap.getLayers();
         MapLayer wall = mapLayers.get("wall");
-        for (MapObject mapObject : wall.getObjects()) {
+        MapLayer pill = mapLayers.get("pill");
+        MapLayer playerLayer = mapLayers.get("player");
+
+        this.addWalls(wall);
+        this.addPills(pill);
+
+
+        for (MapObject mapObject : playerLayer.getObjects()) {
+
+            Rectangle rectangle = ((RectangleMapObject) mapObject).getRectangle();
+
+            centerRectangle(rectangle);
+
+            createPlayer(rectangle);
+        }
+    }
+
+    /**
+     * addWalls creates all the walls that are contained in the map and add then to the wall layer.
+     * @param layer MapLayer
+     */
+    private void addWalls(MapLayer layer){
+        for (MapObject mapObject : layer.getObjects()) {
             BodyDef wallBodyDef = new BodyDef();
             wallBodyDef.position.set(new Vector2(0,2));
 
             Body wallBody = world.createBody(wallBodyDef);
         }
+    }
 
-        MapLayer pill = mapLayers.get("pill");
-        for (MapObject mapObject : pill.getObjects()) {
+    /**
+     * addPills creates each pill and adds them to the pill layer.
+     * @param layer MapLayer
+     */
+    private void addPills(MapLayer layer){
+        for (MapObject mapObject : layer.getObjects()) {
             Rectangle rectangle = ((RectangleMapObject) mapObject).getRectangle();
             centerRectangle(rectangle);
 
@@ -58,17 +84,6 @@ public class WorldBuilder {
             } else {
                 createPill(rectangle, false);
             }
-        }
-
-        // player
-        MapLayer playerLayer = mapLayers.get("player"); // player layer
-        for (MapObject mapObject : playerLayer.getObjects()) {
-
-            Rectangle rectangle = ((RectangleMapObject) mapObject).getRectangle();
-
-            centerRectangle(rectangle);
-
-            createPlayer(rectangle);
         }
     }
 
