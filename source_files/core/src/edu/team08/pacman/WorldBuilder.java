@@ -23,14 +23,12 @@ public class WorldBuilder {
     private final TiledMap tiledMap;
     private final World world;
     private final PooledEngine engine;
-    private SpriteBatch batch;
     private TextureAtlas textureAtlas;
 
     public WorldBuilder(TiledMap tiledMap, PooledEngine engine, World world, SpriteBatch batch) {
         this.tiledMap = tiledMap;
         this.engine = engine;
         this.world = world;
-        this.batch = batch;
         textureAtlas = GameManager.instance.assetManager.get(FilePathConstants.SPRITES_PATH, TextureAtlas.class);
     }
 
@@ -39,16 +37,31 @@ public class WorldBuilder {
     }
 
     private void buildMap() {
-
         MapLayers mapLayers = tiledMap.getLayers();
-        MapLayer wall = mapLayers.get("wall");
+        addWalls(mapLayers);
+        addPills(mapLayers);
+        addPlayer(mapLayers);
+    }
+
+    /**
+     * addWalls creates all the walls that are contained in the map and add then to the wall layer.
+     * @param layers MapLayer
+     */
+    private void addWalls(MapLayers layers){
+        MapLayer wall = layers.get("wall");
         for (MapObject mapObject : wall.getObjects()) {
             Rectangle rectangleWall = ((RectangleMapObject) mapObject).getRectangle();
             centerRectangle(rectangleWall);
             createWall(rectangleWall);
         }
+    }
 
-        MapLayer pill = mapLayers.get("pill");
+    /**
+     * addPills creates each pill and adds them to the pill layer.
+     * @param layers MapLayers
+     */
+    private void addPills(MapLayers layers){
+            MapLayer pill = layers.get("pill");
         for (MapObject mapObject : pill.getObjects()) {
             Rectangle rectangle = ((RectangleMapObject) mapObject).getRectangle();
             centerRectangle(rectangle);
@@ -59,15 +72,18 @@ public class WorldBuilder {
                 createPill(rectangle, false);
             }
         }
+    }
 
-        // player
-        MapLayer playerLayer = mapLayers.get("player"); // player layer
+    /**
+     * addPlayer creates a Player and adds it to the world
+     * @param layers MapLayers
+     */
+    private void addPlayer(MapLayers layers)
+    {
+        MapLayer playerLayer = layers.get("player"); // player layer
         for (MapObject mapObject : playerLayer.getObjects()) {
-
             Rectangle rectangle = ((RectangleMapObject) mapObject).getRectangle();
-
-             centerRectangle(rectangle);
-
+            centerRectangle(rectangle);
             createPlayer(rectangle);
         }
     }
@@ -76,6 +92,7 @@ public class WorldBuilder {
         rectangle.x = (rectangle.x / DisplayConstants.ASSET_SIZE) + (rectangle.width / DisplayConstants.ASSET_SIZE) / 2;
         rectangle.y = (rectangle.y / DisplayConstants.ASSET_SIZE) + (rectangle.height / DisplayConstants.ASSET_SIZE) / 2;
     }
+    
     private void createWall(Rectangle rectangle)
     {
         BodyDef bodyDef = new BodyDef();
@@ -146,39 +163,34 @@ public class WorldBuilder {
         Entity entity = new Entity();
         //add components
         BodyComponent bodyComponent = engine.createComponent(BodyComponent.class);
-        TransformComponent position = engine.createComponent(TransformComponent.class);
-        PlayerComponent player = engine.createComponent(PlayerComponent.class);
+        TransformComponent transformComponent = engine.createComponent(TransformComponent.class);
+        PlayerComponent playerComponent = engine.createComponent(PlayerComponent.class);
         TypeComponent type = engine.createComponent(TypeComponent.class);
-        StateComponent stateCom = engine.createComponent(StateComponent.class);
+        StateComponent stateComponent = engine.createComponent(StateComponent.class);
         AnimationComponent animationComponent = engine.createComponent(AnimationComponent.class);
-        TextureComponent textComp = engine.createComponent(TextureComponent.class);
+        TextureComponent textureComponent = engine.createComponent(TextureComponent.class);
         TextureAtlas textureAtlas = GameManager.instance.assetManager.get(FilePathConstants.SPRITES_PATH, TextureAtlas.class);
-        textComp.region = new TextureRegion(textureAtlas.findRegion("pacman"), 16, 0, 16, 16);
 
-        // set the components data
+        textureComponent.region = new TextureRegion(textureAtlas.findRegion("pacman"), 16, 0, 16, 16);
 
-        bodyComponent.setBody(createOval(rectangle.x, rectangle.y));;
+        bodyComponent.setBody(createOval(rectangle.x, rectangle.y));
+        transformComponent.getPosition().set(rectangle.x, rectangle.y, 1);
 
-
-        // set object position (x,y,z) z used to define draw order 0 first drawn
-        position.getPosition().set(rectangle.x, rectangle.y, 1);
         type.type = TypeComponent.PLAYER;
 
-        // add components to entity
+        // add components
         entity.add(bodyComponent);
-        entity.add(position);
-        entity.add(player);
+        entity.add(transformComponent);
+        entity.add(playerComponent);
         entity.add(type);
-        entity.add(stateCom);
-        entity.add(textComp);
+        entity.add(stateComponent);
+        entity.add(textureComponent);
 
+        // create and add animations
         createKeyFrames(animationComponent);
-
         entity.add(animationComponent);
 
-        //add entity to engine
         engine.addEntity(entity);
-
         bodyComponent.getBody().setUserData(entity);
     }
 

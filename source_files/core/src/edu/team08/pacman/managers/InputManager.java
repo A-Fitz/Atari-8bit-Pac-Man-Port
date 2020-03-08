@@ -1,21 +1,20 @@
-/**
+/***********************************************************************************************************************
  * Class: InputManager
  * <p>
  * Purpose: This class will manage keyboard and mouse input form the user.
  * <p>
  * Resource used: https://www.sitepoint.com/handling-player-input-in-cross-platform-games-with-libgdx/
- */
+ **********************************************************************************************************************/
 package edu.team08.pacman.managers;
 
 import com.badlogic.gdx.InputProcessor;
 
 import java.util.ArrayList;
 
-
 public class InputManager implements InputProcessor {
 
     private static final InputManager instance = new InputManager();
-    public ArrayList<KeyState> keyStates = new ArrayList<KeyState>();
+    public ArrayList<KeyState> keyStates = new ArrayList<>();
 
     public InputManager() {
         for (int i = 0; i < 256; i++) keyStates.add(new KeyState(i));
@@ -123,22 +122,22 @@ public class InputManager implements InputProcessor {
         return false;
     }
 
-    /**
+    /*******************************************************************************************************************
      * Class: InputState
      *
      * Purpose: This class is the state for all input the user uses.
-     */
+     ******************************************************************************************************************/
     public static class InputState {
         public boolean pressed = false;
         public boolean down = false;
         public boolean released = false;
     }
 
-    /**
+    /*******************************************************************************************************************
      * Class: KeyState
      *
      * Purpose: Keyboard key states for the user.
-     */
+     ******************************************************************************************************************/
     public static class KeyState extends InputState {
         public int key;
 
@@ -146,7 +145,6 @@ public class InputManager implements InputProcessor {
             this.key = key;
         }
     }
-    // ----------------------------------------------------------------------------------
 
 }
 

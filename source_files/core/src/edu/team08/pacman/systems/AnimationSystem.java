@@ -10,22 +10,22 @@ import edu.team08.pacman.components.TextureComponent;
 
 public class AnimationSystem extends IteratingSystem {
 
-    private final ComponentMapper<TextureComponent> tm;
-    private final ComponentMapper<AnimationComponent> am;
-    private final ComponentMapper<StateComponent> sm;
+    private final ComponentMapper<TextureComponent> textureComponentComponentMapper;
+    private final ComponentMapper<AnimationComponent> animationComponentComponentMapper;
+    private final ComponentMapper<StateComponent> stateComponentComponentMapper;
 
     public AnimationSystem() {
         super(Family.all(AnimationComponent.class, TextureComponent.class, StateComponent.class).get());
-        tm = ComponentMapper.getFor(TextureComponent.class);
-        am = ComponentMapper.getFor(AnimationComponent.class);
-        sm = ComponentMapper.getFor(StateComponent.class);
+        textureComponentComponentMapper = ComponentMapper.getFor(TextureComponent.class);
+        animationComponentComponentMapper = ComponentMapper.getFor(AnimationComponent.class);
+        stateComponentComponentMapper = ComponentMapper.getFor(StateComponent.class);
     }
 
     @Override
     protected void processEntity(Entity entity, float deltaTime) {
-        TextureComponent texture = tm.get(entity);
-        AnimationComponent animation = am.get(entity);
-        StateComponent state = sm.get(entity);
+        TextureComponent texture = textureComponentComponentMapper.get(entity);
+        AnimationComponent animation = animationComponentComponentMapper.get(entity);
+        StateComponent state = stateComponentComponentMapper.get(entity);
         texture.region.setRegion(animation.getAnimations().get(state.getState()).getKeyFrame(state.getTime()));
     }
 }
