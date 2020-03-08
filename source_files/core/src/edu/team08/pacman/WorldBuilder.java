@@ -12,7 +12,6 @@ import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 import edu.team08.pacman.components.*;
@@ -44,10 +43,9 @@ public class WorldBuilder {
         MapLayers mapLayers = tiledMap.getLayers();
         MapLayer wall = mapLayers.get("wall");
         for (MapObject mapObject : wall.getObjects()) {
-            BodyDef wallBodyDef = new BodyDef();
-            wallBodyDef.position.set(new Vector2(0,2));
-
-            Body wallBody = world.createBody(wallBodyDef);
+            Rectangle rectangleWall = ((RectangleMapObject) mapObject).getRectangle();
+            centerRectangle(rectangleWall);
+            createWall(rectangleWall);
         }
 
         MapLayer pill = mapLayers.get("pill");
@@ -68,7 +66,7 @@ public class WorldBuilder {
 
             Rectangle rectangle = ((RectangleMapObject) mapObject).getRectangle();
 
-            centerRectangle(rectangle);
+             centerRectangle(rectangle);
 
             createPlayer(rectangle);
         }
@@ -77,6 +75,22 @@ public class WorldBuilder {
     private void centerRectangle(Rectangle rectangle) {
         rectangle.x = (rectangle.x / DisplayConstants.ASSET_SIZE) + (rectangle.width / DisplayConstants.ASSET_SIZE) / 2;
         rectangle.y = (rectangle.y / DisplayConstants.ASSET_SIZE) + (rectangle.height / DisplayConstants.ASSET_SIZE) / 2;
+    }
+    private void createWall(Rectangle rectangle)
+    {
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyDef.BodyType.StaticBody;
+        bodyDef.position.set(rectangle.x, rectangle.y);
+        Body body = world.createBody(bodyDef);
+
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(rectangle.x, rectangle.y);
+
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = shape;
+
+        body.createFixture(fixtureDef);
+        shape.dispose();
     }
 
     private void createPill(Rectangle rectangle, boolean big) {
@@ -244,4 +258,3 @@ public class WorldBuilder {
         return body;
     }
 }
-
