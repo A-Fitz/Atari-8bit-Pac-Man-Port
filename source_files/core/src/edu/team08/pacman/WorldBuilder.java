@@ -38,7 +38,7 @@ public class WorldBuilder {
 
     private void buildMap() {
         MapLayers mapLayers = tiledMap.getLayers();
-        addWalls(mapLayers);
+        //addWalls(mapLayers);
         addPills(mapLayers);
         addPlayer(mapLayers);
     }
