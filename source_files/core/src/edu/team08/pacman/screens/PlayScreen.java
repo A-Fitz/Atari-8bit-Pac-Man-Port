@@ -25,16 +25,15 @@ import edu.team08.pacman.managers.GameManager;
 import edu.team08.pacman.managers.InputManager;
 import edu.team08.pacman.systems.*;
 
-public class PlayScreen implements Screen {
+public class PlayScreen implements Screen
+{
+    private final float UNIT_SCALE = 1.0f / DisplayConstants.ASSET_SIZE;
     private SpriteBatch batch;
-
     private FitViewport stageViewport;
     private Stage stage;
     private FitViewport viewport;
-
     private OrthographicCamera camera;
     private Box2DDebugRenderer box2DDebugRenderer;
-
     private PooledEngine engine;
     private World world;
     private TiledMap tiledMap;
@@ -42,14 +41,14 @@ public class PlayScreen implements Screen {
     private Label scoreLabel;
     private GameContactListener gameContactListener;
 
-    public PlayScreen(SpriteBatch batch) {
+    public PlayScreen(SpriteBatch batch)
+    {
         this.batch = batch;
     }
 
-    private final float UNIT_SCALE = 1.0f / DisplayConstants.ASSET_SIZE;
-
     @Override
-    public void show() {
+    public void show()
+    {
         camera = new OrthographicCamera();
         viewport = new FitViewport(DisplayConstants.TILEDMAP_WIDTH, DisplayConstants.TILEDMAP_HEIGHT, camera);
         camera.translate(DisplayConstants.TILEDMAP_WIDTH / 2, DisplayConstants.TILEDMAP_HEIGHT / 2);
@@ -97,7 +96,8 @@ public class PlayScreen implements Screen {
     }
 
     @Override
-    public void render(float delta) {
+    public void render(float delta)
+    {
         // set background color, stop glitching on resize
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
@@ -121,27 +121,32 @@ public class PlayScreen implements Screen {
     }
 
     @Override
-    public void resize(int width, int height) {
+    public void resize(int width, int height)
+    {
         viewport.update(width, height);
     }
 
     @Override
-    public void pause() {
+    public void pause()
+    {
 
     }
 
     @Override
-    public void resume() {
+    public void resume()
+    {
 
     }
 
     @Override
-    public void hide() {
+    public void hide()
+    {
 
     }
 
     @Override
-    public void dispose() {
+    public void dispose()
+    {
         tiledMap.dispose();
         tiledMapRenderer.dispose();
     }

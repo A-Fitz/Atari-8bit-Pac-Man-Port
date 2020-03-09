@@ -7,14 +7,17 @@ import edu.team08.pacman.EntityStates;
 
 import java.util.HashMap;
 
-public class AnimationComponent implements Component {
+public class AnimationComponent implements Component
+{
     private HashMap<EntityStates, Animation<TextureRegion>> animations;
 
-    public  AnimationComponent()
+    public AnimationComponent()
     {
         animations = new HashMap<>();
     }
-    public HashMap<EntityStates, Animation<TextureRegion>> getAnimations() {
+
+    public HashMap<EntityStates, Animation<TextureRegion>> getAnimations()
+    {
         return animations;
     }
 

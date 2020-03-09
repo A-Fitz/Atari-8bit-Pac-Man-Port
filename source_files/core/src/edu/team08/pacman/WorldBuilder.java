@@ -111,9 +111,12 @@ public class WorldBuilder
 
         TextureRegion textureRegion;
         if (big)
+        {
             textureRegion = new TextureRegion(textureAtlas.findRegion("pill"), 16, 0, 16, 16);
-        else
+        } else
+        {
             textureRegion = new TextureRegion(textureAtlas.findRegion("pill"), 0, 0, 16, 16);
+        }
 
         textComp.region = textureRegion;
 
@@ -125,9 +128,12 @@ public class WorldBuilder
         CircleShape circleShape = new CircleShape();
 
         if (big)
+        {
             circleShape.setRadius(rectangle.width);
-        else
+        } else
+        {
             circleShape.setRadius(rectangle.width / 2);
+        }
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = circleShape;
@@ -276,7 +282,9 @@ public class WorldBuilder
         keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 0, 0, 16, 16));
         keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 3 * 16, 0, 16, 16));
         for (int i = 5; i <= 17; i++)
+        {
             keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), i * 16, 0, 16, 16));
+        }
         animation = new Animation<>(0.1f, keyFrames, Animation.PlayMode.LOOP);
         animationComponent.addAnimation(EntityStates.DYING, animation);
         keyFrames.clear();

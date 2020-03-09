@@ -4,7 +4,8 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Disposable;
 
-public class GameManager implements Disposable {
+public class GameManager implements Disposable
+{
 
     public static final GameManager instance = new GameManager();
     public AssetManager assetManager;
@@ -12,21 +13,32 @@ public class GameManager implements Disposable {
     public int totalPills = 0;
     private int score = 0;
 
-    GameManager() {
+    GameManager()
+    {
         assetManager = new AssetManager();
         assetManager.load("sprites/actors.atlas", TextureAtlas.class);
 
         assetManager.finishLoading();
     }
 
-    public int getScore() { return score; }
+    public int getScore()
+    {
+        return score;
+    }
 
-    public void AddScore(int scoreToAdd) { score =+ scoreToAdd; }
+    public void AddScore(int scoreToAdd)
+    {
+        score = +scoreToAdd;
+    }
 
-    public void ResetScore() { score = 0; }
+    public void ResetScore()
+    {
+        score = 0;
+    }
 
     @Override
-    public void dispose() {
+    public void dispose()
+    {
         assetManager.dispose();
     }
 }

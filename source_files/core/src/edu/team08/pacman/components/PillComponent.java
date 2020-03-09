@@ -2,7 +2,8 @@ package edu.team08.pacman.components;
 
 import com.badlogic.ashley.core.Component;
 
-public class PillComponent implements Component {
+public class PillComponent implements Component
+{
     private boolean isEatan;
     private boolean isBig;
 
@@ -12,15 +13,18 @@ public class PillComponent implements Component {
         isEatan = false;
     }
 
-    public boolean isBig() {
+    public boolean isBig()
+    {
         return isBig;
     }
 
-    public boolean isEatan() {
+    public boolean isEatan()
+    {
         return isEatan;
     }
 
-    public void setEatan(boolean eatan) {
+    public void setEatan(boolean eatan)
+    {
         isEatan = eatan;
     }
 }

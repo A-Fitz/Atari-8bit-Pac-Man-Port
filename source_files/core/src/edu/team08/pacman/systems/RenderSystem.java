@@ -9,7 +9,8 @@ import edu.team08.pacman.components.TextureComponent;
 import edu.team08.pacman.components.TransformComponent;
 import edu.team08.pacman.constants.DisplayConstants;
 
-public class RenderSystem extends EntitySystem {
+public class RenderSystem extends EntitySystem
+{
     private ImmutableArray<Entity> entities;
 
     private SpriteBatch batch;
@@ -18,24 +19,28 @@ public class RenderSystem extends EntitySystem {
     private ComponentMapper<TransformComponent> transformComponentComponentMapper = ComponentMapper.getFor(TransformComponent.class);
     private ComponentMapper<TextureComponent> textureComponentComponentMapper = ComponentMapper.getFor(TextureComponent.class);
 
-    public RenderSystem (SpriteBatch batch, OrthographicCamera camera) {
+    public RenderSystem(SpriteBatch batch, OrthographicCamera camera)
+    {
         this.batch = batch;
 
         this.camera = camera;
     }
 
     @Override
-    public void addedToEngine (Engine engine) {
+    public void addedToEngine(Engine engine)
+    {
         entities = engine.getEntitiesFor(Family.all(TransformComponent.class, TextureComponent.class).get());
     }
 
     @Override
-    public void removedFromEngine (Engine engine) {
+    public void removedFromEngine(Engine engine)
+    {
 
     }
 
     @Override
-    public void update (float deltaTime) {
+    public void update(float deltaTime)
+    {
         super.update(deltaTime);
         TransformComponent position;
         TextureComponent visual;
@@ -45,7 +50,8 @@ public class RenderSystem extends EntitySystem {
         batch.begin();
         batch.setProjectionMatrix(camera.combined);
 
-        for (int i = 0; i < entities.size(); ++i) {
+        for (int i = 0; i < entities.size(); ++i)
+        {
             Entity e = entities.get(i);
 
             position = transformComponentComponentMapper.get(e);
