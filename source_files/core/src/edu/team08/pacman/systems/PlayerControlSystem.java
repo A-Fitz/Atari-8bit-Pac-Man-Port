@@ -11,7 +11,6 @@ import edu.team08.pacman.EntityStates;
 import edu.team08.pacman.components.BodyComponent;
 import edu.team08.pacman.components.PlayerComponent;
 import edu.team08.pacman.components.StateComponent;
-import edu.team08.pacman.constants.MovementConstants;
 import edu.team08.pacman.managers.InputManager;
 
 public class PlayerControlSystem extends IteratingSystem {
@@ -27,44 +26,78 @@ public class PlayerControlSystem extends IteratingSystem {
     }
 
     @Override
-    protected void processEntity(Entity entity, float deltaTime) {
+    public void processEntity(Entity entity, float deltaTime) {
         //get the entity body
-        BodyComponent body = bodyComponentComponentMapper.get(entity);
+        BodyComponent bodyComponent = bodyComponentComponentMapper.get(entity);
         // get the entity state
-        StateComponent state = stateComponentComponentMapper.get(entity);
+        StateComponent stateComponent = stateComponentComponentMapper.get(entity);
 
+        // move the entity on keypress and apply constant velocity without keypress based on state
+        moveOnKeyPress(bodyComponent, stateComponent);
+        continueMovement(bodyComponent, stateComponent);
+    }
+
+    private void moveOnKeyPress(BodyComponent bodyComponent, StateComponent stateComponent)
+    {
         // apply forces depending on controller input
         if (inputManager.isKeyPressed(Input.Keys.DOWN)|| inputManager.isKeyPressed(Input.Keys.S))
         {
-            body.getBody().setLinearVelocity(0,
-                    MathUtils.lerp(body.getBody().getLinearVelocity().y, -MovementConstants.PACMAN_SPEED, 1));
-            if(state.getState() != EntityStates.MOVING_DOWN)
+            setYVelocity(bodyComponent, -bodyComponent.getSpeed());
+            if(stateComponent.getState() != EntityStates.MOVING_DOWN)
             {
-                state.set(EntityStates.MOVING_DOWN);
+                stateComponent.set(EntityStates.MOVING_DOWN);
             }
         }
         else if (inputManager.isKeyPressed(Input.Keys.UP)|| inputManager.isKeyPressed(Input.Keys.W)) {
-            body.getBody().setLinearVelocity(0,
-                    MathUtils.lerp(body.getBody().getLinearVelocity().y, MovementConstants.PACMAN_SPEED, 1));
-            if(state.getState() != EntityStates.MOVING_UP)
+            setYVelocity(bodyComponent, bodyComponent.getSpeed());
+            if(stateComponent.getState() != EntityStates.MOVING_UP)
             {
-                state.set(EntityStates.MOVING_UP);
+                stateComponent.set(EntityStates.MOVING_UP);
             }
         }
         else if (inputManager.isKeyPressed(Input.Keys.LEFT)|| inputManager.isKeyPressed(Input.Keys.A)) {
-            body.getBody().setLinearVelocity(MathUtils.lerp(body.getBody().getLinearVelocity().x, -MovementConstants.PACMAN_SPEED, 1),
-                    0);
-            if(state.getState() != EntityStates.MOVING_LEFT)
+            setXVelocity(bodyComponent, -bodyComponent.getSpeed());
+            if(stateComponent.getState() != EntityStates.MOVING_LEFT)
             {
-                state.set(EntityStates.MOVING_LEFT);
+                stateComponent.set(EntityStates.MOVING_LEFT);
             }
         }
         else if (inputManager.isKeyPressed(Input.Keys.RIGHT) || inputManager.isKeyPressed(Input.Keys.D)) {
-            body.getBody().setLinearVelocity(MathUtils.lerp(body.getBody().getLinearVelocity().x, MovementConstants.PACMAN_SPEED, 1), 0);
-            if(state.getState() != EntityStates.MOVING_RIGHT)
+            setXVelocity(bodyComponent, bodyComponent.getSpeed());
+            if(stateComponent.getState() != EntityStates.MOVING_RIGHT)
             {
-                state.set(EntityStates.MOVING_RIGHT);
+                stateComponent.set(EntityStates.MOVING_RIGHT);
             }
         }
+    }
+
+    private void continueMovement(BodyComponent bodyComponent, StateComponent stateComponent)
+    {
+        if(stateComponent.getState() == EntityStates.MOVING_DOWN)
+        {
+            setYVelocity(bodyComponent, -bodyComponent.getSpeed());
+        }
+        else if(stateComponent.getState() == EntityStates.MOVING_UP)
+        {
+            setYVelocity(bodyComponent, bodyComponent.getSpeed());
+        }
+        else if(stateComponent.getState() == EntityStates.MOVING_LEFT)
+        {
+            setXVelocity(bodyComponent, -bodyComponent.getSpeed());
+        }
+        else if(stateComponent.getState() == EntityStates.MOVING_RIGHT)
+        {
+            setXVelocity(bodyComponent, bodyComponent.getSpeed());
+        }
+    }
+
+    private void setXVelocity(BodyComponent bodyComponent, float vX)
+    {
+        bodyComponent.getBody().setLinearVelocity(MathUtils.lerp(bodyComponent.getBody().getLinearVelocity().x, vX, 1), 0);
+    }
+
+    private void setYVelocity(BodyComponent bodyComponent, float vY)
+    {
+        bodyComponent.getBody().setLinearVelocity(0, MathUtils.lerp(bodyComponent.getBody().getLinearVelocity().y, vY, 1));
     }
 }

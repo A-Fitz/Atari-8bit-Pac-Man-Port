@@ -17,6 +17,7 @@ import com.badlogic.gdx.utils.Array;
 import edu.team08.pacman.components.*;
 import edu.team08.pacman.constants.DisplayConstants;
 import edu.team08.pacman.constants.FilePathConstants;
+import edu.team08.pacman.constants.MovementConstants;
 import edu.team08.pacman.managers.GameManager;
 
 public class WorldBuilder
@@ -202,6 +203,7 @@ public class WorldBuilder
         circleShape.dispose();
 
         bodyComponent.setBody(body);
+        bodyComponent.setSpeed(MovementConstants.PACMAN_SPEED);
         transformComponent.getPosition().set(rectangle.x, rectangle.y, 1);
 
         type.type = TypeComponent.PLAYER;
