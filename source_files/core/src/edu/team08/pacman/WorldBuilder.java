@@ -63,7 +63,7 @@ public class WorldBuilder
     {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;
-        bodyDef.position.set((rectangle.x + rectangle.width) - 0.5f, (rectangle.y + rectangle.height) - 0.5f); //TODO "-0.5f" is workaround for tilemap edges
+        bodyDef.position.set(rectangle.x, rectangle.y);
         Body body = world.createBody(bodyDef);
 
         PolygonShape shape = new PolygonShape();
@@ -170,6 +170,11 @@ public class WorldBuilder
         }
     }
 
+    /**
+     * Converts a Rectangle object's position and scale from the TiledMap values to our game values.
+     *
+     * @param rectangle A given rectangle, some TiledMap object.
+     */
     private void correctRectangle(Rectangle rectangle)
     {
         rectangle.x = (rectangle.x / DisplayConstants.ASSET_SIZE) + (rectangle.width / DisplayConstants.ASSET_SIZE) / 2;
@@ -197,12 +202,11 @@ public class WorldBuilder
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(rectangle.x, rectangle.y);
-        bodyDef.linearDamping = 16f;
 
         Body body = world.createBody(bodyDef);
 
         CircleShape circleShape = new CircleShape();
-        circleShape.setRadius(rectangle.width * 0.95f); // 0.45?
+        circleShape.setRadius(rectangle.width * DisplayConstants.MOVING_ENTITY_BODY_SCALE); // Player needs to be able to move, so the scale needs to be slightly smaller than the walls around it
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = circleShape;
         body.createFixture(fixtureDef);
