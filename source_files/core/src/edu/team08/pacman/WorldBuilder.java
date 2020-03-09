@@ -12,7 +12,6 @@ import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 import edu.team08.pacman.components.*;
@@ -38,17 +37,31 @@ public class WorldBuilder {
     }
 
     private void buildMap() {
-
         MapLayers mapLayers = tiledMap.getLayers();
-        MapLayer wall = mapLayers.get("wall");
+        //addWalls(mapLayers);
+        addPills(mapLayers);
+        addPlayer(mapLayers);
+    }
+
+    /**
+     * addWalls creates all the walls that are contained in the map and add then to the wall layer.
+     * @param layers MapLayer
+     */
+    private void addWalls(MapLayers layers){
+        MapLayer wall = layers.get("wall");
         for (MapObject mapObject : wall.getObjects()) {
-            BodyDef wallBodyDef = new BodyDef();
-            wallBodyDef.position.set(new Vector2(0,2));
-
-            Body wallBody = world.createBody(wallBodyDef);
+            Rectangle rectangleWall = ((RectangleMapObject) mapObject).getRectangle();
+            centerRectangle(rectangleWall);
+            createWall(rectangleWall);
         }
+    }
 
-        MapLayer pill = mapLayers.get("pill");
+    /**
+     * addPills creates each pill and adds them to the pill layer.
+     * @param layers MapLayers
+     */
+    private void addPills(MapLayers layers){
+            MapLayer pill = layers.get("pill");
         for (MapObject mapObject : pill.getObjects()) {
             Rectangle rectangle = ((RectangleMapObject) mapObject).getRectangle();
             centerRectangle(rectangle);
@@ -59,15 +72,18 @@ public class WorldBuilder {
                 createPill(rectangle, false);
             }
         }
+    }
 
-        // player
-        MapLayer playerLayer = mapLayers.get("player"); // player layer
+    /**
+     * addPlayer creates a Player and adds it to the world
+     * @param layers MapLayers
+     */
+    private void addPlayer(MapLayers layers)
+    {
+        MapLayer playerLayer = layers.get("player"); // player layer
         for (MapObject mapObject : playerLayer.getObjects()) {
-
             Rectangle rectangle = ((RectangleMapObject) mapObject).getRectangle();
-
             centerRectangle(rectangle);
-
             createPlayer(rectangle);
         }
     }
@@ -75,6 +91,23 @@ public class WorldBuilder {
     private void centerRectangle(Rectangle rectangle) {
         rectangle.x = (rectangle.x / DisplayConstants.ASSET_SIZE) + (rectangle.width / DisplayConstants.ASSET_SIZE) / 2;
         rectangle.y = (rectangle.y / DisplayConstants.ASSET_SIZE) + (rectangle.height / DisplayConstants.ASSET_SIZE) / 2;
+    }
+    
+    private void createWall(Rectangle rectangle)
+    {
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyDef.BodyType.StaticBody;
+        bodyDef.position.set(rectangle.x, rectangle.y);
+        Body body = world.createBody(bodyDef);
+
+        PolygonShape shape = new PolygonShape();
+        shape.setAsBox(rectangle.x, rectangle.y);
+
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = shape;
+
+        body.createFixture(fixtureDef);
+        shape.dispose();
     }
 
     private void createPill(Rectangle rectangle, boolean big) {
@@ -237,4 +270,3 @@ public class WorldBuilder {
         return body;
     }
 }
-
