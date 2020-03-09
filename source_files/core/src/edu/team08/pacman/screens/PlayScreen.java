@@ -12,6 +12,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -32,6 +33,7 @@ public class PlayScreen implements Screen {
     private FitViewport viewport;
 
     private OrthographicCamera camera;
+    private Box2DDebugRenderer box2DDebugRenderer;
 
     private PooledEngine engine;
     private World world;
@@ -59,6 +61,8 @@ public class PlayScreen implements Screen {
         // box2d
         world = new World(new Vector2(0, 0), true);
 
+        box2DDebugRenderer = new Box2DDebugRenderer();
+
         // create new systems and add to engine
         engine = new PooledEngine();
         engine.addSystem(new PhysicsSystem(world));
@@ -74,7 +78,7 @@ public class PlayScreen implements Screen {
         // build map and world
         tiledMap = new TmxMapLoader().load(FilePathConstants.TILEDMAP_PATH);
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, UNIT_SCALE, batch);
-        new WorldBuilder(tiledMap, engine, world, batch).build();
+        new WorldBuilder(tiledMap, engine, world, batch).buildMap();
 
         // setup stage
         stageViewport = new FitViewport(DisplayConstants.TILEDMAP_WIDTH * 20, DisplayConstants.TILEDMAP_HEIGHT * 20);
@@ -107,6 +111,9 @@ public class PlayScreen implements Screen {
 
         tiledMapRenderer.setView(camera);
         tiledMapRenderer.render();
+
+        // Debug Renderer - renders lines around bodies
+        box2DDebugRenderer.render(world, camera.combined);
 
         batch.setProjectionMatrix(camera.combined);
         engine.update(delta);

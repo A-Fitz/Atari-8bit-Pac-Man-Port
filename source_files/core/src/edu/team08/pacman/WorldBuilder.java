@@ -19,89 +19,54 @@ import edu.team08.pacman.constants.DisplayConstants;
 import edu.team08.pacman.constants.FilePathConstants;
 import edu.team08.pacman.managers.GameManager;
 
-public class WorldBuilder {
+public class WorldBuilder
+{
     private final TiledMap tiledMap;
     private final World world;
     private final PooledEngine engine;
     private TextureAtlas textureAtlas;
 
-    public WorldBuilder(TiledMap tiledMap, PooledEngine engine, World world, SpriteBatch batch) {
+    public WorldBuilder(TiledMap tiledMap, PooledEngine engine, World world, SpriteBatch batch)
+    {
         this.tiledMap = tiledMap;
         this.engine = engine;
         this.world = world;
         textureAtlas = GameManager.instance.assetManager.get(FilePathConstants.SPRITES_PATH, TextureAtlas.class);
     }
 
-    public void build() {
-        buildMap();
-    }
-
-    private void buildMap() {
+    public void buildMap()
+    {
         MapLayers mapLayers = tiledMap.getLayers();
-        //addWalls(mapLayers);
-        addPills(mapLayers);
         addPlayer(mapLayers);
+        addWalls(mapLayers);
+        addPills(mapLayers);
     }
 
     /**
      * addWalls creates all the walls that are contained in the map and add then to the wall layer.
+     *
      * @param layers MapLayer
      */
-    private void addWalls(MapLayers layers){
+    private void addWalls(MapLayers layers)
+    {
         MapLayer wall = layers.get("wall");
-        for (MapObject mapObject : wall.getObjects()) {
+        for (MapObject mapObject : wall.getObjects())
+        {
             Rectangle rectangleWall = ((RectangleMapObject) mapObject).getRectangle();
-            centerRectangle(rectangleWall);
+            correctRectangle(rectangleWall);
             createWall(rectangleWall);
         }
     }
 
-    /**
-     * addPills creates each pill and adds them to the pill layer.
-     * @param layers MapLayers
-     */
-    private void addPills(MapLayers layers){
-            MapLayer pill = layers.get("pill");
-        for (MapObject mapObject : pill.getObjects()) {
-            Rectangle rectangle = ((RectangleMapObject) mapObject).getRectangle();
-            centerRectangle(rectangle);
-
-            if (mapObject.getProperties().containsKey("big")) {
-                createPill(rectangle, true);
-            } else {
-                createPill(rectangle, false);
-            }
-        }
-    }
-
-    /**
-     * addPlayer creates a Player and adds it to the world
-     * @param layers MapLayers
-     */
-    private void addPlayer(MapLayers layers)
-    {
-        MapLayer playerLayer = layers.get("player"); // player layer
-        for (MapObject mapObject : playerLayer.getObjects()) {
-            Rectangle rectangle = ((RectangleMapObject) mapObject).getRectangle();
-            centerRectangle(rectangle);
-            createPlayer(rectangle);
-        }
-    }
-
-    private void centerRectangle(Rectangle rectangle) {
-        rectangle.x = (rectangle.x / DisplayConstants.ASSET_SIZE) + (rectangle.width / DisplayConstants.ASSET_SIZE) / 2;
-        rectangle.y = (rectangle.y / DisplayConstants.ASSET_SIZE) + (rectangle.height / DisplayConstants.ASSET_SIZE) / 2;
-    }
-    
     private void createWall(Rectangle rectangle)
     {
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.StaticBody;
-        bodyDef.position.set(rectangle.x, rectangle.y);
+        bodyDef.position.set((rectangle.x + rectangle.width) - 0.5f, (rectangle.y + rectangle.height) - 0.5f); //TODO "-0.5f" is workaround for tilemap edges
         Body body = world.createBody(bodyDef);
 
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(rectangle.x, rectangle.y);
+        shape.setAsBox(rectangle.width, rectangle.height);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
@@ -110,7 +75,31 @@ public class WorldBuilder {
         shape.dispose();
     }
 
-    private void createPill(Rectangle rectangle, boolean big) {
+    /**
+     * addPills creates each pill and adds them to the pill layer.
+     *
+     * @param layers MapLayers
+     */
+    private void addPills(MapLayers layers)
+    {
+        MapLayer pill = layers.get("pill");
+        for (MapObject mapObject : pill.getObjects())
+        {
+            Rectangle rectangle = ((RectangleMapObject) mapObject).getRectangle();
+            correctRectangle(rectangle);
+
+            if (mapObject.getProperties().containsKey("big"))
+            {
+                createPill(rectangle, true);
+            } else
+            {
+                createPill(rectangle, false);
+            }
+        }
+    }
+
+    private void createPill(Rectangle rectangle, boolean big)
+    {
         TransformComponent position = engine.createComponent(TransformComponent.class);
         TypeComponent type = engine.createComponent(TypeComponent.class);
         TextureComponent textComp = engine.createComponent(TextureComponent.class);
@@ -135,9 +124,9 @@ public class WorldBuilder {
         CircleShape circleShape = new CircleShape();
 
         if (big)
-            circleShape.setRadius(1f);
+            circleShape.setRadius(rectangle.width);
         else
-            circleShape.setRadius(0.1f);
+            circleShape.setRadius(rectangle.width / 2);
 
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = circleShape;
@@ -158,7 +147,32 @@ public class WorldBuilder {
         GameManager.instance.totalPills++;
     }
 
-    private void createPlayer(Rectangle rectangle) {
+    /**
+     * addPlayer creates a Player and adds it to the world
+     *
+     * @param layers MapLayers
+     */
+    private void addPlayer(MapLayers layers)
+    {
+        MapLayer playerLayer = layers.get("player"); // player layer
+        for (MapObject mapObject : playerLayer.getObjects())
+        {
+            Rectangle rectangle = ((RectangleMapObject) mapObject).getRectangle();
+            correctRectangle(rectangle);
+            createPlayer(rectangle);
+        }
+    }
+
+    private void correctRectangle(Rectangle rectangle)
+    {
+        rectangle.x = (rectangle.x / DisplayConstants.ASSET_SIZE) + (rectangle.width / DisplayConstants.ASSET_SIZE) / 2;
+        rectangle.y = (rectangle.y / DisplayConstants.ASSET_SIZE) + (rectangle.height / DisplayConstants.ASSET_SIZE) / 2;
+        rectangle.width = rectangle.width / (2 * DisplayConstants.ASSET_SIZE);
+        rectangle.height = rectangle.height / (2 * DisplayConstants.ASSET_SIZE);
+    }
+
+    private void createPlayer(Rectangle rectangle)
+    {
         //create an empty entity
         Entity entity = new Entity();
         //add components
@@ -173,7 +187,21 @@ public class WorldBuilder {
 
         textureComponent.region = new TextureRegion(textureAtlas.findRegion("pacman"), 16, 0, 16, 16);
 
-        bodyComponent.setBody(createOval(rectangle.x, rectangle.y));
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyDef.BodyType.DynamicBody;
+        bodyDef.position.set(rectangle.x, rectangle.y);
+        bodyDef.linearDamping = 16f;
+
+        Body body = world.createBody(bodyDef);
+
+        CircleShape circleShape = new CircleShape();
+        circleShape.setRadius(rectangle.width * 0.95f); // 0.45?
+        FixtureDef fixtureDef = new FixtureDef();
+        fixtureDef.shape = circleShape;
+        body.createFixture(fixtureDef);
+        circleShape.dispose();
+
+        bodyComponent.setBody(body);
         transformComponent.getPosition().set(rectangle.x, rectangle.y, 1);
 
         type.type = TypeComponent.PLAYER;
@@ -245,28 +273,10 @@ public class WorldBuilder {
 
         keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 0, 0, 16, 16));
         keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 3 * 16, 0, 16, 16));
-        for(int i = 5; i <= 17; i++)
+        for (int i = 5; i <= 17; i++)
             keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), i * 16, 0, 16, 16));
         animation = new Animation<>(0.1f, keyFrames, Animation.PlayMode.LOOP);
         animationComponent.addAnimation(EntityStates.DYING, animation);
         keyFrames.clear();
-    }
-
-    private Body createOval(float x, float y) {
-        BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.DynamicBody;
-        bodyDef.position.set(x, y);
-        bodyDef.linearDamping = 16f;
-
-        Body body = world.createBody(bodyDef);
-
-        CircleShape circleShape = new CircleShape();
-        circleShape.setRadius(0.45f);
-        FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.shape = circleShape;
-        body.createFixture(fixtureDef);
-        circleShape.dispose();
-
-        return body;
     }
 }

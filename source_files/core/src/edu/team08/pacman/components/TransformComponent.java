@@ -23,6 +23,12 @@ public class TransformComponent implements Component {
         this.position.z = z;
     }
 
+    public void set(Vector2 pos)
+    {
+        this.position.x = pos.x;
+        this.position.y = pos.y;
+    }
+
     public void setRotation(float rotation) { this.rotation = rotation; }
 
     public float getRotation() { return rotation; }
