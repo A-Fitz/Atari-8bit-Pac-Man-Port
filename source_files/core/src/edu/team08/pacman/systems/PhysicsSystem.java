@@ -6,25 +6,25 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Queue;
 import edu.team08.pacman.components.BodyComponent;
 import edu.team08.pacman.components.TransformComponent;
+import edu.team08.pacman.constants.MovementConstants;
 
 
 public class PhysicsSystem extends IteratingSystem
 {
-    // variable for our box2d world and bodies
     private World world;
-    private Array<Entity> bodiesQueue;
+    private Queue<Entity> entityQueue;
     // component mappers
     private ComponentMapper<BodyComponent> bm = ComponentMapper.getFor(BodyComponent.class);
     private ComponentMapper<TransformComponent> tm = ComponentMapper.getFor(TransformComponent.class);
 
     public PhysicsSystem(World world)
     {
-        // System for all Entities that have B2dBodyComponent and TransformComponent
         super(Family.all(BodyComponent.class, TransformComponent.class).get());
         this.world = world;
-        this.bodiesQueue = new Array<>();
+        this.entityQueue = new Queue<>();
     }
 
     @Override
@@ -32,23 +32,29 @@ public class PhysicsSystem extends IteratingSystem
     {
         super.update(deltaTime);
         //Loop through all Entities and update our components
-        for (Entity entity : bodiesQueue)
+        while(entityQueue.notEmpty())
         {
-            world.step(1 / 60f, 8, 3);
+            Entity entity = entityQueue.removeFirst();
+            world.step(1 / 60f, 8, 3); // 60fps and recommended velocity/position iterations
             // get components
             TransformComponent tfm = tm.get(entity);
             BodyComponent bodyComp = bm.get(entity);
+
+            // teleport entity if needed
+            if(bodyComp.getBody().getPosition().x >= MovementConstants.ENTITY_TELEPORT_MAX)
+                bodyComp.getBody().setTransform(MovementConstants.ENTITY_TELEPORT_MIN, bodyComp.getBody().getPosition().y, tfm.getPosition().z);
+            else if(bodyComp.getBody().getPosition().x <= MovementConstants.ENTITY_TELEPORT_MIN)
+                bodyComp.getBody().setTransform(MovementConstants.ENTITY_TELEPORT_MAX, bodyComp.getBody().getPosition().y, tfm.getPosition().z);
+
             // update our transform to match body position
             tfm.set(bodyComp.getBody().getPosition());
         }
-        // empty queue
-        bodiesQueue.clear();
     }
 
     @Override
     protected void processEntity(Entity entity, float deltaTime)
     {
-        // add Items to queue
-        bodiesQueue.add(entity);
+        // add bodies to queue
+        entityQueue.addLast(entity);
     }
 }
