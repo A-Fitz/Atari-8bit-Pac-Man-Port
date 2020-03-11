@@ -12,6 +12,11 @@ public class PillComponent implements Component
         return isBig;
     }
 
+    public void setBig(boolean isBig)
+    {
+        this.isBig = isBig;
+    }
+
     public boolean isEaten()
     {
         return isEatan;
@@ -20,10 +25,5 @@ public class PillComponent implements Component
     public void setEaten(boolean isEaten)
     {
         this.isEatan = isEaten;
-    }
-
-    public void setBig(boolean isBig)
-    {
-        this.isBig = isBig;
     }
 }

@@ -7,9 +7,9 @@ import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.physics.box2d.Body;
-import edu.team08.pacman.EntityStates;
 import edu.team08.pacman.components.BodyComponent;
 import edu.team08.pacman.components.StateComponent;
+import edu.team08.pacman.constants.EntityStates;
 import edu.team08.pacman.managers.InputManager;
 
 public class PlayerControlSystem extends IteratingSystem

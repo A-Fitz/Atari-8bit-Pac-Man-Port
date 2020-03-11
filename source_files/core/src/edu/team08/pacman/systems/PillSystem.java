@@ -11,25 +11,25 @@ import edu.team08.pacman.managers.GameManager;
 
 public class PillSystem extends IteratingSystem
 {
-    private ComponentMapper<PillComponent> pm;
-    private ComponentMapper<BodyComponent> bm;
+    private ComponentMapper<PillComponent> pillComponentMapper;
+    private ComponentMapper<BodyComponent> bodyComponentMapper;
 
     public PillSystem()
     {
         super(Family.all(PillComponent.class).get());
-        pm = ComponentMapper.getFor(PillComponent.class);
-        bm = ComponentMapper.getFor(BodyComponent.class);
+        pillComponentMapper = ComponentMapper.getFor(PillComponent.class);
+        bodyComponentMapper = ComponentMapper.getFor(BodyComponent.class);
     }
 
     @Override
     protected void processEntity(Entity entity, float deltaTime)
     {
-        PillComponent pill = pm.get(entity);
-        BodyComponent bodyComponent = bm.get(entity);
+        PillComponent pillComponent = pillComponentMapper.get(entity);
+        BodyComponent bodyComponent = bodyComponentMapper.get(entity);
         Body body = bodyComponent.getBody();
-        if (pill.isEaten())
+        if (pillComponent.isEaten())
         {
-            if (pill.isBig())
+            if (pillComponent.isBig())
             {
                 // TODO  play sound
                 GameManager.instance.AddScore(500);

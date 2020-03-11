@@ -16,8 +16,8 @@ public class PhysicsSystem extends IteratingSystem
     private World world;
     private Queue<Entity> entityQueue;
     // component mappers
-    private ComponentMapper<BodyComponent> bm = ComponentMapper.getFor(BodyComponent.class);
-    private ComponentMapper<TransformComponent> tm = ComponentMapper.getFor(TransformComponent.class);
+    private ComponentMapper<BodyComponent> bodyComponentMapper = ComponentMapper.getFor(BodyComponent.class);
+    private ComponentMapper<TransformComponent> transformComponentMapper = ComponentMapper.getFor(TransformComponent.class);
 
     public PhysicsSystem(World world)
     {
@@ -31,22 +31,25 @@ public class PhysicsSystem extends IteratingSystem
     {
         super.update(deltaTime);
         //Loop through all Entities and update our components
-        while(entityQueue.notEmpty())
+        while (entityQueue.notEmpty())
         {
             Entity entity = entityQueue.removeFirst();
             world.step(1 / 60f, 8, 3); // 60fps and recommended velocity/position iterations
             // get components
-            TransformComponent tfm = tm.get(entity);
-            BodyComponent bodyComp = bm.get(entity);
+            TransformComponent transformComponent = transformComponentMapper.get(entity);
+            BodyComponent bodyComponent = bodyComponentMapper.get(entity);
 
             // teleport entity if needed
-            if(bodyComp.getBody().getPosition().x >= MovementConstants.ENTITY_TELEPORT_MAX)
-                bodyComp.getBody().setTransform(MovementConstants.ENTITY_TELEPORT_MIN, bodyComp.getBody().getPosition().y, bodyComp.getBody().getAngle());
-            else if(bodyComp.getBody().getPosition().x <= MovementConstants.ENTITY_TELEPORT_MIN)
-                bodyComp.getBody().setTransform(MovementConstants.ENTITY_TELEPORT_MAX, bodyComp.getBody().getPosition().y, bodyComp.getBody().getAngle());
+            if (bodyComponent.getBody().getPosition().x >= MovementConstants.ENTITY_TELEPORT_MAX)
+            {
+                bodyComponent.getBody().setTransform(MovementConstants.ENTITY_TELEPORT_MIN, bodyComponent.getBody().getPosition().y, bodyComponent.getBody().getAngle());
+            } else if (bodyComponent.getBody().getPosition().x <= MovementConstants.ENTITY_TELEPORT_MIN)
+            {
+                bodyComponent.getBody().setTransform(MovementConstants.ENTITY_TELEPORT_MAX, bodyComponent.getBody().getPosition().y, bodyComponent.getBody().getAngle());
+            }
 
             // update our transform to match body position
-            tfm.set(bodyComp.getBody().getPosition());
+            transformComponent.setPosition(bodyComponent.getBody().getPosition());
         }
     }
 

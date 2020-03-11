@@ -4,12 +4,7 @@ import com.badlogic.ashley.core.Component;
 
 public class PlayerComponent implements Component
 {
-    private boolean alive;
-
-    public PlayerComponent()
-    {
-        this.alive = true;
-    }
+    private boolean alive = true;
 
     public boolean isAlive()
     {

@@ -5,16 +5,11 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
 public class TextureComponent implements Component
 {
-    public TextureRegion region;
+    private TextureRegion region;
 
-    public TextureComponent()
+    public TextureRegion getRegion()
     {
-
-    }
-
-    public TextureComponent(TextureRegion textureRegion)
-    {
-        region = new TextureRegion(textureRegion);
+        return this.region;
     }
 
     public void setRegion(TextureRegion region)

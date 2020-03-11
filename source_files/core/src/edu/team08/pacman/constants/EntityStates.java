@@ -1,4 +1,4 @@
-package edu.team08.pacman;
+package edu.team08.pacman.constants;
 
 public enum EntityStates
 {

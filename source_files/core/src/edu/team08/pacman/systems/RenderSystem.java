@@ -16,13 +16,12 @@ public class RenderSystem extends EntitySystem
     private SpriteBatch batch;
     private OrthographicCamera camera;
 
-    private ComponentMapper<TransformComponent> transformComponentComponentMapper = ComponentMapper.getFor(TransformComponent.class);
-    private ComponentMapper<TextureComponent> textureComponentComponentMapper = ComponentMapper.getFor(TextureComponent.class);
+    private ComponentMapper<TransformComponent> transformComponentMapper = ComponentMapper.getFor(TransformComponent.class);
+    private ComponentMapper<TextureComponent> textureComponentMapper = ComponentMapper.getFor(TextureComponent.class);
 
     public RenderSystem(SpriteBatch batch, OrthographicCamera camera)
     {
         this.batch = batch;
-
         this.camera = camera;
     }
 
@@ -42,8 +41,8 @@ public class RenderSystem extends EntitySystem
     public void update(float deltaTime)
     {
         super.update(deltaTime);
-        TransformComponent position;
-        TextureComponent visual;
+        TransformComponent transformComponent;
+        TextureComponent textureComponent;
 
         camera.update();
 
@@ -54,19 +53,19 @@ public class RenderSystem extends EntitySystem
         {
             Entity e = entities.get(i);
 
-            position = transformComponentComponentMapper.get(e);
-            visual = textureComponentComponentMapper.get(e);
+            transformComponent = transformComponentMapper.get(e);
+            textureComponent = textureComponentMapper.get(e);
 
-            float width = visual.region.getRegionWidth() / DisplayConstants.ASSET_SIZE;
-            float height = visual.region.getRegionHeight() / DisplayConstants.ASSET_SIZE;
+            float width = textureComponent.getRegion().getRegionWidth() / DisplayConstants.ASSET_SIZE;
+            float height = textureComponent.getRegion().getRegionHeight() / DisplayConstants.ASSET_SIZE;
             float originX = width / 2;
             float originY = height / 2;
-            batch.draw(visual.region,
-                    position.getPosition().x - originX, position.getPosition().y - originY,
+            batch.draw(textureComponent.getRegion(),
+                    transformComponent.getPosition().x - originX, transformComponent.getPosition().y - originY,
                     originX, originY,
                     width, height,
-                    position.getScale().x, position.getScale().y,
-                    position.getRotation() * MathUtils.radiansToDegrees);
+                    transformComponent.getScale().x, transformComponent.getScale().y,
+                    transformComponent.getRotation() * MathUtils.radiansToDegrees);
         }
 
         batch.end();

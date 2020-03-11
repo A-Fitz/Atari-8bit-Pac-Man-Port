@@ -16,12 +16,6 @@ public class PacManGame extends Game
     }
 
     @Override
-    public void render()
-    {
-        super.render();
-    }
-
-    @Override
     public void dispose()
     {
         batch.dispose();
