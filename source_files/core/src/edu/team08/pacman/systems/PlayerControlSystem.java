@@ -42,19 +42,31 @@ public class PlayerControlSystem extends IteratingSystem
         if ((inputManager.isKeyPressed(Input.Keys.DOWN) || inputManager.isKeyPressed(Input.Keys.S)) && stateComponent.getState() != EntityStates.IDLE_DOWN)
         {
             setYVelocity(bodyComponent, -bodyComponent.getSpeed());
-            stateComponent.setState(EntityStates.MOVING_DOWN);
+            if(stateComponent.getState() != EntityStates.MOVING_DOWN)
+            {
+                stateComponent.setState(EntityStates.MOVING_DOWN);
+            }
         } else if ((inputManager.isKeyPressed(Input.Keys.UP) || inputManager.isKeyPressed(Input.Keys.W)) && stateComponent.getState() != EntityStates.IDLE_UP)
         {
             setYVelocity(bodyComponent, bodyComponent.getSpeed());
-            stateComponent.setState(EntityStates.MOVING_UP);
+            if(stateComponent.getState() != EntityStates.MOVING_UP)
+            {
+                stateComponent.setState(EntityStates.MOVING_UP);
+            }
         } else if ((inputManager.isKeyPressed(Input.Keys.LEFT) || inputManager.isKeyPressed(Input.Keys.A)) && stateComponent.getState() != EntityStates.IDLE_LEFT)
         {
             setXVelocity(bodyComponent, -bodyComponent.getSpeed());
-            stateComponent.setState(EntityStates.MOVING_LEFT);
+            if(stateComponent.getState() != EntityStates.MOVING_LEFT)
+            {
+                stateComponent.setState(EntityStates.MOVING_LEFT);
+            }
         } else if ((inputManager.isKeyPressed(Input.Keys.RIGHT) || inputManager.isKeyPressed(Input.Keys.D)) && stateComponent.getState() != EntityStates.IDLE_RIGHT)
         {
             setXVelocity(bodyComponent, bodyComponent.getSpeed());
-            stateComponent.setState(EntityStates.MOVING_RIGHT);
+            if(stateComponent.getState() != EntityStates.MOVING_RIGHT)
+            {
+                stateComponent.setState(EntityStates.MOVING_RIGHT);
+            }
         }
     }
 

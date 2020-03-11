@@ -8,6 +8,11 @@ public class BodyComponent implements Component
     private Body body;
     private float speed;
 
+    public BodyComponent()
+    {
+
+    }
+
     public BodyComponent(Body body)
     {
         this.body = body;
