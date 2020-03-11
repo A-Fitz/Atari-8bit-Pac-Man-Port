@@ -5,7 +5,6 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Queue;
 import edu.team08.pacman.components.BodyComponent;
 import edu.team08.pacman.components.TransformComponent;
@@ -42,9 +41,9 @@ public class PhysicsSystem extends IteratingSystem
 
             // teleport entity if needed
             if(bodyComp.getBody().getPosition().x >= MovementConstants.ENTITY_TELEPORT_MAX)
-                bodyComp.getBody().setTransform(MovementConstants.ENTITY_TELEPORT_MIN, bodyComp.getBody().getPosition().y, tfm.getPosition().z);
+                bodyComp.getBody().setTransform(MovementConstants.ENTITY_TELEPORT_MIN, bodyComp.getBody().getPosition().y, bodyComp.getBody().getAngle());
             else if(bodyComp.getBody().getPosition().x <= MovementConstants.ENTITY_TELEPORT_MIN)
-                bodyComp.getBody().setTransform(MovementConstants.ENTITY_TELEPORT_MAX, bodyComp.getBody().getPosition().y, tfm.getPosition().z);
+                bodyComp.getBody().setTransform(MovementConstants.ENTITY_TELEPORT_MAX, bodyComp.getBody().getPosition().y, bodyComp.getBody().getAngle());
 
             // update our transform to match body position
             tfm.set(bodyComp.getBody().getPosition());

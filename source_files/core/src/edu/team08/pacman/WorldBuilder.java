@@ -26,6 +26,7 @@ public class WorldBuilder
     private final World world;
     private final PooledEngine engine;
     private TextureAtlas textureAtlas;
+    private int ASSET_SIZE = (int)DisplayConstants.ASSET_SIZE;
 
     public WorldBuilder(TiledMap tiledMap, PooledEngine engine, World world, SpriteBatch batch)
     {
@@ -101,32 +102,20 @@ public class WorldBuilder
 
     private void createPill(Rectangle rectangle, boolean big)
     {
-        TransformComponent position = engine.createComponent(TransformComponent.class);
-        TypeComponent type = engine.createComponent(TypeComponent.class);
-        TextureComponent textComp = engine.createComponent(TextureComponent.class);
-        TextureAtlas textureAtlas = GameManager.instance.assetManager.get(FilePathConstants.SPRITES_PATH, TextureAtlas.class);
-        type.type = TypeComponent.PILL;
+        Entity pillEntity = engine.createEntity();
 
-        position.set(rectangle.x, rectangle.y, 5);
+        // create components
+        PillComponent pillComponent = engine.createComponent(PillComponent.class);
+        TransformComponent transformComponent = engine.createComponent(TransformComponent.class);
+        TypeComponent typeComponent = engine.createComponent(TypeComponent.class);
+        TextureComponent textureComponent = engine.createComponent(TextureComponent.class);
 
-        TextureRegion textureRegion;
-        if (big)
-        {
-            textureRegion = new TextureRegion(textureAtlas.findRegion("pill"), 16, 0, 16, 16);
-        } else
-        {
-            textureRegion = new TextureRegion(textureAtlas.findRegion("pill"), 0, 0, 16, 16);
-        }
-
-        textComp.region = textureRegion;
-
+        // create body
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
         bodyDef.position.set(rectangle.x, rectangle.y);
-        Body body = world.createBody(bodyDef);
-
+        Body pillBody = world.createBody(bodyDef);
         CircleShape circleShape = new CircleShape();
-
         if (big)
         {
             circleShape.setRadius(rectangle.width);
@@ -134,23 +123,44 @@ public class WorldBuilder
         {
             circleShape.setRadius(rectangle.width / 2);
         }
-
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = circleShape;
         fixtureDef.isSensor = true;
-        body.createFixture(fixtureDef);
-
+        pillBody.createFixture(fixtureDef);
         circleShape.dispose();
 
-        Entity entity = engine.createEntity();
+        // set starting component values
+        transformComponent.set(rectangle.x, rectangle.y);
+        typeComponent.type = TypeComponent.PILL;
+        TextureRegion textureRegion;
+        if (big)
+        {
+            pillComponent.setBig(true);
+            textureRegion = new TextureRegion(textureAtlas.findRegion("pill"), 16, 0, 16, 16);
+        } else
+        {
+            pillComponent.setBig(false);
+            textureRegion = new TextureRegion(textureAtlas.findRegion("pill"), 0, 0, 16, 16);
+        }
+        textureComponent.region = textureRegion;
 
-        entity.add(textComp);
-        entity.add(position);
-        entity.add(type);
-        engine.addEntity(entity);
-        body.setUserData(entity);
+        // add components to entity
+        pillEntity.add(textureComponent);
+        pillEntity.add(transformComponent);
+        pillEntity.add(typeComponent);
+        if(big)
+        {
+            StateComponent stateComponent = engine.createComponent(StateComponent.class);
+            stateComponent.setState(EntityStates.BLINKING);
+            AnimationComponent animationComponent = engine.createComponent(AnimationComponent.class);
+            createBigPillAnimationKeyFrames(animationComponent);
+            pillEntity.add(animationComponent);
+            pillEntity.add(stateComponent);
+        }
 
-
+        // finish entity setup
+        pillBody.setUserData(pillEntity);
+        engine.addEntity(pillEntity);
         GameManager.instance.totalPills++;
     }
 
@@ -194,7 +204,6 @@ public class WorldBuilder
         StateComponent stateComponent = engine.createComponent(StateComponent.class);
         AnimationComponent animationComponent = engine.createComponent(AnimationComponent.class);
         TextureComponent textureComponent = engine.createComponent(TextureComponent.class);
-        TextureAtlas textureAtlas = GameManager.instance.assetManager.get(FilePathConstants.SPRITES_PATH, TextureAtlas.class);
 
         // create body
         BodyDef bodyDef = new BodyDef();
@@ -212,7 +221,7 @@ public class WorldBuilder
         textureComponent.region = new TextureRegion(textureAtlas.findRegion("pacman"), 16, 0, 16, 16);
         bodyComponent.setBody(playerBody);
         bodyComponent.setSpeed(MovementConstants.PACMAN_SPEED);
-        transformComponent.getPosition().set(rectangle.x, rectangle.y, 1);
+        transformComponent.set(rectangle.x, rectangle.y);
         stateComponent.setState(EntityStates.START);
         type.type = TypeComponent.PLAYER;
 
@@ -225,19 +234,30 @@ public class WorldBuilder
         playerEntity.add(textureComponent);
 
         // create and add animations
-        createKeyFrames(animationComponent);
+        createPacManAnimationKeyFrames(animationComponent);
         playerEntity.add(animationComponent);
 
         // finish entity creation
-        engine.addEntity(playerEntity);
         bodyComponent.getBody().setUserData(playerEntity);
+        engine.addEntity(playerEntity);
     }
 
-    private void createKeyFrames(AnimationComponent animationComponent)
+    private void createBigPillAnimationKeyFrames(AnimationComponent animationComponent)
     {
         Array<TextureRegion> keyFrames = new Array<>();
         Animation<TextureRegion> animation;
-        int ASSET_SIZE = (int)DisplayConstants.ASSET_SIZE;
+
+        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pill"), 1 * ASSET_SIZE, 0, ASSET_SIZE, ASSET_SIZE));
+        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pill"), 2 * ASSET_SIZE, 0, ASSET_SIZE, ASSET_SIZE));
+        animation = new Animation<>(DisplayConstants.BIGPILL_ANIMATION_TIME, keyFrames, Animation.PlayMode.LOOP);
+        animationComponent.addAnimation(EntityStates.BLINKING, animation);
+    }
+
+    private void createPacManAnimationKeyFrames(AnimationComponent animationComponent)
+    {
+        Array<TextureRegion> keyFrames = new Array<>();
+        Animation<TextureRegion> animation;
+        float frameDuration = DisplayConstants.PACMAN_ANIMATION_TIME;
 
         // start (same as idle right)
         keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 1 * ASSET_SIZE, 0, ASSET_SIZE, ASSET_SIZE));
@@ -267,39 +287,38 @@ public class WorldBuilder
         keyFrames.clear();
 
         // moving
-        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 0, 0, 16, 16));
-        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 16, 0, 16, 16));
-        animation = new Animation<>(0.1f, keyFrames, Animation.PlayMode.LOOP);
+        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 0, 0, ASSET_SIZE, ASSET_SIZE));
+        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 16, 0, ASSET_SIZE, ASSET_SIZE));
+        animation = new Animation<>(frameDuration, keyFrames, Animation.PlayMode.LOOP);
         animationComponent.addAnimation(EntityStates.MOVING_RIGHT, animation);
         keyFrames.clear();
 
-        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 0, 0, 16, 16));
+        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 0, 0, ASSET_SIZE, ASSET_SIZE));
         keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 2 * ASSET_SIZE, 0, ASSET_SIZE, ASSET_SIZE));
-        animation = new Animation<>(0.1f, keyFrames, Animation.PlayMode.LOOP);
+        animation = new Animation<>(frameDuration, keyFrames, Animation.PlayMode.LOOP);
         animationComponent.addAnimation(EntityStates.MOVING_LEFT, animation);
         keyFrames.clear();
 
-        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 0, 0, 16, 16));
+        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 0, 0, ASSET_SIZE, ASSET_SIZE));
         keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 3 * ASSET_SIZE, 0, ASSET_SIZE, ASSET_SIZE));
-        animation = new Animation<>(0.1f, keyFrames, Animation.PlayMode.LOOP);
+        animation = new Animation<>(frameDuration, keyFrames, Animation.PlayMode.LOOP);
         animationComponent.addAnimation(EntityStates.MOVING_UP, animation);
         keyFrames.clear();
 
-        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 0, 0, 16, 16));
+        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 0, 0, ASSET_SIZE, ASSET_SIZE));
         keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 4 * ASSET_SIZE, 0, ASSET_SIZE, ASSET_SIZE));
-        animation = new Animation<>(0.1f, keyFrames, Animation.PlayMode.LOOP);
+        animation = new Animation<>(frameDuration, keyFrames, Animation.PlayMode.LOOP);
         animationComponent.addAnimation(EntityStates.MOVING_DOWN, animation);
         keyFrames.clear();
 
         // dying
-        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 0, 0, 16, 16));
+        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 0, 0, ASSET_SIZE, ASSET_SIZE));
         keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 3 * ASSET_SIZE, 0, ASSET_SIZE, ASSET_SIZE));
         for (int i = 5; i <= 17; i++)
         {
             keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), i * ASSET_SIZE, 0, ASSET_SIZE, ASSET_SIZE));
         }
-        animation = new Animation<>(0.1f, keyFrames, Animation.PlayMode.LOOP);
+        animation = new Animation<>(frameDuration, keyFrames, Animation.PlayMode.LOOP);
         animationComponent.addAnimation(EntityStates.DYING, animation);
-        keyFrames.clear();
     }
 }

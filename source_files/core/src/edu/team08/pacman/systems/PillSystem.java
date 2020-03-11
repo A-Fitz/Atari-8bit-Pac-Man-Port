@@ -27,7 +27,7 @@ public class PillSystem extends IteratingSystem
         PillComponent pill = pm.get(entity);
         BodyComponent bodyComponent = bm.get(entity);
         Body body = bodyComponent.getBody();
-        if (pill.isEatan())
+        if (pill.isEaten())
         {
             if (pill.isBig())
             {
