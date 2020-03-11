@@ -6,7 +6,7 @@ import edu.team08.pacman.EntityStates;
 public class StateComponent implements Component
 {
     private float time = 0.0f;
-    private EntityStates state = EntityStates.IDLE_RIGHT;
+    private EntityStates state;
 
     public StateComponent()
     {
@@ -14,10 +14,10 @@ public class StateComponent implements Component
 
     public StateComponent(EntityStates state)
     {
-        set(state);
+        setState(state);
     }
 
-    public void set(EntityStates newState)
+    public void setState(EntityStates newState)
     {
         this.state = newState;
         this.time = 0.0f;

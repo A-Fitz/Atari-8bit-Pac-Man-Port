@@ -6,9 +6,9 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.physics.box2d.Body;
 import edu.team08.pacman.EntityStates;
 import edu.team08.pacman.components.BodyComponent;
-import edu.team08.pacman.components.PlayerComponent;
 import edu.team08.pacman.components.StateComponent;
 import edu.team08.pacman.managers.InputManager;
 
@@ -20,7 +20,7 @@ public class PlayerControlSystem extends IteratingSystem
 
     public PlayerControlSystem()
     {
-        super(Family.all(PlayerComponent.class).get());
+        super(Family.all(BodyComponent.class, StateComponent.class).get());
 
         bodyComponentComponentMapper = ComponentMapper.getFor(BodyComponent.class);
         stateComponentComponentMapper = ComponentMapper.getFor(StateComponent.class);
@@ -29,9 +29,7 @@ public class PlayerControlSystem extends IteratingSystem
     @Override
     public void processEntity(Entity entity, float deltaTime)
     {
-        //get the entity body
         BodyComponent bodyComponent = bodyComponentComponentMapper.get(entity);
-        // get the entity state
         StateComponent stateComponent = stateComponentComponentMapper.get(entity);
 
         // move the entity on keypress and apply constant velocity without keypress based on state
@@ -41,35 +39,22 @@ public class PlayerControlSystem extends IteratingSystem
 
     private void moveOnKeyPress(BodyComponent bodyComponent, StateComponent stateComponent)
     {
-        // apply forces depending on controller input
-        if (inputManager.isKeyPressed(Input.Keys.DOWN) || inputManager.isKeyPressed(Input.Keys.S))
+        if ((inputManager.isKeyPressed(Input.Keys.DOWN) || inputManager.isKeyPressed(Input.Keys.S)) && stateComponent.getState() != EntityStates.IDLE_DOWN)
         {
             setYVelocity(bodyComponent, -bodyComponent.getSpeed());
-            if (stateComponent.getState() != EntityStates.MOVING_DOWN)
-            {
-                stateComponent.set(EntityStates.MOVING_DOWN);
-            }
-        } else if (inputManager.isKeyPressed(Input.Keys.UP) || inputManager.isKeyPressed(Input.Keys.W))
+            stateComponent.setState(EntityStates.MOVING_DOWN);
+        } else if ((inputManager.isKeyPressed(Input.Keys.UP) || inputManager.isKeyPressed(Input.Keys.W)) && stateComponent.getState() != EntityStates.IDLE_UP)
         {
             setYVelocity(bodyComponent, bodyComponent.getSpeed());
-            if (stateComponent.getState() != EntityStates.MOVING_UP)
-            {
-                stateComponent.set(EntityStates.MOVING_UP);
-            }
-        } else if (inputManager.isKeyPressed(Input.Keys.LEFT) || inputManager.isKeyPressed(Input.Keys.A))
+            stateComponent.setState(EntityStates.MOVING_UP);
+        } else if ((inputManager.isKeyPressed(Input.Keys.LEFT) || inputManager.isKeyPressed(Input.Keys.A)) && stateComponent.getState() != EntityStates.IDLE_LEFT)
         {
             setXVelocity(bodyComponent, -bodyComponent.getSpeed());
-            if (stateComponent.getState() != EntityStates.MOVING_LEFT)
-            {
-                stateComponent.set(EntityStates.MOVING_LEFT);
-            }
-        } else if (inputManager.isKeyPressed(Input.Keys.RIGHT) || inputManager.isKeyPressed(Input.Keys.D))
+            stateComponent.setState(EntityStates.MOVING_LEFT);
+        } else if ((inputManager.isKeyPressed(Input.Keys.RIGHT) || inputManager.isKeyPressed(Input.Keys.D)) && stateComponent.getState() != EntityStates.IDLE_RIGHT)
         {
             setXVelocity(bodyComponent, bodyComponent.getSpeed());
-            if (stateComponent.getState() != EntityStates.MOVING_RIGHT)
-            {
-                stateComponent.set(EntityStates.MOVING_RIGHT);
-            }
+            stateComponent.setState(EntityStates.MOVING_RIGHT);
         }
     }
 
@@ -87,16 +72,50 @@ public class PlayerControlSystem extends IteratingSystem
     {
         if (stateComponent.getState() == EntityStates.MOVING_DOWN)
         {
-            setYVelocity(bodyComponent, -bodyComponent.getSpeed());
+            if (isMovingYDirection(bodyComponent.getBody()))
+            {
+                setYVelocity(bodyComponent, -bodyComponent.getSpeed());
+            } else
+            {
+                stateComponent.setState(EntityStates.IDLE_DOWN);
+            }
         } else if (stateComponent.getState() == EntityStates.MOVING_UP)
         {
-            setYVelocity(bodyComponent, bodyComponent.getSpeed());
+            if (isMovingYDirection(bodyComponent.getBody()))
+            {
+                setYVelocity(bodyComponent, bodyComponent.getSpeed());
+            } else
+            {
+                stateComponent.setState(EntityStates.IDLE_UP);
+            }
         } else if (stateComponent.getState() == EntityStates.MOVING_LEFT)
         {
-            setXVelocity(bodyComponent, -bodyComponent.getSpeed());
+            if (isMovingXDirection(bodyComponent.getBody()))
+            {
+                setXVelocity(bodyComponent, -bodyComponent.getSpeed());
+            } else
+            {
+                stateComponent.setState(EntityStates.IDLE_LEFT);
+            }
         } else if (stateComponent.getState() == EntityStates.MOVING_RIGHT)
         {
-            setXVelocity(bodyComponent, bodyComponent.getSpeed());
+            if (isMovingXDirection(bodyComponent.getBody()))
+            {
+                setXVelocity(bodyComponent, bodyComponent.getSpeed());
+            } else
+            {
+                stateComponent.setState(EntityStates.IDLE_RIGHT);
+            }
         }
+    }
+
+    private boolean isMovingXDirection(Body body)
+    {
+        return body.getLinearVelocity().x != 0;
+    }
+
+    private boolean isMovingYDirection(Body body)
+    {
+        return body.getLinearVelocity().y != 0;
     }
 }
