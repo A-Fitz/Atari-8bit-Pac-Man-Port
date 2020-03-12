@@ -228,7 +228,7 @@ public class WorldBuilder
         // set starting component values
         textureComponent.setRegion(new TextureRegion(textureAtlas.findRegion("pacman"), 1 * ASSET_SIZE, 0, ASSET_SIZE, ASSET_SIZE));
         bodyComponent.setBody(playerBody);
-        bodyComponent.setSpeed(MovementConstants.PACMAN_SPEED);
+        bodyComponent.setSpeed(MovementConstants.PACMAN_SPEED_LEVEL1_TO_LEVEL3);
         transformComponent.setPosition(rectangle.x, rectangle.y);
         stateComponent.setState(EntityStates.START);
 
