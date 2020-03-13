@@ -2,7 +2,7 @@ package edu.team08.pacman;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import edu.team08.pacman.screens.PlayScreen;
+import edu.team08.pacman.game.PlayScreen;
 
 public class PacManGame extends Game
 {

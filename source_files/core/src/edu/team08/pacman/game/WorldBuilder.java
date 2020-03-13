@@ -1,13 +1,10 @@
-package edu.team08.pacman;
+package edu.team08.pacman.game;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.PooledEngine;
 import com.badlogic.gdx.graphics.g2d.Animation;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.maps.Map;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.MapObject;
@@ -16,142 +13,38 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
+import edu.team08.pacman.Util;
 import edu.team08.pacman.components.*;
 import edu.team08.pacman.constants.*;
 import edu.team08.pacman.managers.GameManager;
 
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
-import java.util.Random;
+import static edu.team08.pacman.constants.DisplayConstants.ASSET_SIZE;
 
 public class WorldBuilder
 {
-    private final TiledMap tiledMap;
     private final World world;
     private final Engine engine;
     private TextureAtlas textureAtlas;
-    private int ASSET_SIZE = (int) DisplayConstants.ASSET_SIZE;
+    private MapLayers mapLayers;
 
-    private List<Rectangle> bonusNuggetRectangles;
-
-    public WorldBuilder(TiledMap tiledMap, Engine engine, World world, SpriteBatch batch)
+    public WorldBuilder(TiledMap tiledMap, Engine engine, World world)
     {
-        this.tiledMap = tiledMap;
         this.engine = engine;
         this.world = world;
-        this.textureAtlas = GameManager.instance.assetManager.get(FilePathConstants.SPRITES_PATH, TextureAtlas.class);
-        this.bonusNuggetRectangles = new ArrayList<>();
-    }
-
-    public void buildMap()
-    {
-        MapLayers mapLayers = tiledMap.getLayers();
-        addPlayer(mapLayers);
-        addWalls(mapLayers);
-        addPills(mapLayers);
-        getBonusNuggetRectangles(mapLayers);
-    }
-
-    private void getBonusNuggetRectangles(MapLayers layers)
-    {
-        MapLayer bonus_nugget = layers.get("bonus_nugget");
-        for (MapObject mapObject : bonus_nugget.getObjects())
-        {
-            Rectangle rectangleBonusNugget = ((RectangleMapObject) mapObject).getRectangle();
-            correctRectangle(rectangleBonusNugget);
-            bonusNuggetRectangles.add(rectangleBonusNugget);
-        }
-    }
-
-    private Rectangle getRandomBonusNuggetLocation()
-    {
-        Random rand = new Random(Calendar.getInstance().getTimeInMillis());
-        return bonusNuggetRectangles.get(rand.nextInt(bonusNuggetRectangles.size()));
-    }
-
-    public void addBonusNugget()
-    {
-        int ASSET_SIZE = (int) DisplayConstants.ASSET_SIZE;
-        int level = GameManager.instance.getLevel();
-        BonusNuggets bonusNuggetToAdd = PointConstants.LEVEL_TO_BONUS_MAP.get(level);
-        Rectangle bonusNuggetRectangle = getRandomBonusNuggetLocation();
-
-        Entity bonusNuggetEntity = new Entity();
-
-        BodyComponent bodyComponent = new BodyComponent();
-        TextureComponent textureComponent = new TextureComponent();
-        TransformComponent transformComponent = new TransformComponent();
-        BonusNuggetComponent bonusNuggetComponent = new BonusNuggetComponent();
-
-        // create body
-        BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.KinematicBody;
-        bodyDef.position.set(bonusNuggetRectangle.x, bonusNuggetRectangle.y);
-        Body bonusNuggetBody = world.createBody(bodyDef);
-        PolygonShape shape = new PolygonShape();
-        shape.setAsBox(bonusNuggetRectangle.width, bonusNuggetRectangle.height);
-        FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.shape = shape;
-        bonusNuggetBody.createFixture(fixtureDef);
-        shape.dispose();
-
-        bodyComponent.setBody(bonusNuggetBody);
-        transformComponent.setPosition(bonusNuggetRectangle.x, bonusNuggetRectangle.y);
-        TextureAtlas textureAtlas = GameManager.instance.assetManager.get(FilePathConstants.SPRITES_PATH, TextureAtlas.class);
-        TextureRegion textureRegion;
-        switch(bonusNuggetToAdd)
-        {
-
-            case CHERRY:
-                textureRegion = new TextureRegion(textureAtlas.findRegion("items"), 0 * ASSET_SIZE, 0, ASSET_SIZE, ASSET_SIZE);
-                break;
-            case STRAWBERRY:
-                textureRegion = new TextureRegion(textureAtlas.findRegion("items"), 1 * ASSET_SIZE, 0, ASSET_SIZE, ASSET_SIZE);
-                break;
-            case ORANGE:
-                textureRegion = new TextureRegion(textureAtlas.findRegion("items"), 2 * ASSET_SIZE, 0, ASSET_SIZE, ASSET_SIZE);
-                break;
-            case APPLE:
-                textureRegion = new TextureRegion(textureAtlas.findRegion("items"), 3 * ASSET_SIZE, 0, ASSET_SIZE, ASSET_SIZE);
-                break;
-            case LIME:
-                textureRegion = new TextureRegion(textureAtlas.findRegion("items"), 4 * ASSET_SIZE, 0, ASSET_SIZE, ASSET_SIZE);
-                break;
-            case GALAXIAN_BOSS:
-                textureRegion = new TextureRegion(textureAtlas.findRegion("items"), 5 * ASSET_SIZE, 0, ASSET_SIZE, ASSET_SIZE);
-                break;
-            case BELL:
-                textureRegion = new TextureRegion(textureAtlas.findRegion("items"), 6 * ASSET_SIZE, 0, ASSET_SIZE, ASSET_SIZE);
-                break;
-            case KEY:
-                textureRegion = new TextureRegion(textureAtlas.findRegion("items"), 7 * ASSET_SIZE, 0, ASSET_SIZE, ASSET_SIZE);
-                break;
-            default:
-                throw new IllegalStateException("Unexpected value: " + bonusNuggetToAdd);
-        }
-        textureComponent.setRegion(textureRegion);
-
-        bonusNuggetEntity.add(bodyComponent);
-        bonusNuggetEntity.add(textureComponent);
-        bonusNuggetEntity.add(transformComponent);
-        bonusNuggetEntity.add(bonusNuggetComponent);
-        bonusNuggetBody.setUserData(bonusNuggetEntity);
-        engine.addEntity(bonusNuggetEntity);
+        this.textureAtlas = GameManager.getInstance().getTextureAtlas();
+        this.mapLayers = tiledMap.getLayers();
     }
 
     /**
      * addWalls creates all the walls that are contained in the map and add then to the wall layer.
-     *
-     * @param layers MapLayer
      */
-    private void addWalls(MapLayers layers)
+    public void addWalls()
     {
-        MapLayer wall = layers.get("wall");
+        MapLayer wall = this.mapLayers.get("wall");
         for (MapObject mapObject : wall.getObjects())
         {
             Rectangle rectangleWall = ((RectangleMapObject) mapObject).getRectangle();
-            correctRectangle(rectangleWall);
+            Util.correctRectangle(rectangleWall);
             createWall(rectangleWall);
         }
     }
@@ -175,16 +68,14 @@ public class WorldBuilder
 
     /**
      * addPills creates each pill and adds them to the pill layer.
-     *
-     * @param layers MapLayers
      */
-    private void addPills(MapLayers layers)
+    public void addPills()
     {
-        MapLayer pill = layers.get("pill");
+        MapLayer pill = this.mapLayers.get("pill");
         for (MapObject mapObject : pill.getObjects())
         {
             Rectangle rectangle = ((RectangleMapObject) mapObject).getRectangle();
-            correctRectangle(rectangle);
+            Util.correctRectangle(rectangle);
 
             if (mapObject.getProperties().containsKey("big"))
             {
@@ -254,7 +145,7 @@ public class WorldBuilder
         // finish entity setup
         pillBody.setUserData(pillEntity);
         engine.addEntity(pillEntity);
-        GameManager.instance.totalPills++;
+        GameManager.getInstance().increaseTotalPills();
     }
 
     private void createBigPillAnimationKeyFrames(AnimationComponent animationComponent)
@@ -270,31 +161,16 @@ public class WorldBuilder
 
     /**
      * addPlayer creates a Player and adds it to the world
-     *
-     * @param layers MapLayers
      */
-    private void addPlayer(MapLayers layers)
+    public void addPlayer()
     {
-        MapLayer playerLayer = layers.get("player"); // player layer
+        MapLayer playerLayer = this.mapLayers.get("player"); // player layer
         for (MapObject mapObject : playerLayer.getObjects())
         {
             Rectangle rectangle = ((RectangleMapObject) mapObject).getRectangle();
-            correctRectangle(rectangle);
+            Util.correctRectangle(rectangle);
             createPlayer(rectangle);
         }
-    }
-
-    /**
-     * Converts a Rectangle object's position and scale from the TiledMap values to our game values.
-     *
-     * @param rectangle A given rectangle, some TiledMap object.
-     */
-    public void correctRectangle(Rectangle rectangle)
-    {
-        rectangle.x = (rectangle.x / DisplayConstants.ASSET_SIZE) + (rectangle.width / DisplayConstants.ASSET_SIZE) / 2;
-        rectangle.y = (rectangle.y / DisplayConstants.ASSET_SIZE) + (rectangle.height / DisplayConstants.ASSET_SIZE) / 2;
-        rectangle.width = rectangle.width / (2 * DisplayConstants.ASSET_SIZE);
-        rectangle.height = rectangle.height / (2 * DisplayConstants.ASSET_SIZE);
     }
 
     private void createPlayer(Rectangle rectangle)
@@ -323,7 +199,7 @@ public class WorldBuilder
         // set starting component values
         textureComponent.setRegion(new TextureRegion(textureAtlas.findRegion("pacman"), 1 * ASSET_SIZE, 0, ASSET_SIZE, ASSET_SIZE));
         bodyComponent.setBody(playerBody);
-        bodyComponent.setSpeed(MovementConstants.PACMAN_SPEED_LEVEL1_TO_LEVEL3);
+        bodyComponent.setSpeed(getPlayerSpeedForLevel(GameManager.getInstance().getLevel()));
         transformComponent.setPosition(rectangle.x, rectangle.y);
         stateComponent.setState(EntityStates.START);
 
@@ -341,6 +217,18 @@ public class WorldBuilder
         // finish entity creation
         bodyComponent.getBody().setUserData(playerEntity);
         engine.addEntity(playerEntity);
+    }
+
+    private float getPlayerSpeedForLevel(int level)
+    {
+        if(level <= GameConstants.MAX_GAME_LEVELS)
+        {
+            return MovementConstants.LEVEL_TO_PACMAN_SPEED_MAP.get(level);
+        }
+        else
+        {
+            return MovementConstants.LEVEL_TO_PACMAN_SPEED_MAP.get(GameConstants.MAX_GAME_LEVELS);
+        }
     }
 
     private void createPacManAnimationKeyFrames(AnimationComponent animationComponent)

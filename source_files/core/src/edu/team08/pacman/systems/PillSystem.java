@@ -32,11 +32,11 @@ public class PillSystem extends IteratingSystem
             if (pillComponent.isBig())
             {
                 // TODO  play sound
-                GameManager.instance.AddScore(500);
+                GameManager.getInstance().addScore(500);
             } else
             {
                 // TODO  play sound
-                GameManager.instance.AddScore(100);
+                GameManager.getInstance().addScore(100);
             }
 
             // removes the entity from the world
@@ -45,6 +45,6 @@ public class PillSystem extends IteratingSystem
         }
 
 
-        GameManager.instance.totalPills--;
+        GameManager.getInstance().decreaseTotalPills();
     }
 }

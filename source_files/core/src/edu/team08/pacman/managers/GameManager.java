@@ -2,40 +2,67 @@ package edu.team08.pacman.managers;
 
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Disposable;
+import edu.team08.pacman.constants.FilePathConstants;
 
 public class GameManager implements Disposable
 {
 
-    public static final GameManager instance = new GameManager();
-    public AssetManager assetManager;
+    private static final GameManager instance = new GameManager();
 
-    public int totalPills = 0;
-    private int score = 0;
-    private int level = 1;
+    private int totalPills;
+    private AssetManager assetManager;
+    private TextureAtlas textureAtlas;
+    private int score;
+    private int level;
+    private boolean levelEnded;
 
     GameManager()
     {
-        assetManager = new AssetManager();
-        assetManager.load("sprites/actors.atlas", TextureAtlas.class);
+        this.assetManager = new AssetManager();
+        this.assetManager.load("sprites/actors.atlas", TextureAtlas.class);
+        this.assetManager.finishLoading();
+        this.textureAtlas = assetManager.get(FilePathConstants.SPRITES_PATH, TextureAtlas.class);
 
-        assetManager.finishLoading();
+        this.totalPills = 0;
+        this.score = 0;
+        this.level = 0;
+        this.levelEnded = false;
+    }
+
+    public static GameManager getInstance()
+    {
+        return instance;
+    }
+
+    public int getTotalPills()
+    {
+        return totalPills;
+    }
+
+    public void increaseTotalPills()
+    {
+        this.totalPills++;
+    }
+
+    public void decreaseTotalPills()
+    {
+        this.totalPills--;
     }
 
     public int getScore()
     {
-        return score;
+        return this.score;
     }
 
-    public void AddScore(int scoreToAdd)
+    public void addScore(int scoreToAdd)
     {
-        score = +scoreToAdd;
+        this.score += scoreToAdd;
     }
 
-    public void ResetScore()
+    public void resetScore()
     {
-        score = 0;
+        this.score = 0;
     }
 
     public int getLevel()
@@ -48,14 +75,38 @@ public class GameManager implements Disposable
         this.level = level;
     }
 
-    public void increaseLevel()
+    public void newLevel()
     {
+        this.totalPills = 0;
         this.level++;
+    }
+
+    public AssetManager getAssetManager()
+    {
+        return this.assetManager;
+    }
+
+    public TextureAtlas getTextureAtlas()
+    {
+        return this.textureAtlas;
+    }
+
+    public boolean isLevelEnded()
+    {
+        return this.levelEnded;
+    }
+
+    /**
+     * Use this method when a condition is reached where the level should end.
+     */
+    public void endLevel()
+    {
+        this.levelEnded = true;
     }
 
     @Override
     public void dispose()
     {
-        assetManager.dispose();
+        this.assetManager.dispose();
     }
 }

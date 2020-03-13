@@ -55,6 +55,30 @@ public class PointConstants
         LEVEL_TO_BONUS_MAP.put(19, BonusNuggets.KEY);
     }
 
+    public static final HashMap<Integer, Integer> LEVEL_TO_BONUS_TEXTURE_MAP;
+    static {
+        LEVEL_TO_BONUS_TEXTURE_MAP = new HashMap<>();
+        LEVEL_TO_BONUS_TEXTURE_MAP.put(1, 0);
+        LEVEL_TO_BONUS_TEXTURE_MAP.put(2, 1);
+        LEVEL_TO_BONUS_TEXTURE_MAP.put(3, 2);
+        LEVEL_TO_BONUS_TEXTURE_MAP.put(4, 2);
+        LEVEL_TO_BONUS_TEXTURE_MAP.put(5, 3);
+        LEVEL_TO_BONUS_TEXTURE_MAP.put(6, 3);
+        LEVEL_TO_BONUS_TEXTURE_MAP.put(7, 4);
+        LEVEL_TO_BONUS_TEXTURE_MAP.put(8, 4);
+        LEVEL_TO_BONUS_TEXTURE_MAP.put(9, 5);
+        LEVEL_TO_BONUS_TEXTURE_MAP.put(10, 5);
+        LEVEL_TO_BONUS_TEXTURE_MAP.put(11, 6);
+        LEVEL_TO_BONUS_TEXTURE_MAP.put(12, 6);
+        LEVEL_TO_BONUS_TEXTURE_MAP.put(13, 7);
+        LEVEL_TO_BONUS_TEXTURE_MAP.put(14, 7);
+        LEVEL_TO_BONUS_TEXTURE_MAP.put(15, 7);
+        LEVEL_TO_BONUS_TEXTURE_MAP.put(16, 7);
+        LEVEL_TO_BONUS_TEXTURE_MAP.put(17, 7);
+        LEVEL_TO_BONUS_TEXTURE_MAP.put(18, 7);
+        LEVEL_TO_BONUS_TEXTURE_MAP.put(19, 7);
+    }
+
     public static final HashMap<BonusNuggets, Integer> BONUS_TO_POINTS_MAP;
     static {
         BONUS_TO_POINTS_MAP = new HashMap<>();

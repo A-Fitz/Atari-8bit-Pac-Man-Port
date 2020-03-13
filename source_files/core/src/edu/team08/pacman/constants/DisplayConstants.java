@@ -4,19 +4,20 @@ import java.util.HashMap;
 
 public class DisplayConstants
 {
-    public static final float TILEDMAP_WIDTH = 20.0f;
-    public static final float TILEDMAP_HEIGHT = 22.0f;
-    public static final float ASSET_SIZE = 16.0f;
+    /* Display Positions and Scale */
+    public static final int LEVEL_MARKER_BONUS_NUGGET_XPOS = 352;
+    public static final int LEVEL_MARKER_BONUS_NUGGET_YPOS = 55;
+    public static final float VIEWPORT_WIDTH = 20.0f;
+    public static final float VIEWPORT_HEIGHT = 25.0f;
     public static final float MOVING_ENTITY_BODY_SCALE = 0.96f;
+    public static final int ASSET_SIZE = 16;
 
+    /* Display Times (in seconds) */
     public static final float PACMAN_ANIMATION_TIME = 0.1f;
     public static final float BIGPILL_ANIMATION_TIME = 0.3f;
-
-    // seconds
     public static final int BONUS_NUGGET_SPAWN_TIME = 30;
     public static final int BONUS_NUGGET_DURATION = 8;
-
-    //TODO these are in seconds
+    // Time that a Ghost entity remains blue per level
     private static final float GHOST_BLUE_TIME_LEVEL1 = 4;
     private static final float GHOST_BLUE_TIME_LEVEL2_6_10 = 3;
     private static final float GHOST_BLUE_TIME_LEVEL3 = 2;
@@ -45,7 +46,7 @@ public class DisplayConstants
         LEVEL_TO_GHOST_BLUE_TIME_MAP.put(18, GHOST_BLUE_TIME_LEVEL5_7_8_9_11_12_13_15_16_17_18_19_AND_UP);
         LEVEL_TO_GHOST_BLUE_TIME_MAP.put(19, GHOST_BLUE_TIME_LEVEL5_7_8_9_11_12_13_15_16_17_18_19_AND_UP);
     }
-
+    // Number of times that a Ghost entity flashes while blue, before it turns back to normal
     private static final int BLUE_GHOSTS_FLASH_AMOUNT_LEVEL1_2_3_4_5_6_7_8_10_11_15 = 5;
     private static final int BLUE_GHOSTS_FLASH_AMOUNT_LEVEL9_12_13_14_16_18 = 3;
     public static final int BLUE_GHOSTS_FLASH_AMOUNT_LEVEL17_19_AND_UP = 0;
