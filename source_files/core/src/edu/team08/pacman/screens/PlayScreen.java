@@ -1,6 +1,6 @@
 package edu.team08.pacman.screens;
 
-import com.badlogic.ashley.core.PooledEngine;
+import com.badlogic.ashley.core.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
@@ -8,38 +8,47 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
-import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import edu.team08.pacman.GameContactListener;
 import edu.team08.pacman.WorldBuilder;
-import edu.team08.pacman.constants.DisplayConstants;
-import edu.team08.pacman.constants.FilePathConstants;
+import edu.team08.pacman.components.*;
+import edu.team08.pacman.constants.*;
 import edu.team08.pacman.managers.GameManager;
 import edu.team08.pacman.managers.InputManager;
 import edu.team08.pacman.systems.*;
 
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
+
+import static edu.team08.pacman.constants.DisplayConstants.ASSET_SIZE;
+
 public class PlayScreen implements Screen
 {
-    private final float UNIT_SCALE = 1.0f / DisplayConstants.ASSET_SIZE;
+    private final float UNIT_SCALE = 1.0f / ASSET_SIZE;
     private SpriteBatch batch;
     private FitViewport stageViewport;
     private Stage stage;
     private FitViewport viewport;
     private OrthographicCamera camera;
     private Box2DDebugRenderer box2DDebugRenderer;
-    private PooledEngine engine;
-    private World world;
+    private Engine engine;
     private TiledMap tiledMap;
     private OrthogonalTiledMapRenderer tiledMapRenderer;
     private Label scoreLabel;
     private GameContactListener gameContactListener;
+    private World world;
+    private WorldBuilder worldBuilder;
 
     public PlayScreen(SpriteBatch batch)
     {
@@ -63,13 +72,14 @@ public class PlayScreen implements Screen
         box2DDebugRenderer = new Box2DDebugRenderer();
 
         // create new systems and add to engine
-        engine = new PooledEngine();
+        engine = new Engine();
         engine.addSystem(new PhysicsSystem(world));
         engine.addSystem(new RenderSystem(batch, camera));
         engine.addSystem(new PlayerControlSystem());
         engine.addSystem(new AnimationSystem());
         engine.addSystem(new PillSystem());
         engine.addSystem(new StateSystem());
+        engine.addSystem(new BonusNuggetSystem());
 
         // set the input controller
         Gdx.input.setInputProcessor(InputManager.getInstance());
@@ -77,22 +87,42 @@ public class PlayScreen implements Screen
         // build map and world
         tiledMap = new TmxMapLoader().load(FilePathConstants.TILEDMAP_PATH);
         tiledMapRenderer = new OrthogonalTiledMapRenderer(tiledMap, UNIT_SCALE, batch);
-        new WorldBuilder(tiledMap, engine, world, batch).buildMap();
+        this.worldBuilder = new WorldBuilder(tiledMap, engine, world, batch);
+        this.worldBuilder.buildMap();
 
         // setup stage
         stageViewport = new FitViewport(DisplayConstants.TILEDMAP_WIDTH * 20, DisplayConstants.TILEDMAP_HEIGHT * 20);
         stage = new Stage(stageViewport, batch);
 
+        // setup stage
         BitmapFont font = new BitmapFont();
         Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
-
         scoreLabel = new Label("0", labelStyle);
         scoreLabel.setPosition(DisplayConstants.TILEDMAP_WIDTH * 3, DisplayConstants.TILEDMAP_HEIGHT * 17.5f);
         stage.addActor(scoreLabel);
 
         //setup contact listener
         gameContactListener = new GameContactListener();
-        world.setContactListener(gameContactListener);
+        this.world.setContactListener(gameContactListener);
+
+        // TODO implement levels, this shouldn't be here
+        // spawn bonus nuggets
+        long time = TimeUnit.MILLISECONDS.convert(DisplayConstants.BONUS_NUGGET_SPAWN_TIME, TimeUnit.SECONDS);
+        new Timer().scheduleAtFixedRate(addBonusNuggetTask, time, time);
+    }
+
+    TimerTask addBonusNuggetTask = new TimerTask()
+    {
+        @Override
+        public void run()
+        {
+            addBonusNugget();
+        }
+    };
+
+    private void addBonusNugget()
+    {
+        worldBuilder.addBonusNugget();
     }
 
     @Override
@@ -113,7 +143,7 @@ public class PlayScreen implements Screen
         tiledMapRenderer.render();
 
         // Debug Renderer - renders lines around bodies
-        box2DDebugRenderer.render(world, camera.combined);
+        box2DDebugRenderer.render(this.world, camera.combined);
 
         batch.setProjectionMatrix(camera.combined);
         engine.update(delta);

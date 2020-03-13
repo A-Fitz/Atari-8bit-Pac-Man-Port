@@ -7,6 +7,7 @@ import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Queue;
 import edu.team08.pacman.components.BodyComponent;
+import edu.team08.pacman.components.StateComponent;
 import edu.team08.pacman.components.TransformComponent;
 import edu.team08.pacman.constants.MovementConstants;
 
@@ -21,7 +22,8 @@ public class PhysicsSystem extends IteratingSystem
 
     public PhysicsSystem(World world)
     {
-        super(Family.all(BodyComponent.class, TransformComponent.class).get());
+        // TODO problem area here: added the StateComponent only because the BonusNuggets don't have it, and BonusNuggets were impacting speed of movement of Pac-Man
+        super(Family.all(BodyComponent.class, TransformComponent.class, StateComponent.class).get());
         this.world = world;
         this.entityQueue = new Queue<>();
     }
@@ -30,7 +32,7 @@ public class PhysicsSystem extends IteratingSystem
     public void update(float deltaTime)
     {
         super.update(deltaTime);
-        //Loop through all Entities and update our components
+        // loop through entities and update positions
         while (entityQueue.notEmpty())
         {
             Entity entity = entityQueue.removeFirst();

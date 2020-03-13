@@ -10,12 +10,6 @@ public class BodyComponent implements Component
 
     public BodyComponent()
     {
-
-    }
-
-    public BodyComponent(Body body)
-    {
-        this.body = body;
     }
 
     public Body getBody()

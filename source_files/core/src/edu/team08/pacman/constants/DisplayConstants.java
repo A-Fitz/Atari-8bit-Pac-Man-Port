@@ -12,9 +12,9 @@ public class DisplayConstants
     public static final float PACMAN_ANIMATION_TIME = 0.1f;
     public static final float BIGPILL_ANIMATION_TIME = 0.3f;
 
-    //TODO these are in seconds
-    public static final float BONUS_NUGGET_SPAWN_TIME = 30f;
-    public static final float BONUS_NUGGET_DURATION = 8f;
+    // seconds
+    public static final int BONUS_NUGGET_SPAWN_TIME = 30;
+    public static final int BONUS_NUGGET_DURATION = 8;
 
     //TODO these are in seconds
     private static final float GHOST_BLUE_TIME_LEVEL1 = 4;
