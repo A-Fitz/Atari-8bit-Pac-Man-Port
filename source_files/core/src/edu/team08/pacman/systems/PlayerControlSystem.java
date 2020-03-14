@@ -8,6 +8,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.physics.box2d.Body;
 import edu.team08.pacman.components.BodyComponent;
+import edu.team08.pacman.components.PlayerComponent;
 import edu.team08.pacman.components.StateComponent;
 import edu.team08.pacman.constants.EntityStates;
 import edu.team08.pacman.managers.InputManager;
@@ -20,7 +21,7 @@ public class PlayerControlSystem extends IteratingSystem
 
     public PlayerControlSystem()
     {
-        super(Family.all(BodyComponent.class, StateComponent.class).get());
+        super(Family.all(BodyComponent.class, StateComponent.class, PlayerComponent.class).get());
 
         bodyComponentComponentMapper = ComponentMapper.getFor(BodyComponent.class);
         stateComponentComponentMapper = ComponentMapper.getFor(StateComponent.class);

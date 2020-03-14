@@ -104,6 +104,11 @@ public class GameManager implements Disposable
         this.levelEnded = true;
     }
 
+    public void resetLevel()
+    {
+        this.levelEnded = false;
+    }
+
     @Override
     public void dispose()
     {

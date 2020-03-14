@@ -95,7 +95,7 @@ public class WorldBuilder
         PillComponent pillComponent = new PillComponent();
         TransformComponent transformComponent = new TransformComponent();
         TextureComponent textureComponent = new TextureComponent();
-
+        BodyComponent bodyComponent = new BodyComponent();
         // create body
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.DynamicBody;
@@ -112,7 +112,10 @@ public class WorldBuilder
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = circleShape;
         fixtureDef.isSensor = true;
+        fixtureDef.filter.categoryBits = GameConstants.PILL_BIT;
+        fixtureDef.filter.maskBits = GameConstants.PLAYER_BIT;
         pillBody.createFixture(fixtureDef);
+        bodyComponent.setBody(pillBody);
         circleShape.dispose();
 
         // set starting component values
@@ -132,18 +135,21 @@ public class WorldBuilder
         // add components to entity
         pillEntity.add(textureComponent);
         pillEntity.add(transformComponent);
+        pillEntity.add(pillComponent);
+        pillEntity.add(bodyComponent);
         if (big)
         {
             StateComponent stateComponent = new StateComponent();
             stateComponent.setState(EntityStates.BLINKING);
-            AnimationComponent animationComponent = new AnimationComponent();
-            createBigPillAnimationKeyFrames(animationComponent);
-            pillEntity.add(animationComponent);
+            AnimationComponent pillAnimationComponent = new AnimationComponent();
+            createBigPillAnimationKeyFrames(pillAnimationComponent);
+            pillEntity.add(pillAnimationComponent);
             pillEntity.add(stateComponent);
         }
 
         // finish entity setup
         pillBody.setUserData(pillEntity);
+        bodyComponent.getBody().setUserData(pillEntity);
         engine.addEntity(pillEntity);
         GameManager.getInstance().increaseTotalPills();
     }
@@ -193,6 +199,7 @@ public class WorldBuilder
         circleShape.setRadius(rectangle.width * DisplayConstants.MOVING_ENTITY_BODY_SCALE); // Player needs to be able to move, so the scale needs to be slightly smaller than the walls around it
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = circleShape;
+        fixtureDef.filter.categoryBits = GameConstants.PLAYER_BIT;
         playerBody.createFixture(fixtureDef);
         circleShape.dispose();
 

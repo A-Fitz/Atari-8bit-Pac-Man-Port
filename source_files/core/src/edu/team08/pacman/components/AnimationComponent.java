@@ -6,12 +6,18 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import edu.team08.pacman.constants.EntityStates;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class AnimationComponent implements Component
 {
-    private HashMap<EntityStates, Animation<TextureRegion>> animations = new HashMap<>();
+    private Map<EntityStates, Animation<TextureRegion>> animations;
 
-    public HashMap<EntityStates, Animation<TextureRegion>> getAnimations()
+    public AnimationComponent()
+    {
+        animations = new HashMap<>();
+    }
+
+    public Map<EntityStates, Animation<TextureRegion>> getAnimations()
     {
         return animations;
     }

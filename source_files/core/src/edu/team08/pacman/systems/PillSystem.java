@@ -38,13 +38,12 @@ public class PillSystem extends IteratingSystem
                 // TODO  play sound
                 GameManager.getInstance().addScore(100);
             }
+            GameManager.getInstance().decreaseTotalPills();
 
             // removes the entity from the world
-            getEngine().removeEntity(entity);
             body.getWorld().destroyBody(body);
+            getEngine().removeEntity(entity);
+
         }
-
-
-        GameManager.getInstance().decreaseTotalPills();
     }
 }

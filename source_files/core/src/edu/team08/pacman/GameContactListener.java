@@ -1,25 +1,36 @@
 package edu.team08.pacman;
 
+import com.badlogic.ashley.core.ComponentMapper;
+import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.physics.box2d.*;
-
-import javax.swing.text.html.parser.Entity;
+import edu.team08.pacman.components.PillComponent;
+import edu.team08.pacman.constants.GameConstants;
+import edu.team08.pacman.game.WorldBuilder;
 
 public class GameContactListener implements ContactListener
 {
+    private final ComponentMapper<PillComponent> pillM = ComponentMapper.getFor(PillComponent.class);
 
     @Override
     public void beginContact(Contact contact)
     {
-        Fixture a = contact.getFixtureA();
-        Fixture b = contact.getFixtureB();
+        Fixture fixtureA = contact.getFixtureA();
+        Fixture fixtureB = contact.getFixtureB();
 
-        Object object1 = a.getBody().getUserData();
-        Object object2 = b.getBody().getUserData();
 
-        if (object1 instanceof Entity && object2 instanceof Entity)
-        {
-            Entity entity1 = (Entity) object1;
-            Entity entity2 = (Entity) object2;
+
+        if (fixtureA.getFilterData().categoryBits == GameConstants.PILL_BIT || fixtureB.getFilterData().categoryBits == GameConstants.PILL_BIT) {
+            if (fixtureA.getFilterData().categoryBits == GameConstants.PLAYER_BIT) {
+                Body body = fixtureB.getBody();
+                Entity entity = (Entity) body.getUserData();
+                PillComponent pill = pillM.get(entity);
+                pill.setEaten(true);
+            } else if (fixtureB.getFilterData().categoryBits == GameConstants.PLAYER_BIT) {
+                Body body = fixtureA.getBody();
+                Entity entity = (Entity) body.getUserData();
+                PillComponent pill = pillM.get(entity);
+                pill.setEaten(true);
+            }
         }
 
     }

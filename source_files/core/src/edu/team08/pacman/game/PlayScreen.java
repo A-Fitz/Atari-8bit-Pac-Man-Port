@@ -27,10 +27,12 @@ public class PlayScreen implements Screen
     private Stage stage;
     private FitViewport viewport;
     private OrthographicCamera camera;
+    private FitViewport stageViewport;
     private Engine engine;
     private TiledMap tiledMap;
     private OrthogonalTiledMapRenderer tiledMapRenderer;
-
+    private Box2DDebugRenderer box2DDebugRenderer;
+    private World world;
     private Level level;
 
     public PlayScreen(SpriteBatch batch)
@@ -45,10 +47,9 @@ public class PlayScreen implements Screen
         viewport = new FitViewport(DisplayConstants.VIEWPORT_WIDTH, DisplayConstants.VIEWPORT_HEIGHT, camera);
         camera.translate(DisplayConstants.VIEWPORT_WIDTH / 2, (DisplayConstants.VIEWPORT_HEIGHT / 2) - 3); // -3 is to center the game between the stage
         camera.update();
+        box2DDebugRenderer = new Box2DDebugRenderer();
 
-        // setup stage
-        FitViewport stageViewport = new FitViewport(DisplayConstants.VIEWPORT_WIDTH * 20, DisplayConstants.VIEWPORT_HEIGHT * 20);
-        stage = new Stage(stageViewport, batch);
+        stageViewport = new FitViewport(DisplayConstants.VIEWPORT_WIDTH * 20, DisplayConstants.VIEWPORT_HEIGHT * 20);
 
         // create level
         newLevel();
@@ -60,13 +61,15 @@ public class PlayScreen implements Screen
     private void newLevel()
     {
         GameManager.getInstance().newLevel();
-
+        GameManager.getInstance().resetLevel();
         // setup SpriteBatch and camera
         batch = new SpriteBatch();
         batch.setProjectionMatrix(camera.combined);
 
+        stage = new Stage(stageViewport, batch);
+
         // box2d
-        World world = new World(new Vector2(0, 0), true);
+        world = new World(new Vector2(0, 0), true);
 
         // create new systems and add to engine
         engine = new Engine();
@@ -97,10 +100,9 @@ public class PlayScreen implements Screen
         camera.update();
 
         level.update();
-
+        box2DDebugRenderer.render(world, camera.combined);
         tiledMapRenderer.setView(camera);
         tiledMapRenderer.render();
-
         batch.setProjectionMatrix(camera.combined);
         engine.update(delta);
         stage.draw();
