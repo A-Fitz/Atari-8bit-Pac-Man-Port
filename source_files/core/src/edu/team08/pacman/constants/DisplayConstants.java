@@ -8,7 +8,7 @@ public class DisplayConstants
 
     /* Display Positions and Scale */
     public static final int GAME_INFO_ACTOR_RIGHT_X_POS = 352;
-    public static final int GAME_INFO_ACTOR_LEFT_X_POS = 16;
+    public static final int GAME_INFO_ACTOR_LEFT_X_POS = 32;
     public static final int GAME_INFO_ACTOR_LOWER_Y_POS = 55;
     public static final float VIEWPORT_WIDTH = 20.0f;
     public static final float VIEWPORT_HEIGHT = 25.0f;
