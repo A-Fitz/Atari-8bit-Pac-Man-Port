@@ -4,7 +4,7 @@ import com.badlogic.ashley.core.Component;
 
 public class PillComponent implements Component
 {
-    private boolean isEatan = false;
+    private boolean isEaten = false;
     private boolean isBig;
 
     public boolean isBig()
@@ -19,11 +19,11 @@ public class PillComponent implements Component
 
     public boolean isEaten()
     {
-        return isEatan;
+        return isEaten;
     }
 
     public void setEaten(boolean isEaten)
     {
-        this.isEatan = isEaten;
+        this.isEaten = isEaten;
     }
 }

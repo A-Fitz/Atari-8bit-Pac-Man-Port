@@ -98,7 +98,7 @@ public class WorldBuilder
         BodyComponent bodyComponent = new BodyComponent();
         // create body
         BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.DynamicBody;
+        bodyDef.type = BodyDef.BodyType.KinematicBody;
         bodyDef.position.set(rectangle.x, rectangle.y);
         Body pillBody = world.createBody(bodyDef);
         CircleShape circleShape = new CircleShape();
@@ -112,8 +112,7 @@ public class WorldBuilder
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = circleShape;
         fixtureDef.isSensor = true;
-        fixtureDef.filter.categoryBits = GameConstants.PILL_BIT;
-        fixtureDef.filter.maskBits = GameConstants.PLAYER_BIT;
+        fixtureDef.filter.categoryBits = GameConstants.PILL_BITS;
         pillBody.createFixture(fixtureDef);
         bodyComponent.setBody(pillBody);
         circleShape.dispose();
@@ -199,7 +198,7 @@ public class WorldBuilder
         circleShape.setRadius(rectangle.width * DisplayConstants.MOVING_ENTITY_BODY_SCALE); // Player needs to be able to move, so the scale needs to be slightly smaller than the walls around it
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = circleShape;
-        fixtureDef.filter.categoryBits = GameConstants.PLAYER_BIT;
+        fixtureDef.filter.categoryBits = GameConstants.PLAYER_BITS;
         playerBody.createFixture(fixtureDef);
         circleShape.dispose();
 

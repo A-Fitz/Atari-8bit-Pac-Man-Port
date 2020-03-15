@@ -122,7 +122,7 @@ public class Level
         this.scoreActor.update();
     }
 
-    public void addBonusNugget()
+    private void addBonusNugget()
     {
         Rectangle bonusNuggetRectangle = getRandomBonusNuggetLocation();
 
@@ -131,7 +131,7 @@ public class Level
         BodyComponent bodyComponent = new BodyComponent();
         TextureComponent textureComponent = new TextureComponent();
         TransformComponent transformComponent = new TransformComponent();
-        BonusNuggetComponent bonusNuggetComponent = new BonusNuggetComponent();
+        BonusNuggetComponent bonusNuggetComponent = new BonusNuggetComponent(PointConstants.LEVEL_TO_BONUS_MAP.get(GameManager.getInstance().getLevel()));
 
         // create body
         BodyDef bodyDef = new BodyDef();
@@ -142,10 +142,12 @@ public class Level
         shape.setAsBox(bonusNuggetRectangle.width, bonusNuggetRectangle.height);
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
+        fixtureDef.isSensor = true;
+        fixtureDef.filter.categoryBits = GameConstants.BONUS_NUGGET_BITS;
         bonusNuggetBody.createFixture(fixtureDef);
+        bodyComponent.setBody(bonusNuggetBody);
         shape.dispose();
 
-        bodyComponent.setBody(bonusNuggetBody);
         transformComponent.setPosition(bonusNuggetRectangle.x, bonusNuggetRectangle.y);
 
         textureComponent.setRegion(getNewBonusNuggetTextureRegion());
@@ -154,7 +156,9 @@ public class Level
         bonusNuggetEntity.add(textureComponent);
         bonusNuggetEntity.add(transformComponent);
         bonusNuggetEntity.add(bonusNuggetComponent);
+
         bonusNuggetBody.setUserData(bonusNuggetEntity);
+        bodyComponent.getBody().setUserData(bonusNuggetEntity);
         engine.addEntity(bonusNuggetEntity);
     }
 

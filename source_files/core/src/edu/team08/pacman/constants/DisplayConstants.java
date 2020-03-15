@@ -15,8 +15,8 @@ public class DisplayConstants
     /* Display Times (in seconds) */
     public static final float PACMAN_ANIMATION_TIME = 0.1f;
     public static final float BIGPILL_ANIMATION_TIME = 0.3f;
-    public static final int BONUS_NUGGET_SPAWN_TIME = 30;
-    public static final int BONUS_NUGGET_DURATION = 8;
+    public static final int BONUS_NUGGET_SPAWN_TIME = 5;
+    public static final int BONUS_NUGGET_DURATION = 3;
     // Time that a Ghost entity remains blue per level
     private static final float GHOST_BLUE_TIME_LEVEL1 = 4;
     private static final float GHOST_BLUE_TIME_LEVEL2_6_10 = 3;

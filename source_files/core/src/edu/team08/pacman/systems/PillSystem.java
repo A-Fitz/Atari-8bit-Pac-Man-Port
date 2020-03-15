@@ -7,6 +7,7 @@ import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.physics.box2d.Body;
 import edu.team08.pacman.components.BodyComponent;
 import edu.team08.pacman.components.PillComponent;
+import edu.team08.pacman.constants.PointConstants;
 import edu.team08.pacman.managers.GameManager;
 
 public class PillSystem extends IteratingSystem
@@ -16,7 +17,7 @@ public class PillSystem extends IteratingSystem
 
     public PillSystem()
     {
-        super(Family.all(PillComponent.class).get());
+        super(Family.all(PillComponent.class).get()); // only work for PillComponents
         pillComponentMapper = ComponentMapper.getFor(PillComponent.class);
         bodyComponentMapper = ComponentMapper.getFor(BodyComponent.class);
     }
@@ -32,18 +33,18 @@ public class PillSystem extends IteratingSystem
             if (pillComponent.isBig())
             {
                 // TODO  play sound
-                GameManager.getInstance().addScore(500);
+                GameManager.getInstance().addScore(PointConstants.BIG_PILL_POINTS);
             } else
             {
                 // TODO  play sound
-                GameManager.getInstance().addScore(100);
+                GameManager.getInstance().addScore(PointConstants.PILL_POINTS);
             }
+
             GameManager.getInstance().decreaseTotalPills();
 
             // removes the entity from the world
             body.getWorld().destroyBody(body);
             getEngine().removeEntity(entity);
-
         }
     }
 }
