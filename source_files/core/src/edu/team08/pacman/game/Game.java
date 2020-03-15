@@ -11,6 +11,7 @@ public class Game
     private boolean levelEnded;
     private int livesLeft;
     private GameState gameState;
+    private boolean extraLifeEarned;
 
     public Game()
     {
@@ -20,6 +21,17 @@ public class Game
         this.levelEnded = false;
         this.livesLeft = GameConstants.STARTING_LIVES;
         this.gameState = GameState.IN_PROGRESS;
+        this.extraLifeEarned = false;
+    }
+
+    public boolean isExtraLifeEarned()
+    {
+        return extraLifeEarned;
+    }
+
+    public void setExtraLifeEarned(boolean extraLifeEarned)
+    {
+        this.extraLifeEarned = extraLifeEarned;
     }
 
     public int getTotalPills()

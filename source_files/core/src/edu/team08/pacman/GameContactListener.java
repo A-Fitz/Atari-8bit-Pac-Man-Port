@@ -5,6 +5,7 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.physics.box2d.*;
 import edu.team08.pacman.components.BonusNuggetComponent;
 import edu.team08.pacman.components.PillComponent;
+import edu.team08.pacman.constants.CategoryBitsConstants;
 import edu.team08.pacman.constants.GameConstants;
 
 public class GameContactListener implements ContactListener
@@ -25,24 +26,24 @@ public class GameContactListener implements ContactListener
         Fixture fixtureB = contact.getFixtureB();
 
         // if a Pac-Man and a Bonus Nugget contact, then the Pac-Man eats the Bonus Nugget
-        if (fixtureA.getFilterData().categoryBits == GameConstants.BONUS_NUGGET_BITS || fixtureB.getFilterData().categoryBits == GameConstants.BONUS_NUGGET_BITS)
+        if (fixtureA.getFilterData().categoryBits == CategoryBitsConstants.BONUS_NUGGET_BITS || fixtureB.getFilterData().categoryBits == CategoryBitsConstants.BONUS_NUGGET_BITS)
         {
-            if (fixtureA.getFilterData().categoryBits == GameConstants.PLAYER_BITS)
+            if (fixtureA.getFilterData().categoryBits == CategoryBitsConstants.PLAYER_BITS)
             {
                 eatBonusNugget(fixtureB);
-            } else if (fixtureB.getFilterData().categoryBits == GameConstants.PLAYER_BITS)
+            } else if (fixtureB.getFilterData().categoryBits == CategoryBitsConstants.PLAYER_BITS)
             {
                 eatBonusNugget(fixtureA);
             }
         }
 
         // if a Pac-Man and a Pill contact, then the Pac-Man eats the Pill
-        if (fixtureA.getFilterData().categoryBits == GameConstants.PILL_BITS || fixtureB.getFilterData().categoryBits == GameConstants.PILL_BITS)
+        if (fixtureA.getFilterData().categoryBits == CategoryBitsConstants.PILL_BITS || fixtureB.getFilterData().categoryBits == CategoryBitsConstants.PILL_BITS)
         {
-            if (fixtureA.getFilterData().categoryBits == GameConstants.PLAYER_BITS)
+            if (fixtureA.getFilterData().categoryBits == CategoryBitsConstants.PLAYER_BITS)
             {
                 eatPill(fixtureB);
-            } else if (fixtureB.getFilterData().categoryBits == GameConstants.PLAYER_BITS)
+            } else if (fixtureB.getFilterData().categoryBits == CategoryBitsConstants.PLAYER_BITS)
             {
                 eatPill(fixtureA);
             }

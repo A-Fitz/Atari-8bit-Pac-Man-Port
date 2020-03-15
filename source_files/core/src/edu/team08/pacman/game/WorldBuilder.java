@@ -15,6 +15,7 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 import edu.team08.pacman.Util;
 import edu.team08.pacman.components.*;
+import edu.team08.pacman.constants.CategoryBitsConstants;
 import edu.team08.pacman.constants.DisplayConstants;
 import edu.team08.pacman.constants.GameConstants;
 import edu.team08.pacman.constants.MovementConstants;
@@ -115,7 +116,7 @@ public class WorldBuilder
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = circleShape;
         fixtureDef.isSensor = true;
-        fixtureDef.filter.categoryBits = GameConstants.PILL_BITS;
+        fixtureDef.filter.categoryBits = CategoryBitsConstants.PILL_BITS;
         pillBody.createFixture(fixtureDef);
         bodyComponent.setBody(pillBody);
         circleShape.dispose();
@@ -201,7 +202,7 @@ public class WorldBuilder
         circleShape.setRadius(rectangle.width * DisplayConstants.MOVING_ENTITY_BODY_SCALE); // Player needs to be able to move, so the scale needs to be slightly smaller than the walls around it
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = circleShape;
-        fixtureDef.filter.categoryBits = GameConstants.PLAYER_BITS;
+        fixtureDef.filter.categoryBits = CategoryBitsConstants.PLAYER_BITS;
         playerBody.createFixture(fixtureDef);
         circleShape.dispose();
 

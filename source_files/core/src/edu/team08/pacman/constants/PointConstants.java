@@ -6,7 +6,7 @@ import java.util.HashMap;
 
 public class PointConstants
 {
-    public static final int PILL_POINTS = 10;
+    public static final int PILL_POINTS = 1000;
     public static final int BIG_PILL_POINTS = 50;
 
     public static final int POINTS_FOR_EXTRA_LIFE = 10000;

@@ -17,6 +17,7 @@ import edu.team08.pacman.components.BodyComponent;
 import edu.team08.pacman.components.BonusNuggetComponent;
 import edu.team08.pacman.components.TextureComponent;
 import edu.team08.pacman.components.TransformComponent;
+import edu.team08.pacman.constants.CategoryBitsConstants;
 import edu.team08.pacman.constants.DisplayConstants;
 import edu.team08.pacman.constants.GameConstants;
 import edu.team08.pacman.constants.PointConstants;
@@ -77,14 +78,19 @@ public class Level
 
     private void addLivesActors()
     {
-        for (int i = 0; i < GameManager.getInstance().getLivesLeft(); i++)
+        for (int i = 1; i <= GameManager.getInstance().getLivesLeft(); i++)
         {
-            TextureRegion textureRegion = new TextureRegion(GameManager.getInstance().getTextureAtlas().findRegion("pacman"), 2 * ASSET_SIZE, 0, ASSET_SIZE, ASSET_SIZE);
-            GameInfoActor livesActor = new GameInfoActor(textureRegion,
-                    DisplayConstants.GAME_INFO_ACTOR_LEFT_X_POS + (i * ASSET_SIZE) + ((ASSET_SIZE / 2) * i),
-                    DisplayConstants.GAME_INFO_ACTOR_LOWER_Y_POS);
-            stage.addActor(livesActor);
+            addLivesActor(i);
         }
+    }
+
+    private void addLivesActor(int lifeNumber)
+    {
+        TextureRegion textureRegion = new TextureRegion(GameManager.getInstance().getTextureAtlas().findRegion("pacman"), 2 * ASSET_SIZE, 0, ASSET_SIZE, ASSET_SIZE);
+        GameInfoActor livesActor = new GameInfoActor(textureRegion,
+                DisplayConstants.GAME_INFO_ACTOR_LEFT_X_POS + ((lifeNumber-1) * ASSET_SIZE) + ((ASSET_SIZE / 2) * (lifeNumber-1)),
+                DisplayConstants.GAME_INFO_ACTOR_LOWER_Y_POS);
+        stage.addActor(livesActor);
     }
 
     private void addScoreActor()
@@ -155,7 +161,12 @@ public class Level
 
     public void update()
     {
-        if (GameManager.getInstance().getTotalPills() <= 0)
+        if(GameManager.getInstance().getScore() >= PointConstants.POINTS_FOR_EXTRA_LIFE && !GameManager.getInstance().isExtraLifeEarned())
+        {
+            GameManager.getInstance().addLife();
+            addLivesActor(GameManager.getInstance().getLivesLeft());
+            GameManager.getInstance().extraLifeEarned();
+        } else if (GameManager.getInstance().getTotalPills() <= 0)
         {
             GameManager.getInstance().endLevel();
         }
@@ -183,7 +194,7 @@ public class Level
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.isSensor = true;
-        fixtureDef.filter.categoryBits = GameConstants.BONUS_NUGGET_BITS;
+        fixtureDef.filter.categoryBits = CategoryBitsConstants.BONUS_NUGGET_BITS;
         bonusNuggetBody.createFixture(fixtureDef);
         bodyComponent.setBody(bonusNuggetBody);
         shape.dispose();

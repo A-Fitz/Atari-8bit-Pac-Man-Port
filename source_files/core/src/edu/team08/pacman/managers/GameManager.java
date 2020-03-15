@@ -7,6 +7,9 @@ import edu.team08.pacman.constants.FilePathConstants;
 import edu.team08.pacman.game.Game;
 import edu.team08.pacman.states.GameState;
 
+/**
+ * Maintains some resources and acts as an accessible interface for the Game class.
+ */
 public class GameManager implements Disposable
 {
 
@@ -28,6 +31,16 @@ public class GameManager implements Disposable
     public static GameManager getInstance()
     {
         return instance;
+    }
+
+    public boolean isExtraLifeEarned()
+    {
+        return this.game.isExtraLifeEarned();
+    }
+
+    public void extraLifeEarned()
+    {
+        this.game.setExtraLifeEarned(true);
     }
 
     public int getTotalPills()
@@ -108,6 +121,11 @@ public class GameManager implements Disposable
     public void setLivesLeft(int livesLeft)
     {
         this.game.setLivesLeft(livesLeft);
+    }
+
+    public void addLife()
+    {
+        this.game.setLivesLeft(this.game.getLivesLeft() + 1);
     }
 
     /**
