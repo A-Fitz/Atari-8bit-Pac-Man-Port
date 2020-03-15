@@ -7,13 +7,20 @@ public class MovementConstants
 {
     public static final float ENTITY_TELEPORT_MIN = 0f;
     public static final float ENTITY_TELEPORT_MAX = 19f;
-
+    public static final Map<Integer, Float> LEVEL_TO_PACMAN_SPEED_MAP;
+    public static final Map<Integer, Float> LEVEL_TO_NOTBLINKY_GHOST_SPEED_MAP;
+    public static final Map<Integer, Float> LEVEL_TO_BLINKY_SPEED_MAP;
     //TODO need to adjust speeds
     private static final float PACMAN_SPEED_LEVEL1_TO_LEVEL3 = 3.0f;
     private static final float PACMAN_SPEED_LEVEL4 = 3.2f;
     private static final float PACMAN_SPEED_LEVEL5_AND_UP = 3.4f;
-    public static final Map<Integer, Float> LEVEL_TO_PACMAN_SPEED_MAP;
-    static {
+    private static final float ALL_GHOST_SPEED_LEVEL1_TO_LEVEL2 = 2.8f;
+    private static final float ALL_GHOST_SPEED_LEVEL3_TO_LEVEL4 = 3.0f;
+    private static final float OTHER_GHOST_SPEED_LEVEL5_AND_UP = 3.2f;
+    private static final float BLINKY_GHOST_SPEED_LEVEL5_AND_UP = 3.4f;
+
+    static
+    {
         LEVEL_TO_PACMAN_SPEED_MAP = new HashMap<>();
         LEVEL_TO_PACMAN_SPEED_MAP.put(1, PACMAN_SPEED_LEVEL1_TO_LEVEL3);
         LEVEL_TO_PACMAN_SPEED_MAP.put(2, PACMAN_SPEED_LEVEL1_TO_LEVEL3);
@@ -36,12 +43,8 @@ public class MovementConstants
         LEVEL_TO_PACMAN_SPEED_MAP.put(19, PACMAN_SPEED_LEVEL5_AND_UP);
     }
 
-    private static final float ALL_GHOST_SPEED_LEVEL1_TO_LEVEL2 = 2.8f;
-    private static final float ALL_GHOST_SPEED_LEVEL3_TO_LEVEL4 = 3.0f;
-    private static final float OTHER_GHOST_SPEED_LEVEL5_AND_UP = 3.2f;
-    private static final float BLINKY_GHOST_SPEED_LEVEL5_AND_UP = 3.4f;
-    public static final Map<Integer, Float> LEVEL_TO_NOTBLINKY_GHOST_SPEED_MAP;
-    static {
+    static
+    {
         LEVEL_TO_NOTBLINKY_GHOST_SPEED_MAP = new HashMap<>();
         LEVEL_TO_PACMAN_SPEED_MAP.put(1, ALL_GHOST_SPEED_LEVEL1_TO_LEVEL2);
         LEVEL_TO_PACMAN_SPEED_MAP.put(2, ALL_GHOST_SPEED_LEVEL1_TO_LEVEL2);
@@ -63,8 +66,9 @@ public class MovementConstants
         LEVEL_TO_PACMAN_SPEED_MAP.put(18, OTHER_GHOST_SPEED_LEVEL5_AND_UP);
         LEVEL_TO_PACMAN_SPEED_MAP.put(19, OTHER_GHOST_SPEED_LEVEL5_AND_UP);
     }
-    public static final Map<Integer, Float> LEVEL_TO_BLINKY_SPEED_MAP;
-    static {
+
+    static
+    {
         LEVEL_TO_BLINKY_SPEED_MAP = new HashMap<>();
         LEVEL_TO_PACMAN_SPEED_MAP.put(1, ALL_GHOST_SPEED_LEVEL1_TO_LEVEL2);
         LEVEL_TO_PACMAN_SPEED_MAP.put(2, ALL_GHOST_SPEED_LEVEL1_TO_LEVEL2);

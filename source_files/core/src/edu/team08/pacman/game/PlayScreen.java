@@ -1,8 +1,7 @@
 package edu.team08.pacman.game;
 
-import com.badlogic.ashley.core.*;
+import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -11,10 +10,12 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
+import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.viewport.FitViewport;
-import edu.team08.pacman.constants.*;
+import edu.team08.pacman.constants.DisplayConstants;
+import edu.team08.pacman.constants.FilePathConstants;
 import edu.team08.pacman.managers.GameManager;
 import edu.team08.pacman.managers.InputManager;
 import edu.team08.pacman.systems.*;
@@ -61,21 +62,19 @@ public class PlayScreen implements Screen
     private void newLevel()
     {
         GameManager.getInstance().newLevel();
-        GameManager.getInstance().resetLevel();
         // setup SpriteBatch and camera
         batch = new SpriteBatch();
         batch.setProjectionMatrix(camera.combined);
 
-        stage = new Stage(stageViewport, batch);
-
         // box2d
         world = new World(new Vector2(0, 0), true);
+        stage = new Stage(stageViewport, batch);
 
         // create new systems and add to engine
         engine = new Engine();
         engine.addSystem(new PhysicsSystem(world));
         engine.addSystem(new RenderSystem(batch, camera));
-        engine.addSystem(new PlayerControlSystem());
+        engine.addSystem(new PlayerSystem());
         engine.addSystem(new AnimationSystem());
         engine.addSystem(new PillSystem());
         engine.addSystem(new StateSystem());
@@ -107,7 +106,11 @@ public class PlayScreen implements Screen
         engine.update(delta);
         stage.draw();
 
-        if(GameManager.getInstance().isLevelEnded())
+        if (GameManager.getInstance().isGameEnding())
+        {
+            // TODO end game screen
+            System.exit(0);
+        } else if (GameManager.getInstance().isLevelEnded())
         {
             newLevel();
         }

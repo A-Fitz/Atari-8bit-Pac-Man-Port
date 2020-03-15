@@ -15,8 +15,11 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
 import edu.team08.pacman.Util;
 import edu.team08.pacman.components.*;
-import edu.team08.pacman.constants.*;
+import edu.team08.pacman.constants.DisplayConstants;
+import edu.team08.pacman.constants.GameConstants;
+import edu.team08.pacman.constants.MovementConstants;
 import edu.team08.pacman.managers.GameManager;
+import edu.team08.pacman.states.EntityState;
 
 import static edu.team08.pacman.constants.DisplayConstants.ASSET_SIZE;
 
@@ -139,7 +142,7 @@ public class WorldBuilder
         if (big)
         {
             StateComponent stateComponent = new StateComponent();
-            stateComponent.setState(EntityStates.BLINKING);
+            stateComponent.setState(EntityState.BLINKING);
             AnimationComponent pillAnimationComponent = new AnimationComponent();
             createBigPillAnimationKeyFrames(pillAnimationComponent);
             pillEntity.add(pillAnimationComponent);
@@ -161,7 +164,7 @@ public class WorldBuilder
         keyFrames.add(new TextureRegion(textureAtlas.findRegion("pill"), 1 * ASSET_SIZE, 0, ASSET_SIZE, ASSET_SIZE));
         keyFrames.add(new TextureRegion(textureAtlas.findRegion("pill"), 2 * ASSET_SIZE, 0, ASSET_SIZE, ASSET_SIZE));
         animation = new Animation<>(DisplayConstants.BIGPILL_ANIMATION_TIME, keyFrames, Animation.PlayMode.LOOP);
-        animationComponent.addAnimation(EntityStates.BLINKING, animation);
+        animationComponent.addAnimation(EntityState.BLINKING, animation);
     }
 
     /**
@@ -207,7 +210,7 @@ public class WorldBuilder
         bodyComponent.setBody(playerBody);
         bodyComponent.setSpeed(getPlayerSpeedForLevel(GameManager.getInstance().getLevel()));
         transformComponent.setPosition(rectangle.x, rectangle.y);
-        stateComponent.setState(EntityStates.START);
+        stateComponent.setState(EntityState.START);
 
         // add components
         playerEntity.add(bodyComponent);
@@ -227,11 +230,10 @@ public class WorldBuilder
 
     private float getPlayerSpeedForLevel(int level)
     {
-        if(level <= GameConstants.MAX_GAME_LEVELS)
+        if (level <= GameConstants.MAX_GAME_LEVELS)
         {
             return MovementConstants.LEVEL_TO_PACMAN_SPEED_MAP.get(level);
-        }
-        else
+        } else
         {
             return MovementConstants.LEVEL_TO_PACMAN_SPEED_MAP.get(GameConstants.MAX_GAME_LEVELS);
         }
@@ -246,53 +248,53 @@ public class WorldBuilder
         // start (same as idle right)
         keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 1 * ASSET_SIZE, 0, ASSET_SIZE, ASSET_SIZE));
         animation = new Animation<>(1f, keyFrames);
-        animationComponent.addAnimation(EntityStates.START, animation);
+        animationComponent.addAnimation(EntityState.START, animation);
         keyFrames.clear();
 
         // idle
         keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 1 * ASSET_SIZE, 0, ASSET_SIZE, ASSET_SIZE));
         animation = new Animation<>(1f, keyFrames);
-        animationComponent.addAnimation(EntityStates.IDLE_RIGHT, animation);
+        animationComponent.addAnimation(EntityState.IDLE_RIGHT, animation);
         keyFrames.clear();
 
         keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 2 * ASSET_SIZE, 0, ASSET_SIZE, ASSET_SIZE));
         animation = new Animation<>(1f, keyFrames);
-        animationComponent.addAnimation(EntityStates.IDLE_LEFT, animation);
+        animationComponent.addAnimation(EntityState.IDLE_LEFT, animation);
         keyFrames.clear();
 
         keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 3 * ASSET_SIZE, 0, ASSET_SIZE, ASSET_SIZE));
         animation = new Animation<>(1f, keyFrames);
-        animationComponent.addAnimation(EntityStates.IDLE_UP, animation);
+        animationComponent.addAnimation(EntityState.IDLE_UP, animation);
         keyFrames.clear();
 
         keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 4 * ASSET_SIZE, 0, ASSET_SIZE, ASSET_SIZE));
         animation = new Animation<>(1f, keyFrames);
-        animationComponent.addAnimation(EntityStates.IDLE_DOWN, animation);
+        animationComponent.addAnimation(EntityState.IDLE_DOWN, animation);
         keyFrames.clear();
 
         // moving
         keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 0, 0, ASSET_SIZE, ASSET_SIZE));
         keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 16, 0, ASSET_SIZE, ASSET_SIZE));
         animation = new Animation<>(frameDuration, keyFrames, Animation.PlayMode.LOOP);
-        animationComponent.addAnimation(EntityStates.MOVING_RIGHT, animation);
+        animationComponent.addAnimation(EntityState.MOVING_RIGHT, animation);
         keyFrames.clear();
 
         keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 0, 0, ASSET_SIZE, ASSET_SIZE));
         keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 2 * ASSET_SIZE, 0, ASSET_SIZE, ASSET_SIZE));
         animation = new Animation<>(frameDuration, keyFrames, Animation.PlayMode.LOOP);
-        animationComponent.addAnimation(EntityStates.MOVING_LEFT, animation);
+        animationComponent.addAnimation(EntityState.MOVING_LEFT, animation);
         keyFrames.clear();
 
         keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 0, 0, ASSET_SIZE, ASSET_SIZE));
         keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 3 * ASSET_SIZE, 0, ASSET_SIZE, ASSET_SIZE));
         animation = new Animation<>(frameDuration, keyFrames, Animation.PlayMode.LOOP);
-        animationComponent.addAnimation(EntityStates.MOVING_UP, animation);
+        animationComponent.addAnimation(EntityState.MOVING_UP, animation);
         keyFrames.clear();
 
         keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 0, 0, ASSET_SIZE, ASSET_SIZE));
         keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 4 * ASSET_SIZE, 0, ASSET_SIZE, ASSET_SIZE));
         animation = new Animation<>(frameDuration, keyFrames, Animation.PlayMode.LOOP);
-        animationComponent.addAnimation(EntityStates.MOVING_DOWN, animation);
+        animationComponent.addAnimation(EntityState.MOVING_DOWN, animation);
         keyFrames.clear();
 
         // dying
@@ -303,6 +305,6 @@ public class WorldBuilder
             keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), i * ASSET_SIZE, 0, ASSET_SIZE, ASSET_SIZE));
         }
         animation = new Animation<>(frameDuration, keyFrames, Animation.PlayMode.LOOP);
-        animationComponent.addAnimation(EntityStates.DYING, animation);
+        animationComponent.addAnimation(EntityState.DYING, animation);
     }
 }

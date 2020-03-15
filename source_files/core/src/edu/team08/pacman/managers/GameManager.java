@@ -4,30 +4,25 @@ import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Disposable;
 import edu.team08.pacman.constants.FilePathConstants;
+import edu.team08.pacman.game.Game;
+import edu.team08.pacman.states.GameState;
 
 public class GameManager implements Disposable
 {
 
     private static final GameManager instance = new GameManager();
 
-    private int totalPills;
+    private Game game;
     private AssetManager assetManager;
     private TextureAtlas textureAtlas;
-    private int score;
-    private int level;
-    private boolean levelEnded;
 
-    GameManager()
+    public GameManager()
     {
+        this.game = new Game();
         this.assetManager = new AssetManager();
         this.assetManager.load("sprites/actors.atlas", TextureAtlas.class);
         this.assetManager.finishLoading();
         this.textureAtlas = assetManager.get(FilePathConstants.SPRITES_PATH, TextureAtlas.class);
-
-        this.totalPills = 0;
-        this.score = 0;
-        this.level = 0;
-        this.levelEnded = false;
     }
 
     public static GameManager getInstance()
@@ -37,48 +32,49 @@ public class GameManager implements Disposable
 
     public int getTotalPills()
     {
-        return totalPills;
+        return game.getTotalPills();
     }
 
     public void increaseTotalPills()
     {
-        this.totalPills++;
+        this.game.setTotalPills(this.game.getTotalPills() + 1);
     }
 
     public void decreaseTotalPills()
     {
-        this.totalPills--;
+        this.game.setTotalPills(this.game.getTotalPills() - 1);
     }
 
     public int getScore()
     {
-        return this.score;
+        return this.game.getScore();
     }
 
     public void addScore(int scoreToAdd)
     {
-        this.score += scoreToAdd;
+        this.game.setScore(this.game.getScore() + scoreToAdd);
     }
 
     public void resetScore()
     {
-        this.score = 0;
+        this.game.setScore(0);
     }
 
     public int getLevel()
     {
-        return level;
+        return this.game.getLevel();
     }
 
     public void setLevel(int level)
     {
-        this.level = level;
+        this.game.setLevel(level);
     }
 
     public void newLevel()
     {
-        this.totalPills = 0;
-        this.level++;
+        this.game.setLevelEnded(false);
+        this.game.setTotalPills(0);
+        this.game.setLevel(this.game.getLevel() + 1);
     }
 
     public AssetManager getAssetManager()
@@ -93,7 +89,7 @@ public class GameManager implements Disposable
 
     public boolean isLevelEnded()
     {
-        return this.levelEnded;
+        return this.game.isLevelEnded();
     }
 
     /**
@@ -101,12 +97,51 @@ public class GameManager implements Disposable
      */
     public void endLevel()
     {
-        this.levelEnded = true;
+        this.game.setLevelEnded(true);
     }
 
-    public void resetLevel()
+    public int getLivesLeft()
     {
-        this.levelEnded = false;
+        return this.game.getLivesLeft();
+    }
+
+    public void setLivesLeft(int livesLeft)
+    {
+        this.game.setLivesLeft(livesLeft);
+    }
+
+    /**
+     * Happens when Pac-Man is killed. Please add some wait timer before calling this so we can see the death animation.
+     */
+    public void decreaseLivesLeft()
+    {
+        int potentialLivesLeft = this.game.getLivesLeft() - 1;
+
+        if (potentialLivesLeft <= 0)
+        {
+            this.game.setLivesLeft(0);
+            this.game.setGameState(GameState.ENDING);
+        } else
+        {
+            this.game.setLivesLeft(potentialLivesLeft);
+        }
+
+        this.game.setLevelEnded(true);
+    }
+
+    public boolean isGameEnding()
+    {
+        return this.game.getGameState() == GameState.ENDING;
+    }
+
+    public GameState getGameState()
+    {
+        return this.game.getGameState();
+    }
+
+    public void setGameState(GameState gameState)
+    {
+        this.game.setGameState(gameState);
     }
 
     @Override

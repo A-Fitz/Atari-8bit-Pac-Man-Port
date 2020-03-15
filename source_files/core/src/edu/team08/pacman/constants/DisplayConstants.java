@@ -4,9 +4,12 @@ import java.util.HashMap;
 
 public class DisplayConstants
 {
+    public static final int MAX_BONUS_NUGGET_LEVEL_MARKERS_IN_STAGE = 6;
+
     /* Display Positions and Scale */
-    public static final int LEVEL_MARKER_BONUS_NUGGET_XPOS = 352;
-    public static final int LEVEL_MARKER_BONUS_NUGGET_YPOS = 55;
+    public static final int GAME_INFO_ACTOR_RIGHT_X_POS = 352;
+    public static final int GAME_INFO_ACTOR_LEFT_X_POS = 16;
+    public static final int GAME_INFO_ACTOR_LOWER_Y_POS = 55;
     public static final float VIEWPORT_WIDTH = 20.0f;
     public static final float VIEWPORT_HEIGHT = 25.0f;
     public static final float MOVING_ENTITY_BODY_SCALE = 0.96f;
@@ -15,16 +18,23 @@ public class DisplayConstants
     /* Display Times (in seconds) */
     public static final float PACMAN_ANIMATION_TIME = 0.1f;
     public static final float BIGPILL_ANIMATION_TIME = 0.3f;
-    public static final int BONUS_NUGGET_SPAWN_TIME = 5;
-    public static final int BONUS_NUGGET_DURATION = 3;
+    public static final int BONUS_NUGGET_SPAWN_TIME = 30;
+    public static final int BONUS_NUGGET_DURATION = 8;
+    public static final float GHOST_BLUE_TIME_LEVEL5_7_8_9_11_12_13_15_16_17_18_19_AND_UP = 0;
+    public static final int BLUE_GHOSTS_FLASH_AMOUNT_LEVEL17_19_AND_UP = 0;
+    public static final HashMap<Integer, Integer> LEVEL_TO_BLUE_GHOST_FLASH_AMOUNT;
     // Time that a Ghost entity remains blue per level
     private static final float GHOST_BLUE_TIME_LEVEL1 = 4;
     private static final float GHOST_BLUE_TIME_LEVEL2_6_10 = 3;
     private static final float GHOST_BLUE_TIME_LEVEL3 = 2;
     private static final float GHOST_BLUE_TIME_LEVEL4_14 = 1;
-    public static final float GHOST_BLUE_TIME_LEVEL5_7_8_9_11_12_13_15_16_17_18_19_AND_UP = 0;
     private static final HashMap<Integer, Float> LEVEL_TO_GHOST_BLUE_TIME_MAP;
-    static {
+    // Number of times that a Ghost entity flashes while blue, before it turns back to normal
+    private static final int BLUE_GHOSTS_FLASH_AMOUNT_LEVEL1_2_3_4_5_6_7_8_10_11_15 = 5;
+    private static final int BLUE_GHOSTS_FLASH_AMOUNT_LEVEL9_12_13_14_16_18 = 3;
+
+    static
+    {
         LEVEL_TO_GHOST_BLUE_TIME_MAP = new HashMap<Integer, Float>();
         LEVEL_TO_GHOST_BLUE_TIME_MAP.put(1, GHOST_BLUE_TIME_LEVEL1);
         LEVEL_TO_GHOST_BLUE_TIME_MAP.put(2, GHOST_BLUE_TIME_LEVEL2_6_10);
@@ -46,12 +56,9 @@ public class DisplayConstants
         LEVEL_TO_GHOST_BLUE_TIME_MAP.put(18, GHOST_BLUE_TIME_LEVEL5_7_8_9_11_12_13_15_16_17_18_19_AND_UP);
         LEVEL_TO_GHOST_BLUE_TIME_MAP.put(19, GHOST_BLUE_TIME_LEVEL5_7_8_9_11_12_13_15_16_17_18_19_AND_UP);
     }
-    // Number of times that a Ghost entity flashes while blue, before it turns back to normal
-    private static final int BLUE_GHOSTS_FLASH_AMOUNT_LEVEL1_2_3_4_5_6_7_8_10_11_15 = 5;
-    private static final int BLUE_GHOSTS_FLASH_AMOUNT_LEVEL9_12_13_14_16_18 = 3;
-    public static final int BLUE_GHOSTS_FLASH_AMOUNT_LEVEL17_19_AND_UP = 0;
-    public static final HashMap<Integer, Integer> LEVEL_TO_BLUE_GHOST_FLASH_AMOUNT;
-    static {
+
+    static
+    {
         LEVEL_TO_BLUE_GHOST_FLASH_AMOUNT = new HashMap<>();
         LEVEL_TO_BLUE_GHOST_FLASH_AMOUNT.put(1, BLUE_GHOSTS_FLASH_AMOUNT_LEVEL1_2_3_4_5_6_7_8_10_11_15);
         LEVEL_TO_BLUE_GHOST_FLASH_AMOUNT.put(2, BLUE_GHOSTS_FLASH_AMOUNT_LEVEL1_2_3_4_5_6_7_8_10_11_15);

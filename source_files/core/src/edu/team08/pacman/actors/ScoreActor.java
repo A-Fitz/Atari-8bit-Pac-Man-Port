@@ -12,7 +12,8 @@ public class ScoreActor extends Actor
     private StringBuilder stringBuilder;
     private Label scoreLabel;
 
-    public ScoreActor (float x, float y) {
+    public ScoreActor(float x, float y)
+    {
         this.stringBuilder = new StringBuilder();
         BitmapFont font = new BitmapFont();
         Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
@@ -31,7 +32,8 @@ public class ScoreActor extends Actor
     }
 
     @Override
-    public void draw (Batch batch, float parentAlpha) {
+    public void draw(Batch batch, float parentAlpha)
+    {
         scoreLabel.draw(batch, parentAlpha);
     }
 }

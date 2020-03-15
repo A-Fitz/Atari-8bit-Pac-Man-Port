@@ -1,6 +1,6 @@
-package edu.team08.pacman.constants;
+package edu.team08.pacman;
 
-public enum BonusNuggets
+public enum BonusNuggetType
 {
     CHERRY,
     STRAWBERRY,

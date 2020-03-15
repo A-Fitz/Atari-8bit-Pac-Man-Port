@@ -1,19 +1,19 @@
 package edu.team08.pacman.components;
 
 import com.badlogic.ashley.core.Component;
-import edu.team08.pacman.constants.EntityStates;
+import edu.team08.pacman.states.EntityState;
 
 public class StateComponent implements Component
 {
     private float time = 0.0f;
-    private EntityStates state;
+    private EntityState state;
 
-    public EntityStates getState()
+    public EntityState getState()
     {
         return state;
     }
 
-    public void setState(EntityStates newState)
+    public void setState(EntityState newState)
     {
         this.state = newState;
         this.time = 0.0f;

@@ -1,6 +1,6 @@
-package edu.team08.pacman.constants;
+package edu.team08.pacman.states;
 
-public enum EntityStates
+public enum EntityState
 {
     START,
     IDLE_UP, IDLE_DOWN, IDLE_LEFT, IDLE_RIGHT,

@@ -1,16 +1,16 @@
 package edu.team08.pacman.components;
 
 import com.badlogic.ashley.core.Component;
-import edu.team08.pacman.constants.BonusNuggets;
+import edu.team08.pacman.BonusNuggetType;
 import edu.team08.pacman.constants.DisplayConstants;
 
 public class BonusNuggetComponent implements Component
 {
     private float timeLeft;
     private boolean isEaten;
-    private BonusNuggets bonusNugget;
+    private BonusNuggetType bonusNugget;
 
-    public BonusNuggetComponent(BonusNuggets bonusNugget)
+    public BonusNuggetComponent(BonusNuggetType bonusNugget)
     {
         this.isEaten = false;
         this.bonusNugget = bonusNugget;
@@ -37,7 +37,7 @@ public class BonusNuggetComponent implements Component
         this.isEaten = isEaten;
     }
 
-    public BonusNuggets getBonusNugget()
+    public BonusNuggetType getBonusNugget()
     {
         return this.bonusNugget;
     }

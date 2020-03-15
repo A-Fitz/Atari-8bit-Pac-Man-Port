@@ -6,7 +6,10 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.utils.Queue;
-import edu.team08.pacman.components.*;
+import edu.team08.pacman.components.BodyComponent;
+import edu.team08.pacman.components.BonusNuggetComponent;
+import edu.team08.pacman.components.PillComponent;
+import edu.team08.pacman.components.TransformComponent;
 import edu.team08.pacman.constants.MovementConstants;
 
 

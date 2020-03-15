@@ -25,9 +25,9 @@ public class GameContactListener implements ContactListener
         Fixture fixtureB = contact.getFixtureB();
 
         // if a Pac-Man and a Bonus Nugget contact, then the Pac-Man eats the Bonus Nugget
-        if(fixtureA.getFilterData().categoryBits == GameConstants.BONUS_NUGGET_BITS || fixtureB.getFilterData().categoryBits == GameConstants.BONUS_NUGGET_BITS)
+        if (fixtureA.getFilterData().categoryBits == GameConstants.BONUS_NUGGET_BITS || fixtureB.getFilterData().categoryBits == GameConstants.BONUS_NUGGET_BITS)
         {
-            if(fixtureA.getFilterData().categoryBits == GameConstants.PLAYER_BITS)
+            if (fixtureA.getFilterData().categoryBits == GameConstants.PLAYER_BITS)
             {
                 eatBonusNugget(fixtureB);
             } else if (fixtureB.getFilterData().categoryBits == GameConstants.PLAYER_BITS)
@@ -42,7 +42,8 @@ public class GameContactListener implements ContactListener
             if (fixtureA.getFilterData().categoryBits == GameConstants.PLAYER_BITS)
             {
                 eatPill(fixtureB);
-            } else if (fixtureB.getFilterData().categoryBits == GameConstants.PLAYER_BITS) {
+            } else if (fixtureB.getFilterData().categoryBits == GameConstants.PLAYER_BITS)
+            {
                 eatPill(fixtureA);
             }
         }

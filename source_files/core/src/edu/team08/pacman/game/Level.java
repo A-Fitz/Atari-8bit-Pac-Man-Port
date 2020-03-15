@@ -13,8 +13,6 @@ import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import edu.team08.pacman.GameContactListener;
 import edu.team08.pacman.Util;
-import edu.team08.pacman.actors.BonusNuggetsActor;
-import edu.team08.pacman.actors.ScoreActor;
 import edu.team08.pacman.components.BodyComponent;
 import edu.team08.pacman.components.BonusNuggetComponent;
 import edu.team08.pacman.components.TextureComponent;
@@ -23,6 +21,8 @@ import edu.team08.pacman.constants.DisplayConstants;
 import edu.team08.pacman.constants.GameConstants;
 import edu.team08.pacman.constants.PointConstants;
 import edu.team08.pacman.managers.GameManager;
+import edu.team08.pacman.actors.GameInfoActor;
+import edu.team08.pacman.actors.ScoreActor;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -39,6 +39,7 @@ public class Level
     private WorldBuilder worldBuilder;
 
     private ScoreActor scoreActor;
+
     private TimerTask addBonusNuggetTask = new TimerTask()
     {
         @Override
@@ -68,9 +69,22 @@ public class Level
         getBonusNuggetRectangles();
         addBonusNuggetActors();
         addScoreActor();
+        addLivesActors();
 
         long time = TimeUnit.MILLISECONDS.convert(DisplayConstants.BONUS_NUGGET_SPAWN_TIME, TimeUnit.SECONDS);
         new Timer().scheduleAtFixedRate(addBonusNuggetTask, time, time);
+    }
+
+    private void addLivesActors()
+    {
+        for (int i = 0; i < GameManager.getInstance().getLivesLeft(); i++)
+        {
+            TextureRegion textureRegion = new TextureRegion(GameManager.getInstance().getTextureAtlas().findRegion("pacman"), 2 * ASSET_SIZE, 0, ASSET_SIZE, ASSET_SIZE);
+            GameInfoActor livesActor = new GameInfoActor(textureRegion,
+                    DisplayConstants.GAME_INFO_ACTOR_LEFT_X_POS + (i * ASSET_SIZE) + ((ASSET_SIZE / 2) * i),
+                    DisplayConstants.GAME_INFO_ACTOR_LOWER_Y_POS);
+            stage.addActor(livesActor);
+        }
     }
 
     private void addScoreActor()
@@ -93,18 +107,44 @@ public class Level
 
     private void addBonusNuggetActors()
     {
-        stage.addActor(new BonusNuggetsActor(getNewBonusNuggetTextureRegion(),
-                DisplayConstants.LEVEL_MARKER_BONUS_NUGGET_XPOS - ((GameManager.getInstance().getLevel() - 1) * ASSET_SIZE) - ((ASSET_SIZE / 2) * GameManager.getInstance().getLevel()),
-                DisplayConstants.LEVEL_MARKER_BONUS_NUGGET_YPOS));
+        List<TextureRegion> textureRegionList = getNewBonusNuggetTextureRegionList();
+        for (int i = textureRegionList.size() - 1; i >= 0; i--)
+        {
+            TextureRegion textureRegion = textureRegionList.get(i);
+            stage.addActor(new GameInfoActor(textureRegion,
+                    DisplayConstants.GAME_INFO_ACTOR_RIGHT_X_POS - (i * ASSET_SIZE) - ((ASSET_SIZE / 2) * i),
+                    DisplayConstants.GAME_INFO_ACTOR_LOWER_Y_POS));
+        }
     }
 
-    private TextureRegion getNewBonusNuggetTextureRegion()
+    private List<TextureRegion> getNewBonusNuggetTextureRegionList()
+    {
+        List<TextureRegion> textureRegionList = new ArrayList<>();
+        int level = GameManager.getInstance().getLevel();
+        if (level > GameConstants.MAX_GAME_LEVELS)
+        {
+            level = GameConstants.MAX_GAME_LEVELS;
+        }
+
+        for (int i = 0; i < DisplayConstants.MAX_BONUS_NUGGET_LEVEL_MARKERS_IN_STAGE; i++)
+        {
+            if (level - i < 1)
+            {
+                break;
+            }
+            textureRegionList.add(getNewBonusNuggetTextureRegion(level - i));
+        }
+
+        return textureRegionList;
+    }
+
+    private TextureRegion getNewBonusNuggetTextureRegion(int level)
     {
         int texturePosition;
 
-        if (GameManager.getInstance().getLevel() <= GameConstants.MAX_GAME_LEVELS)
+        if (level <= GameConstants.MAX_GAME_LEVELS)
         {
-            texturePosition = PointConstants.LEVEL_TO_BONUS_TEXTURE_MAP.get(GameManager.getInstance().getLevel());
+            texturePosition = PointConstants.LEVEL_TO_BONUS_TEXTURE_MAP.get(level);
         } else
         {
             texturePosition = PointConstants.LEVEL_TO_BONUS_TEXTURE_MAP.get(GameConstants.MAX_GAME_LEVELS);
@@ -115,7 +155,7 @@ public class Level
 
     public void update()
     {
-        if (GameManager.getInstance().getTotalPills() == 0)
+        if (GameManager.getInstance().getTotalPills() <= 0)
         {
             GameManager.getInstance().endLevel();
         }
@@ -150,7 +190,7 @@ public class Level
 
         transformComponent.setPosition(bonusNuggetRectangle.x, bonusNuggetRectangle.y);
 
-        textureComponent.setRegion(getNewBonusNuggetTextureRegion());
+        textureComponent.setRegion(getNewBonusNuggetTextureRegion(GameManager.getInstance().getLevel()));
 
         bonusNuggetEntity.add(bodyComponent);
         bonusNuggetEntity.add(textureComponent);
