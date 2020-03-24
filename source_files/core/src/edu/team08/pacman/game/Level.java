@@ -95,7 +95,7 @@ public class Level
 
     private void addScoreActor()
     {
-        this.scoreActor = new ScoreActor(DisplayConstants.VIEWPORT_WIDTH * 3, DisplayConstants.VIEWPORT_HEIGHT * 17.5f);
+        this.scoreActor = new ScoreActor(DisplayConstants.VIEWPORT_WIDTH * 2, DisplayConstants.VIEWPORT_HEIGHT * 17.5f);
         this.stage.addActor(scoreActor);
     }
 

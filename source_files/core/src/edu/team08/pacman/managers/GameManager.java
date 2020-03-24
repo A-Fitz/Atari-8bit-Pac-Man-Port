@@ -23,7 +23,7 @@ public class GameManager implements Disposable
     {
         this.game = new Game();
         this.assetManager = new AssetManager();
-        this.assetManager.load("sprites/actors.atlas", TextureAtlas.class);
+        this.assetManager.load(FilePathConstants.SPRITES_PATH, TextureAtlas.class);
         this.assetManager.finishLoading();
         this.textureAtlas = assetManager.get(FilePathConstants.SPRITES_PATH, TextureAtlas.class);
     }
