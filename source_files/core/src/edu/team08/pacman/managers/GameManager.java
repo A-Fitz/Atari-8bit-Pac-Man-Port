@@ -15,6 +15,7 @@ public class GameManager implements Disposable
 
     private static final GameManager instance = new GameManager();
 
+    private boolean isBigPillEaten;
     private Game game;
     private AssetManager assetManager;
     private TextureAtlas textureAtlas;
@@ -26,6 +27,7 @@ public class GameManager implements Disposable
         this.assetManager.load(FilePathConstants.SPRITES_PATH, TextureAtlas.class);
         this.assetManager.finishLoading();
         this.textureAtlas = assetManager.get(FilePathConstants.SPRITES_PATH, TextureAtlas.class);
+        this.isBigPillEaten = false;
     }
 
     public static GameManager getInstance()
@@ -57,6 +59,10 @@ public class GameManager implements Disposable
     {
         this.game.setTotalPills(this.game.getTotalPills() - 1);
     }
+
+    public boolean isBigPillEaten() { return isBigPillEaten; }
+
+    public void setBigPillEaten(boolean bigPillEaten) { isBigPillEaten = bigPillEaten; }
 
     public int getScore()
     {

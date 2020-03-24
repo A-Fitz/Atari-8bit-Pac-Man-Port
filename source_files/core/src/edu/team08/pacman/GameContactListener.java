@@ -7,6 +7,7 @@ import edu.team08.pacman.components.BonusNuggetComponent;
 import edu.team08.pacman.components.PillComponent;
 import edu.team08.pacman.constants.CategoryBitsConstants;
 import edu.team08.pacman.constants.GameConstants;
+import edu.team08.pacman.managers.GameManager;
 
 public class GameContactListener implements ContactListener
 {
@@ -64,6 +65,7 @@ public class GameContactListener implements ContactListener
         Entity entity = (Entity) body.getUserData();
         PillComponent pillComponent = pillComponentMapper.get(entity);
         pillComponent.setEaten(true);
+        GameManager.getInstance().setBigPillEaten(pillComponent.isBig());
     }
 
     @Override
