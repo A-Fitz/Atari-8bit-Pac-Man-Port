@@ -308,4 +308,32 @@ public class WorldBuilder
         animation = new Animation<>(frameDuration, keyFrames, Animation.PlayMode.LOOP);
         animationComponent.addAnimation(EntityState.DYING, animation);
     }
+
+    /**
+     * createGhosts creates all the ghosts in PAC-MAN
+     * @param rectangle
+     */
+    public void createGhosts(Rectangle rectangle){
+        //create shadow "Blinky" - red
+        //create speedy "Pinky" - pink
+        // create Bashful "Inky" - blue
+        //create pokey "clyde" - yellow
+        
+   }
+
+    /**
+     * createGhost creates a given ghost in PAC-MAN
+     */
+   private void createGhost(){
+       /*
+            create new entity for each ghost
+            create components to each entity
+            create the body for each ghost
+            set starting component values for each ghost
+            add components
+            create and add animations
+            finish entity creation
+
+         */
+   }
 }
