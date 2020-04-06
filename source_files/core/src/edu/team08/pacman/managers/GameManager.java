@@ -1,6 +1,7 @@
 package edu.team08.pacman.managers;
 
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.utils.Disposable;
 import edu.team08.pacman.constants.FilePathConstants;
@@ -25,6 +26,12 @@ public class GameManager implements Disposable
         this.game = new Game();
         this.assetManager = new AssetManager();
         this.assetManager.load(FilePathConstants.SPRITES_PATH, TextureAtlas.class);
+        this.assetManager.load(FilePathConstants.BEGINNING_PATH, Sound.class);
+        this.assetManager.load(FilePathConstants.DEATH_PATH, Sound.class);
+        this.assetManager.load(FilePathConstants.EAT_FRUIT_PATH, Sound.class);
+        this.assetManager.load(FilePathConstants.EAT_GHOST_PATH, Sound.class);
+        this.assetManager.load(FilePathConstants.EAT_PILL_PATH, Sound.class);
+        this.assetManager.load(FilePathConstants.EXTRA_LIFE_PATH, Sound.class);
         this.assetManager.finishLoading();
         this.textureAtlas = assetManager.get(FilePathConstants.SPRITES_PATH, TextureAtlas.class);
         this.isBigPillEaten = false;
