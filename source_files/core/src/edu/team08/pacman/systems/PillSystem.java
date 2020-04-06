@@ -4,9 +4,11 @@ import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;
 import com.badlogic.ashley.systems.IteratingSystem;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.physics.box2d.Body;
 import edu.team08.pacman.components.BodyComponent;
 import edu.team08.pacman.components.PillComponent;
+import edu.team08.pacman.constants.FilePathConstants;
 import edu.team08.pacman.constants.PointConstants;
 import edu.team08.pacman.managers.GameManager;
 
@@ -32,11 +34,11 @@ public class PillSystem extends IteratingSystem
         {
             if (pillComponent.isBig())
             {
-                // TODO  play sound
+               GameManager.getInstance().getAssetManager().get(FilePathConstants.EAT_PILL_PATH, Sound.class).play();
                 GameManager.getInstance().addScore(PointConstants.BIG_PILL_POINTS);
             } else
             {
-                // TODO  play sound
+                GameManager.getInstance().getAssetManager().get(FilePathConstants.EAT_PILL_PATH, Sound.class).play();
                 GameManager.getInstance().addScore(PointConstants.PILL_POINTS);
             }
 

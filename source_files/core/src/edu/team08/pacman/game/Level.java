@@ -2,6 +2,7 @@ package edu.team08.pacman.game;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapLayers;
@@ -17,10 +18,7 @@ import edu.team08.pacman.components.BodyComponent;
 import edu.team08.pacman.components.BonusNuggetComponent;
 import edu.team08.pacman.components.TextureComponent;
 import edu.team08.pacman.components.TransformComponent;
-import edu.team08.pacman.constants.CategoryBitsConstants;
-import edu.team08.pacman.constants.DisplayConstants;
-import edu.team08.pacman.constants.GameConstants;
-import edu.team08.pacman.constants.PointConstants;
+import edu.team08.pacman.constants.*;
 import edu.team08.pacman.managers.GameManager;
 import edu.team08.pacman.actors.GameInfoActor;
 import edu.team08.pacman.actors.ScoreActor;
@@ -164,6 +162,7 @@ public class Level
         if(GameManager.getInstance().getScore() >= PointConstants.POINTS_FOR_EXTRA_LIFE && !GameManager.getInstance().isExtraLifeEarned())
         {
             GameManager.getInstance().addLife();
+            GameManager.getInstance().getAssetManager().get(FilePathConstants.EXTRA_LIFE_PATH, Sound.class).play();
             addLivesActor(GameManager.getInstance().getLivesLeft());
             GameManager.getInstance().extraLifeEarned();
         } else if (GameManager.getInstance().getTotalPills() <= 0)
