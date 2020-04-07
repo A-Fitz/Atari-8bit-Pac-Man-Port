@@ -32,13 +32,13 @@ public class PillSystem extends IteratingSystem
         Body body = bodyComponent.getBody();
         if (pillComponent.isEaten())
         {
+            GameManager.getInstance().getAssetManager().get(FilePathConstants.SOUND_EAT_PILL_PATH, Sound.class).play();
+
             if (pillComponent.isBig())
             {
-               GameManager.getInstance().getAssetManager().get(FilePathConstants.EAT_PILL_PATH, Sound.class).play();
                 GameManager.getInstance().addScore(PointConstants.BIG_PILL_POINTS);
             } else
             {
-                GameManager.getInstance().getAssetManager().get(FilePathConstants.EAT_PILL_PATH, Sound.class).play();
                 GameManager.getInstance().addScore(PointConstants.PILL_POINTS);
             }
 

@@ -3,7 +3,7 @@ package edu.team08.pacman.game;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -56,14 +56,25 @@ public class PlayScreen implements Screen
         // create level
         newLevel();
 
-        // set the input controller
-        Gdx.input.setInputProcessor(InputManager.getInstance());
+        // pause and play game start sound
+        Music beginningMusic = GameManager.getInstance().getAssetManager().get(FilePathConstants.MUSIC_BEGINNING_PATH, Music.class);
+        beginningMusic.play();
+
+        // allow controls when game music stops
+        beginningMusic.setOnCompletionListener(new Music.OnCompletionListener() {
+            @Override
+            public void onCompletion(Music aMusic) {
+                // set the input controller
+                Gdx.input.setInputProcessor(InputManager.getInstance());
+            }
+        });
+
     }
 
     private void newLevel()
     {
         GameManager.getInstance().newLevel();
-        GameManager.getInstance().getAssetManager().get(FilePathConstants.BEGINNING_PATH, Sound.class).play();
+
         // setup SpriteBatch and camera
         batch = new SpriteBatch();
         batch.setProjectionMatrix(camera.combined);

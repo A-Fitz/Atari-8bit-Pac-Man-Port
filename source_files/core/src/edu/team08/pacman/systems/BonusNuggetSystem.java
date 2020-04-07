@@ -33,7 +33,7 @@ public class BonusNuggetSystem extends IteratingSystem
         if (bonusNuggetComponent.isEaten())
         {
             GameManager.getInstance().addScore(PointConstants.BONUS_TO_POINTS_MAP.get(bonusNuggetComponent.getBonusNugget()));
-            GameManager.getInstance().getAssetManager().get(FilePathConstants.EAT_FRUIT_PATH, Sound.class).play();
+            GameManager.getInstance().getAssetManager().get(FilePathConstants.SOUND_EAT_FRUIT_PATH, Sound.class).play();
             Body body = bodyComponent.getBody();
             body.getWorld().destroyBody(body);
             getEngine().removeEntity(entity);

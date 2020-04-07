@@ -162,10 +162,11 @@ public class Level
         if(GameManager.getInstance().getScore() >= PointConstants.POINTS_FOR_EXTRA_LIFE && !GameManager.getInstance().isExtraLifeEarned())
         {
             GameManager.getInstance().addLife();
-            GameManager.getInstance().getAssetManager().get(FilePathConstants.EXTRA_LIFE_PATH, Sound.class).play();
+            GameManager.getInstance().getAssetManager().get(FilePathConstants.SOUND_EXTRA_LIFE_PATH, Sound.class).play();
             addLivesActor(GameManager.getInstance().getLivesLeft());
-            GameManager.getInstance().extraLifeEarned();
-        } else if (GameManager.getInstance().getTotalPills() <= 0)
+            GameManager.getInstance().setExtraLifeEarned();
+        }
+        else if (GameManager.getInstance().getTotalPills() <= 0)
         {
             GameManager.getInstance().endLevel();
         }
