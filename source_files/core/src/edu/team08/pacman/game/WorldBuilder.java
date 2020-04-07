@@ -41,12 +41,11 @@ public class WorldBuilder
     }
 
     /**
-     * addWalls creates all the walls that are contained in the map and add then to the wall layer.
+     * addWalls creates a wall in every map object in the map layer "wall" of the game
      */
     public void addWalls()
     {
-        MapLayer wall = this.mapLayers.get("wall");
-        for (MapObject mapObject : wall.getObjects())
+        for (MapObject mapObject : this.mapLayers.get("wall").getObjects())
         {
             Rectangle rectangleWall = ((RectangleMapObject) mapObject).getRectangle();
             Util.correctRectangle(rectangleWall);
@@ -54,12 +53,22 @@ public class WorldBuilder
         }
     }
 
+    /**
+     * create wall creates a wall's body
+     * @param rectangle
+     */
     private void createWall(Rectangle rectangle)
     {
-        BodyDef bodyDef = new BodyDef();
-        bodyDef.type = BodyDef.BodyType.StaticBody;
-        bodyDef.position.set(rectangle.x, rectangle.y);
-        Body body = world.createBody(bodyDef);
+        this.createWallBody(rectangle, this.createWallBodyDef(rectangle));
+    }
+
+    /**
+     * createWallBody creates a wall's Body from a wall's BodyDef
+     * @param rectangle
+     * @param wallBodyDef
+     */
+    private void createWallBody(Rectangle rectangle, BodyDef wallBodyDef){
+        Body body = world.createBody(wallBodyDef);
 
         PolygonShape shape = new PolygonShape();
         shape.setAsBox(rectangle.width, rectangle.height);
@@ -72,12 +81,24 @@ public class WorldBuilder
     }
 
     /**
-     * addPills creates each pill and adds them to the pill layer.
+     * createWallBodyDef creates a wall's BodyDef and returns it.
+     * @param rectangle
+     * @return BodyDef a wall's BodyDef
+     */
+    private BodyDef createWallBodyDef(Rectangle rectangle){
+        BodyDef bodyDef = new BodyDef();
+        bodyDef.type = BodyDef.BodyType.StaticBody;
+        bodyDef.position.set(rectangle.x, rectangle.y);
+
+        return bodyDef;
+    }
+
+    /**
+     * addPills adds both the big pills and small pills to the map.
      */
     public void addPills()
     {
-        MapLayer pill = this.mapLayers.get("pill");
-        for (MapObject mapObject : pill.getObjects())
+        for (MapObject mapObject : this.mapLayers.get("pill").getObjects())
         {
             Rectangle rectangle = ((RectangleMapObject) mapObject).getRectangle();
             Util.correctRectangle(rectangle);
@@ -101,12 +122,14 @@ public class WorldBuilder
         TransformComponent transformComponent = new TransformComponent();
         TextureComponent textureComponent = new TextureComponent();
         BodyComponent bodyComponent = new BodyComponent();
+
         // create body
         BodyDef bodyDef = new BodyDef();
         bodyDef.type = BodyDef.BodyType.KinematicBody;
         bodyDef.position.set(rectangle.x, rectangle.y);
-        Body pillBody = world.createBody(bodyDef);
+        Body pillBody = this.world.createBody(bodyDef);
         CircleShape circleShape = new CircleShape();
+
         if (big)
         {
             circleShape.setRadius(rectangle.width);
@@ -114,6 +137,7 @@ public class WorldBuilder
         {
             circleShape.setRadius(rectangle.width / 2);
         }
+
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = circleShape;
         fixtureDef.isSensor = true;
