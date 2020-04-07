@@ -71,7 +71,7 @@ public class InputManager implements InputProcessor
      */
     public boolean isKeyPressed(int key)
     {
-        if(GameManager.getInstance().getGameState() != GameState.IN_PROGRESS)
+        if(!GameManager.getInstance().isGameInProgress())
             return false;
         else
             return keyStates.get(key).pressed;

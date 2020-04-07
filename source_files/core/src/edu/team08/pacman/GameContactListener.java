@@ -67,7 +67,7 @@ public class GameContactListener implements ContactListener
         pillComponent.setEaten(true);
 
         if(pillComponent.isBig())
-            GameManager.getInstance().setBigPillEaten(true);
+            GameManager.getInstance().setGhostsFlashing();
     }
 
     @Override

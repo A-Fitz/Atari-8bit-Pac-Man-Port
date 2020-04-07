@@ -66,26 +66,6 @@ public class GameManager implements Disposable
         this.game.setTotalPills(this.game.getTotalPills() - 1);
     }
 
-    public boolean isPacManKilled()
-    {
-        return this.game.isPacManKilled();
-    }
-
-    public void setPacManKilled(boolean pacManKilled)
-    {
-        this.game.setPacManKilled(pacManKilled);
-    }
-
-    public boolean isBigPillEaten()
-    {
-        return this.game.isBigPillEaten();
-    }
-
-    public void setBigPillEaten(boolean bigPillEaten)
-    {
-        this.game.setBigPillEaten(bigPillEaten);
-    }
-
     public int getScore()
     {
         return this.game.getScore();
@@ -113,11 +93,11 @@ public class GameManager implements Disposable
 
     public void newLevel()
     {
-        this.game.setLevelEnded(false);
         this.game.setTotalPills(0);
-        if(!this.game.isPacManKilled())
+        if (this.game.getGameState() == GameState.LEVEL_ENDED_PILLS_EATEN)
+        {
             this.game.setLevel(this.game.getLevel() + 1);
-        this.game.setPacManKilled(false);
+        }
     }
 
     public AssetManager getAssetManager()
@@ -128,19 +108,6 @@ public class GameManager implements Disposable
     public TextureAtlas getTextureAtlas()
     {
         return this.textureAtlas;
-    }
-
-    public boolean isLevelEnded()
-    {
-        return this.game.isLevelEnded();
-    }
-
-    /**
-     * Use this method when a condition is reached where the level should end.
-     */
-    public void endLevel()
-    {
-        this.game.setLevelEnded(true);
     }
 
     public int getLivesLeft()
@@ -161,39 +128,69 @@ public class GameManager implements Disposable
     /**
      * Happens when Pac-Man is killed.
      */
-    public void decreaseLivesLeft()
+    private void killPacMan()
     {
-        if(!this.isLevelEnded())
+        int potentialLivesLeft = this.game.getLivesLeft() - 1;
+
+        if (potentialLivesLeft <= 0)
         {
-            int potentialLivesLeft = this.game.getLivesLeft() - 1;
-
-            if (potentialLivesLeft <= 0)
-            {
-                this.game.setLivesLeft(0);
-                this.game.setGameState(GameState.ENDED);
-            } else
-            {
-                this.game.setLivesLeft(potentialLivesLeft);
-            }
-
-            this.game.setPacManKilled(true);
-            this.game.setLevelEnded(true);
+            this.game.setLivesLeft(0);
+            this.game.setGameState(GameState.ENDED);
+        } else
+        {
+            this.game.setLivesLeft(potentialLivesLeft);
         }
-    }
-
-    public GameState getGameState()
-    {
-        return this.game.getGameState();
-    }
-
-    public void setGameState(GameState gameState)
-    {
-        this.game.setGameState(gameState);
     }
 
     @Override
     public void dispose()
     {
         this.assetManager.dispose();
+    }
+
+    public boolean isGameInProgress()
+    {
+        return (this.game.getGameState() == GameState.IN_PROGRESS_GHOST_FLASHING || this.game.getGameState() == GameState.IN_PROGRESS_NORMAL);
+    }
+
+    public boolean isLevelEnded()
+    {
+        return (this.game.getGameState() == GameState.LEVEL_ENDED_PACMAN_DIED || this.game.getGameState() == GameState.LEVEL_ENDED_PILLS_EATEN);
+    }
+
+    public boolean isPacManDead()
+    {
+        return this.game.getGameState() == GameState.LEVEL_ENDED_PACMAN_DIED;
+    }
+
+    public boolean isGameEnded()
+    {
+        return this.game.getGameState() == GameState.ENDED;
+    }
+
+    public boolean isGameStarting()
+    {
+        return this.game.getGameState() == GameState.STARTING;
+    }
+
+    public void endLevelPillsEaten()
+    {
+        killPacMan();
+        this.game.setGameState(GameState.LEVEL_ENDED_PACMAN_DIED);
+    }
+
+    public void endLevelPacManDead()
+    {
+        this.game.setGameState(GameState.LEVEL_ENDED_PILLS_EATEN);
+    }
+
+    public void setGameInProgressNormal()
+    {
+        this.game.setGameState(GameState.IN_PROGRESS_NORMAL);
+    }
+
+    public void setGhostsFlashing()
+    {
+        this.game.setGameState(GameState.IN_PROGRESS_GHOST_FLASHING);
     }
 }

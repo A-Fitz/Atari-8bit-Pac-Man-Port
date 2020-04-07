@@ -71,6 +71,18 @@ public class Level
         this.world.setContactListener(new GameContactListener());
     }
 
+    public void update()
+    {
+        if(GameManager.getInstance().getScore() >= PointConstants.POINTS_FOR_EXTRA_LIFE && !GameManager.getInstance().isExtraLifeEarned())
+        {
+            GameManager.getInstance().addLife();
+            GameManager.getInstance().getAssetManager().get(FilePathConstants.SOUND_EXTRA_LIFE_PATH, Sound.class).play();
+            addLivesActor(GameManager.getInstance().getLivesLeft());
+            GameManager.getInstance().setExtraLifeEarned();
+        }
+        this.scoreActor.update();
+    }
+
     public void buildLevel()
     {
         this.worldBuilder.addWalls();
@@ -90,7 +102,7 @@ public class Level
         stage.addActor(readyActor);
 
         // new level animation (includes new game music if applicable)
-        if(GameManager.getInstance().getGameState() == GameState.STARTING) // new game
+        if(GameManager.getInstance().isGameStarting()) // new game
         {
             // play game start music
             Music beginningMusic = GameManager.getInstance().getAssetManager().get(FilePathConstants.MUSIC_BEGINNING_PATH, Music.class);
@@ -117,7 +129,6 @@ public class Level
 
     private void startLevel()
     {
-        GameManager.getInstance().setGameState(GameState.IN_PROGRESS);
         readyActor.remove();
 
         this.worldBuilder.addPlayer();
@@ -129,6 +140,8 @@ public class Level
 
         long time = TimeUnit.MILLISECONDS.convert(DisplayConstants.BONUS_NUGGET_SPAWN_TIME, TimeUnit.SECONDS);
         new Timer().scheduleAtFixedRate(addBonusNuggetTask, time, time);
+
+        GameManager.getInstance().setGameInProgressNormal();
     }
 
     private void addLivesActors()
@@ -213,18 +226,6 @@ public class Level
         }
 
         return new TextureRegion(GameManager.getInstance().getTextureAtlas().findRegion("items"), texturePosition * ASSET_SIZE, 0, ASSET_SIZE, ASSET_SIZE);
-    }
-
-    public void update()
-    {
-        if(GameManager.getInstance().getScore() >= PointConstants.POINTS_FOR_EXTRA_LIFE && !GameManager.getInstance().isExtraLifeEarned())
-        {
-            GameManager.getInstance().addLife();
-            GameManager.getInstance().getAssetManager().get(FilePathConstants.SOUND_EXTRA_LIFE_PATH, Sound.class).play();
-            addLivesActor(GameManager.getInstance().getLivesLeft());
-            GameManager.getInstance().setExtraLifeEarned();
-        }
-        this.scoreActor.update();
     }
 
     private void addBonusNugget()

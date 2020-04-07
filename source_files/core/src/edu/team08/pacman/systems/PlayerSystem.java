@@ -49,8 +49,8 @@ public class PlayerSystem extends IteratingSystem
 
         if (!playerComponent.isAlive() && !GameManager.getInstance().isLevelEnded())
         {
-            // decrease lives left and end level
-            GameManager.getInstance().decreaseLivesLeft(); // TODO can prob do this in contact listener
+            // kill pac-man
+            GameManager.getInstance().endLevelPacManDead(); // TODO can prob do this in contact listener
         } else
         {
             // move the entity on keypress and apply constant velocity without keypress based on state
