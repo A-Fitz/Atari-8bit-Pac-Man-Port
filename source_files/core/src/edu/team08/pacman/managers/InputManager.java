@@ -8,6 +8,7 @@
 package edu.team08.pacman.managers;
 
 import com.badlogic.gdx.InputProcessor;
+import edu.team08.pacman.states.GameState;
 
 import java.util.ArrayList;
 
@@ -63,14 +64,17 @@ public class InputManager implements InputProcessor
     }
 
     /**
-     * isKeyPressed: Check state of supplied keys
+     * isKeyPressed: Check state of supplied keys. Does not allow movement when game not in progress (weird coupling)
      *
      * @param key int
      * @return boolean
      */
     public boolean isKeyPressed(int key)
     {
-        return keyStates.get(key).pressed;
+        if(GameManager.getInstance().getGameState() != GameState.IN_PROGRESS)
+            return false;
+        else
+            return keyStates.get(key).pressed;
     }
 
     /**

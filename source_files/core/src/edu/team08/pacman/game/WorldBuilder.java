@@ -10,6 +10,7 @@ import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.utils.Array;
@@ -207,11 +208,12 @@ public class WorldBuilder
         circleShape.dispose();
 
         // set starting component values
-        textureComponent.setRegion(new TextureRegion(textureAtlas.findRegion("pacman"), 1 * ASSET_SIZE, 0, ASSET_SIZE, ASSET_SIZE));
+        textureComponent.setRegion(new TextureRegion(textureAtlas.findRegion("pacman"), 2 * ASSET_SIZE, 0, ASSET_SIZE, ASSET_SIZE));
         bodyComponent.setBody(playerBody);
         bodyComponent.setSpeed(getPlayerSpeedForLevel(GameManager.getInstance().getLevel()));
         transformComponent.setPosition(rectangle.x, rectangle.y);
-        stateComponent.setState(EntityState.START);
+        stateComponent.setState(EntityState.MOVING_LEFT);
+        bodyComponent.getBody().setLinearVelocity(MathUtils.lerp(bodyComponent.getBody().getLinearVelocity().x, -bodyComponent.getSpeed(), 1), 0);
 
         // add components
         playerEntity.add(bodyComponent);
@@ -246,10 +248,10 @@ public class WorldBuilder
         Animation<TextureRegion> animation;
         float frameDuration = DisplayConstants.PACMAN_ANIMATION_TIME;
 
-        // start (same as idle right)
-        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 1 * ASSET_SIZE, 0, ASSET_SIZE, ASSET_SIZE));
+        // start
+        keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), 0 * ASSET_SIZE, 0, ASSET_SIZE, ASSET_SIZE));
         animation = new Animation<>(1f, keyFrames);
-        animationComponent.addAnimation(EntityState.START, animation);
+        animationComponent.addAnimation(EntityState.FROZEN, animation);
         keyFrames.clear();
 
         // idle

@@ -152,7 +152,7 @@ public class GameManager implements Disposable
         if (potentialLivesLeft <= 0)
         {
             this.game.setLivesLeft(0);
-            this.game.setGameState(GameState.ENDING);
+            this.game.setGameState(GameState.ENDED);
         } else
         {
             this.game.setLivesLeft(potentialLivesLeft);
@@ -163,7 +163,7 @@ public class GameManager implements Disposable
 
     public boolean isGameEnding()
     {
-        return this.game.getGameState() == GameState.ENDING;
+        return this.game.getGameState() == GameState.ENDED;
     }
 
     public GameState getGameState()

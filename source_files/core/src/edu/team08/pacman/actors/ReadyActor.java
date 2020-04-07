@@ -7,16 +7,17 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import edu.team08.pacman.constants.DisplayConstants;
 import edu.team08.pacman.constants.FilePathConstants;
 import edu.team08.pacman.managers.GameManager;
 
-public class ScoreActor extends Actor
+public class ReadyActor extends Actor
 {
     private Label scoreLabel;
     private FreeTypeFontGenerator freeTypeFontGenerator;
     private FreeTypeFontGenerator.FreeTypeFontParameter freeTypeFontParameter;
     private BitmapFont bitmapFont;
-    public ScoreActor(float x, float y)
+    public ReadyActor(float x, float y)
     {
         freeTypeFontGenerator = new FreeTypeFontGenerator(Gdx.files.internal(FilePathConstants.FONT_PATH));
         freeTypeFontParameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
@@ -27,16 +28,26 @@ public class ScoreActor extends Actor
 
         bitmapFont = freeTypeFontGenerator.generateFont(freeTypeFontParameter);
 
-        Label.LabelStyle labelStyle = new Label.LabelStyle(bitmapFont, Color.WHITE);
-        scoreLabel = new Label("0", labelStyle);
+        Label.LabelStyle labelStyle = new Label.LabelStyle(bitmapFont, Color.valueOf(DisplayConstants.READY_ACTOR_TEXT_COLOR));
+        scoreLabel = new Label("READY!", labelStyle);
         scoreLabel.setPosition(x, y);
         setBounds(scoreLabel.getX(), scoreLabel.getY(), scoreLabel.getWidth(), scoreLabel.getHeight());
     }
 
-    public void update()
+    public void update(float x, float y)
     {
-        scoreLabel.setText(GameManager.getInstance().getScore());
+        scoreLabel.setPosition(x, y);
         setBounds(scoreLabel.getX(), scoreLabel.getY(), scoreLabel.getWidth(), scoreLabel.getHeight());
+    }
+
+    public float getX()
+    {
+        return scoreLabel.getX();
+    }
+
+    public float getY()
+    {
+        return scoreLabel.getY();
     }
 
     @Override

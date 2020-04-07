@@ -2,6 +2,8 @@ package edu.team08.pacman.game;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapLayer;
@@ -12,8 +14,10 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.physics.box2d.*;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Timer.*;
 import edu.team08.pacman.GameContactListener;
 import edu.team08.pacman.Util;
+import edu.team08.pacman.actors.ReadyActor;
 import edu.team08.pacman.components.BodyComponent;
 import edu.team08.pacman.components.BonusNuggetComponent;
 import edu.team08.pacman.components.TextureComponent;
@@ -22,6 +26,8 @@ import edu.team08.pacman.constants.*;
 import edu.team08.pacman.managers.GameManager;
 import edu.team08.pacman.actors.GameInfoActor;
 import edu.team08.pacman.actors.ScoreActor;
+import edu.team08.pacman.managers.InputManager;
+import edu.team08.pacman.states.GameState;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -38,6 +44,9 @@ public class Level
     private WorldBuilder worldBuilder;
 
     private ScoreActor scoreActor;
+    private ReadyActor readyActor;
+
+    private List<GameInfoActor> liveActorsList;
 
     private TimerTask addBonusNuggetTask = new TimerTask()
     {
@@ -57,6 +66,8 @@ public class Level
         this.bonusNuggetRectangles = new ArrayList<>();
         this.worldBuilder = new WorldBuilder(this.tiledMap, this.engine, this.world);
 
+        this.liveActorsList = new ArrayList<>();
+
         this.world.setContactListener(new GameContactListener());
     }
 
@@ -64,12 +75,52 @@ public class Level
     {
         this.worldBuilder.addWalls();
         this.worldBuilder.addPills();
-        this.worldBuilder.addPlayer();
-        //this.worldBuilder.createGhosts();
+
         getBonusNuggetRectangles();
         addBonusNuggetActors();
         addScoreActor();
         addLivesActors();
+
+        readyActor = new ReadyActor(DisplayConstants.READY_ACTOR_X_POS, DisplayConstants.READY_ACTOR_Y_POS);
+        stage.addActor(readyActor);
+        // new level animation (includes new game music if applicable)
+        if(GameManager.getInstance().getLevel() == 1) // new game
+        {
+            // play game start music
+            Music beginningMusic = GameManager.getInstance().getAssetManager().get(FilePathConstants.MUSIC_BEGINNING_PATH, Music.class);
+            beginningMusic.play();
+
+            // allow game start when game music stops
+            beginningMusic.setOnCompletionListener(new Music.OnCompletionListener() {
+                @Override
+                public void onCompletion(Music music) {
+                    startLevel();
+                }
+            });
+
+        } else
+        {
+            // start level after time
+            com.badlogic.gdx.utils.Timer.schedule(new Task(){
+                @Override
+                public void run() {
+                    startLevel();
+                }
+            }, DisplayConstants.READY_ACTOR_DISPLAY_TIME);
+        }
+    }
+
+    private void startLevel()
+    {
+        GameManager.getInstance().setGameState(GameState.IN_PROGRESS);
+        readyActor.remove();
+
+        this.worldBuilder.addPlayer();
+        //this.worldBuilder.createGhosts();
+
+        GameInfoActor lastLifeActor = this.liveActorsList.get(this.liveActorsList.size()-1);
+        this.liveActorsList.remove(lastLifeActor);
+        lastLifeActor.remove();
 
         long time = TimeUnit.MILLISECONDS.convert(DisplayConstants.BONUS_NUGGET_SPAWN_TIME, TimeUnit.SECONDS);
         new Timer().scheduleAtFixedRate(addBonusNuggetTask, time, time);
@@ -77,7 +128,8 @@ public class Level
 
     private void addLivesActors()
     {
-        for (int i = 1; i <= GameManager.getInstance().getLivesLeft(); i++)
+        // we do +1 for condition as the level starts with one extra life actor shown, and it is removed in startLevel after intro
+        for (int i = 1; i <= GameManager.getInstance().getLivesLeft()+1; i++)
         {
             addLivesActor(i);
         }
@@ -89,6 +141,7 @@ public class Level
         GameInfoActor livesActor = new GameInfoActor(textureRegion,
                 DisplayConstants.GAME_INFO_ACTOR_LEFT_X_POS + ((lifeNumber-1) * ASSET_SIZE) + ((ASSET_SIZE / 2) * (lifeNumber-1)),
                 DisplayConstants.GAME_INFO_ACTOR_LOWER_Y_POS);
+        this.liveActorsList.add(livesActor);
         stage.addActor(livesActor);
     }
 

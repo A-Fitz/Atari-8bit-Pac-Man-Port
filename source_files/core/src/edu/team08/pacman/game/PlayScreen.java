@@ -19,6 +19,7 @@ import edu.team08.pacman.constants.DisplayConstants;
 import edu.team08.pacman.constants.FilePathConstants;
 import edu.team08.pacman.managers.GameManager;
 import edu.team08.pacman.managers.InputManager;
+import edu.team08.pacman.states.GameState;
 import edu.team08.pacman.systems.*;
 
 import static edu.team08.pacman.constants.DisplayConstants.ASSET_SIZE;
@@ -56,23 +57,13 @@ public class PlayScreen implements Screen
         // create level
         newLevel();
 
-        // pause and play game start sound
-        Music beginningMusic = GameManager.getInstance().getAssetManager().get(FilePathConstants.MUSIC_BEGINNING_PATH, Music.class);
-        beginningMusic.play();
-
-        // allow controls when game music stops
-        beginningMusic.setOnCompletionListener(new Music.OnCompletionListener() {
-            @Override
-            public void onCompletion(Music aMusic) {
-                // set the input controller
-                Gdx.input.setInputProcessor(InputManager.getInstance());
-            }
-        });
-
+        // set input manager
+        Gdx.input.setInputProcessor(InputManager.getInstance());
     }
 
     private void newLevel()
     {
+        GameManager.getInstance().setGameState(GameState.IN_TRANSITION);
         GameManager.getInstance().newLevel();
 
         // setup SpriteBatch and camera
