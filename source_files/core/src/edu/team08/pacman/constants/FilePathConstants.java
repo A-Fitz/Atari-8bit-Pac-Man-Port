@@ -8,7 +8,7 @@ public class FilePathConstants {
 
     public static final String SOUND_DEATH_PATH = "sounds/death.ogg";
     public static final String SOUND_EAT_PILL_PATH = "sounds/chomp.ogg";
-    public static final String SOUND_EAT_GHOST_PATH = "sounds/eatfruit.ogg";
+    public static final String SOUND_EAT_GHOST_PATH = "sounds/eatghost.ogg";
     public static final String SOUND_EAT_FRUIT_PATH = "sounds/eatfruit.ogg";
     public static final String MUSIC_BEGINNING_PATH = "sounds/beginning.ogg";
     public static final String SOUND_EXTRA_LIFE_PATH = "sounds/extrapac.ogg";

@@ -65,7 +65,7 @@ public class Level
         this.worldBuilder.addWalls();
         this.worldBuilder.addPills();
         this.worldBuilder.addPlayer();
-        this.worldBuilder.createGhosts();
+        //this.worldBuilder.createGhosts();
         getBonusNuggetRectangles();
         addBonusNuggetActors();
         addScoreActor();
