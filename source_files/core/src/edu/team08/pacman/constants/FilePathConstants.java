@@ -6,7 +6,7 @@ public class FilePathConstants {
 
     public static final String FONT_PATH = "font/game_font.ttf";
 
-    public static final String SOUND_DEATH_PATH = "sounds/death.ogg";
+    public static final String MUSIC_DEATH_PATH = "sounds/death.ogg";
     public static final String SOUND_EAT_PILL_PATH = "sounds/chomp.ogg";
     public static final String SOUND_EAT_GHOST_PATH = "sounds/eatghost.ogg";
     public static final String SOUND_EAT_FRUIT_PATH = "sounds/eatfruit.ogg";

@@ -17,7 +17,6 @@ public class GameManager implements Disposable
 
     private static final GameManager instance = new GameManager();
 
-    private boolean isBigPillEaten;
     private Game game;
     private AssetManager assetManager;
     private TextureAtlas textureAtlas;
@@ -28,14 +27,13 @@ public class GameManager implements Disposable
         this.assetManager = new AssetManager();
         this.assetManager.load(FilePathConstants.SPRITES_PATH, TextureAtlas.class);
         this.assetManager.load(FilePathConstants.MUSIC_BEGINNING_PATH, Music.class);
-        this.assetManager.load(FilePathConstants.SOUND_DEATH_PATH, Sound.class);
+        this.assetManager.load(FilePathConstants.MUSIC_DEATH_PATH, Music.class);
         this.assetManager.load(FilePathConstants.SOUND_EAT_FRUIT_PATH, Sound.class);
         this.assetManager.load(FilePathConstants.SOUND_EAT_GHOST_PATH, Sound.class);
         this.assetManager.load(FilePathConstants.SOUND_EAT_PILL_PATH, Sound.class);
         this.assetManager.load(FilePathConstants.SOUND_EXTRA_LIFE_PATH, Sound.class);
         this.assetManager.finishLoading();
         this.textureAtlas = assetManager.get(FilePathConstants.SPRITES_PATH, TextureAtlas.class);
-        this.isBigPillEaten = false;
     }
 
     public static GameManager getInstance()
@@ -68,9 +66,25 @@ public class GameManager implements Disposable
         this.game.setTotalPills(this.game.getTotalPills() - 1);
     }
 
-    public boolean isBigPillEaten() { return isBigPillEaten; }
+    public boolean isPacManKilled()
+    {
+        return this.game.isPacManKilled();
+    }
 
-    public void setBigPillEaten(boolean bigPillEaten) { isBigPillEaten = bigPillEaten; }
+    public void setPacManKilled(boolean pacManKilled)
+    {
+        this.game.setPacManKilled(pacManKilled);
+    }
+
+    public boolean isBigPillEaten()
+    {
+        return this.game.isBigPillEaten();
+    }
+
+    public void setBigPillEaten(boolean bigPillEaten)
+    {
+        this.game.setBigPillEaten(bigPillEaten);
+    }
 
     public int getScore()
     {
@@ -101,7 +115,9 @@ public class GameManager implements Disposable
     {
         this.game.setLevelEnded(false);
         this.game.setTotalPills(0);
-        this.game.setLevel(this.game.getLevel() + 1);
+        if(!this.game.isPacManKilled())
+            this.game.setLevel(this.game.getLevel() + 1);
+        this.game.setPacManKilled(false);
     }
 
     public AssetManager getAssetManager()
@@ -143,27 +159,26 @@ public class GameManager implements Disposable
     }
 
     /**
-     * Happens when Pac-Man is killed. Please add some wait timer before calling this so we can see the death animation.
+     * Happens when Pac-Man is killed.
      */
     public void decreaseLivesLeft()
     {
-        int potentialLivesLeft = this.game.getLivesLeft() - 1;
+        if(!this.isLevelEnded())
+        {
+            int potentialLivesLeft = this.game.getLivesLeft() - 1;
 
-        if (potentialLivesLeft <= 0)
-        {
-            this.game.setLivesLeft(0);
-            this.game.setGameState(GameState.ENDED);
-        } else
-        {
-            this.game.setLivesLeft(potentialLivesLeft);
+            if (potentialLivesLeft <= 0)
+            {
+                this.game.setLivesLeft(0);
+                this.game.setGameState(GameState.ENDED);
+            } else
+            {
+                this.game.setLivesLeft(potentialLivesLeft);
+            }
+
+            this.game.setPacManKilled(true);
+            this.game.setLevelEnded(true);
         }
-
-        this.game.setLevelEnded(true);
-    }
-
-    public boolean isGameEnding()
-    {
-        return this.game.getGameState() == GameState.ENDED;
     }
 
     public GameState getGameState()

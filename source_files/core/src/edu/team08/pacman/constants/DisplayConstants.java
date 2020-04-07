@@ -7,6 +7,7 @@ public class DisplayConstants
     public static final int MAX_BONUS_NUGGET_LEVEL_MARKERS_IN_STAGE = 6;
     public static final String READY_ACTOR_TEXT_COLOR = "#A18D34";
     public static final float READY_ACTOR_DISPLAY_TIME = 3.0f; // in seconds
+    public static final float END_LEVEL_DISPLAY_TIME = 4.0f; // in seconds
 
     /* Display Positions and Scale */
     public static final float READY_ACTOR_X_POS = 148;

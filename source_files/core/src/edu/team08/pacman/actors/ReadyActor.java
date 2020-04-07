@@ -34,12 +34,6 @@ public class ReadyActor extends Actor
         setBounds(scoreLabel.getX(), scoreLabel.getY(), scoreLabel.getWidth(), scoreLabel.getHeight());
     }
 
-    public void update(float x, float y)
-    {
-        scoreLabel.setPosition(x, y);
-        setBounds(scoreLabel.getX(), scoreLabel.getY(), scoreLabel.getWidth(), scoreLabel.getHeight());
-    }
-
     public float getX()
     {
         return scoreLabel.getX();

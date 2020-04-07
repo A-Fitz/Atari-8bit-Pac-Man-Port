@@ -65,7 +65,9 @@ public class GameContactListener implements ContactListener
         Entity entity = (Entity) body.getUserData();
         PillComponent pillComponent = pillComponentMapper.get(entity);
         pillComponent.setEaten(true);
-        GameManager.getInstance().setBigPillEaten(pillComponent.isBig());
+
+        if(pillComponent.isBig())
+            GameManager.getInstance().setBigPillEaten(true);
     }
 
     @Override

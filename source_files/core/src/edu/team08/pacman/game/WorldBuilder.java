@@ -307,7 +307,7 @@ public class WorldBuilder
         {
             keyFrames.add(new TextureRegion(textureAtlas.findRegion("pacman"), i * ASSET_SIZE, 0, ASSET_SIZE, ASSET_SIZE));
         }
-        animation = new Animation<>(frameDuration, keyFrames, Animation.PlayMode.LOOP);
+        animation = new Animation<>(frameDuration, keyFrames, Animation.PlayMode.NORMAL);
         animationComponent.addAnimation(EntityState.DYING, animation);
     }
 

@@ -13,6 +13,7 @@ import edu.team08.pacman.components.StateComponent;
 import edu.team08.pacman.managers.GameManager;
 import edu.team08.pacman.managers.InputManager;
 import edu.team08.pacman.states.EntityState;
+import edu.team08.pacman.states.GameState;
 
 /**
  * Manages control and livelihood of player.
@@ -40,9 +41,16 @@ public class PlayerSystem extends IteratingSystem
         StateComponent stateComponent = stateComponentMapper.get(entity);
         PlayerComponent playerComponent = playerComponentMapper.get(entity);
 
-        if (!playerComponent.isAlive())
+        if(GameManager.getInstance().isLevelEnded())
         {
-            GameManager.getInstance().decreaseLivesLeft();
+            setXVelocity(bodyComponent, 0);
+            setYVelocity(bodyComponent, 0);
+        }
+
+        if (!playerComponent.isAlive() && !GameManager.getInstance().isLevelEnded())
+        {
+            // decrease lives left and end level
+            GameManager.getInstance().decreaseLivesLeft(); // TODO can prob do this in contact listener
         } else
         {
             // move the entity on keypress and apply constant velocity without keypress based on state

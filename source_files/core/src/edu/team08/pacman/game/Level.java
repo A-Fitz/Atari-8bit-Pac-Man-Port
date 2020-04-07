@@ -2,6 +2,8 @@ package edu.team08.pacman.game;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
@@ -18,15 +20,13 @@ import com.badlogic.gdx.utils.Timer.*;
 import edu.team08.pacman.GameContactListener;
 import edu.team08.pacman.Util;
 import edu.team08.pacman.actors.ReadyActor;
-import edu.team08.pacman.components.BodyComponent;
-import edu.team08.pacman.components.BonusNuggetComponent;
-import edu.team08.pacman.components.TextureComponent;
-import edu.team08.pacman.components.TransformComponent;
+import edu.team08.pacman.components.*;
 import edu.team08.pacman.constants.*;
 import edu.team08.pacman.managers.GameManager;
 import edu.team08.pacman.actors.GameInfoActor;
 import edu.team08.pacman.actors.ScoreActor;
 import edu.team08.pacman.managers.InputManager;
+import edu.team08.pacman.states.EntityState;
 import edu.team08.pacman.states.GameState;
 
 import java.util.*;
@@ -81,10 +81,16 @@ public class Level
         addScoreActor();
         addLivesActors();
 
+        startOfLevelAnimation();
+    }
+
+    private void startOfLevelAnimation()
+    {
         readyActor = new ReadyActor(DisplayConstants.READY_ACTOR_X_POS, DisplayConstants.READY_ACTOR_Y_POS);
         stage.addActor(readyActor);
+
         // new level animation (includes new game music if applicable)
-        if(GameManager.getInstance().getLevel() == 1) // new game
+        if(GameManager.getInstance().getGameState() == GameState.STARTING) // new game
         {
             // play game start music
             Music beginningMusic = GameManager.getInstance().getAssetManager().get(FilePathConstants.MUSIC_BEGINNING_PATH, Music.class);
@@ -97,7 +103,6 @@ public class Level
                     startLevel();
                 }
             });
-
         } else
         {
             // start level after time
@@ -128,8 +133,7 @@ public class Level
 
     private void addLivesActors()
     {
-        // we do +1 for condition as the level starts with one extra life actor shown, and it is removed in startLevel after intro
-        for (int i = 1; i <= GameManager.getInstance().getLivesLeft()+1; i++)
+        for (int i = 1; i <= GameManager.getInstance().getLivesLeft(); i++)
         {
             addLivesActor(i);
         }
@@ -219,10 +223,6 @@ public class Level
             GameManager.getInstance().getAssetManager().get(FilePathConstants.SOUND_EXTRA_LIFE_PATH, Sound.class).play();
             addLivesActor(GameManager.getInstance().getLivesLeft());
             GameManager.getInstance().setExtraLifeEarned();
-        }
-        else if (GameManager.getInstance().getTotalPills() <= 0)
-        {
-            GameManager.getInstance().endLevel();
         }
         this.scoreActor.update();
     }

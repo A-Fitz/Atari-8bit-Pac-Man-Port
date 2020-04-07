@@ -12,6 +12,8 @@ public class Game
     private int livesLeft;
     private GameState gameState;
     private boolean extraLifeEarned;
+    private boolean isBigPillEaten;
+    private boolean pacManKilled;
 
     public Game()
     {
@@ -20,8 +22,30 @@ public class Game
         this.level = 0;
         this.levelEnded = false;
         this.livesLeft = GameConstants.STARTING_LIVES;
-        this.gameState = GameState.IN_PROGRESS;
+        this.gameState = GameState.STARTING;
         this.extraLifeEarned = false;
+        this.isBigPillEaten = false;
+        this.pacManKilled = false;
+    }
+
+    public boolean isBigPillEaten()
+    {
+        return isBigPillEaten;
+    }
+
+    public void setBigPillEaten(boolean bigPillEaten)
+    {
+        isBigPillEaten = bigPillEaten;
+    }
+
+    public boolean isPacManKilled()
+    {
+        return pacManKilled;
+    }
+
+    public void setPacManKilled(boolean pacManKilled)
+    {
+        this.pacManKilled = pacManKilled;
     }
 
     public boolean isExtraLifeEarned()

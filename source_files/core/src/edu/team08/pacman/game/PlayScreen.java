@@ -1,9 +1,13 @@
 package edu.team08.pacman.game;
 
 import com.badlogic.ashley.core.Engine;
+import com.badlogic.ashley.core.Entity;
+import com.badlogic.ashley.core.Family;
+import com.badlogic.ashley.utils.ImmutableArray;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -11,14 +15,21 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Box2DDebugRenderer;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import edu.team08.pacman.components.BodyComponent;
+import edu.team08.pacman.components.PillComponent;
+import edu.team08.pacman.components.PlayerComponent;
+import edu.team08.pacman.components.StateComponent;
 import edu.team08.pacman.constants.DisplayConstants;
 import edu.team08.pacman.constants.FilePathConstants;
 import edu.team08.pacman.managers.GameManager;
 import edu.team08.pacman.managers.InputManager;
+import edu.team08.pacman.states.EntityState;
 import edu.team08.pacman.states.GameState;
 import edu.team08.pacman.systems.*;
 
@@ -63,7 +74,9 @@ public class PlayScreen implements Screen
 
     private void newLevel()
     {
-        GameManager.getInstance().setGameState(GameState.IN_TRANSITION);
+        if(GameManager.getInstance().getGameState() != GameState.STARTING)
+            GameManager.getInstance().setGameState(GameState.IN_TRANSITION);
+
         GameManager.getInstance().newLevel();
 
         // setup SpriteBatch and camera
@@ -79,10 +92,10 @@ public class PlayScreen implements Screen
         engine.addSystem(new PhysicsSystem(world));
         engine.addSystem(new RenderSystem(batch, camera));
         engine.addSystem(new PlayerSystem());
-        engine.addSystem(new AnimationSystem());
         engine.addSystem(new PillSystem());
         engine.addSystem(new StateSystem());
         engine.addSystem(new BonusNuggetSystem());
+        engine.addSystem(new AnimationSystem());
 
         // build map and world
         tiledMap = new TmxMapLoader().load(FilePathConstants.TILEDMAP_PATH);
@@ -110,13 +123,70 @@ public class PlayScreen implements Screen
         engine.update(delta);
         stage.draw();
 
-        if (GameManager.getInstance().isGameEnding())
+        checkEndOfLevelConditions();
+
+        if (GameManager.getInstance().getGameState() == GameState.ENDED)
         {
             // TODO end game screen
             System.exit(0);
-        } else if (GameManager.getInstance().isLevelEnded())
+        } else if (GameManager.getInstance().isLevelEnded() && GameManager.getInstance().getGameState() == GameState.IN_PROGRESS)
         {
-            newLevel();
+            GameManager.getInstance().setGameState(GameState.IN_TRANSITION); // used to do this if statement only once
+            endLevel();
+        }
+    }
+
+    public void endLevel()
+    {
+        // failure animation
+        if(GameManager.getInstance().isPacManKilled())
+        {
+            // TODO remove ghost entities
+
+            Entity player = engine.getEntitiesFor(Family.all(PlayerComponent.class).get()).get(0);
+            player.getComponent(StateComponent.class).setState(EntityState.DYING);
+            player.getComponent(PlayerComponent.class).setAlive(false); // TODO do this in contact listener for ghost/player contact
+
+            GameManager.getInstance().getAssetManager().get(FilePathConstants.MUSIC_DEATH_PATH, Music.class).play();
+            com.badlogic.gdx.utils.Timer.schedule(new Timer.Task(){
+                @Override
+                public void run() {
+                    newLevel();
+                }
+            }, DisplayConstants.END_LEVEL_DISPLAY_TIME);
+        } else // success animation
+        {
+            // TODO remove ghost entities
+
+            // remove pill entities
+            ImmutableArray<Entity> pillEntities = engine.getEntitiesFor(Family.all(PillComponent.class).get());
+            for(Entity pillEntity : pillEntities)
+            {
+                Body body = pillEntity.getComponent(BodyComponent.class).getBody();
+                body.getWorld().destroyBody(body);
+                engine.removeEntity(pillEntity);
+            }
+
+            Entity player = engine.getEntitiesFor(Family.all(PlayerComponent.class).get()).get(0);
+            player.getComponent(StateComponent.class).setState(EntityState.FROZEN);
+
+            // TODO flash the tiledmap somehow
+
+            // wait time
+            com.badlogic.gdx.utils.Timer.schedule(new Timer.Task(){
+                @Override
+                public void run() {
+                    newLevel();
+                }
+            }, DisplayConstants.END_LEVEL_DISPLAY_TIME);
+        }
+    }
+
+    private void checkEndOfLevelConditions()
+    {
+        if (GameManager.getInstance().getTotalPills() <= 0)
+        {
+            GameManager.getInstance().endLevel();
         }
     }
 
