@@ -1,6 +1,6 @@
 package edu.team08.pacman.constants;
 
-import edu.team08.pacman.BonusNuggetType;
+import edu.team08.pacman.game.BonusNuggetType;
 
 import java.util.HashMap;
 

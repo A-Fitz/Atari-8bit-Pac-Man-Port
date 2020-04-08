@@ -64,17 +64,14 @@ public class InputManager implements InputProcessor
     }
 
     /**
-     * isKeyPressed: Check state of supplied keys. Does not allow movement when game not in progress (weird coupling)
+     * isKeyPressed: Check state of supplied keys.
      *
      * @param key int
      * @return boolean
      */
     public boolean isKeyPressed(int key)
     {
-        if(!GameManager.getInstance().isGameInProgress())
-            return false;
-        else
-            return keyStates.get(key).pressed;
+        return keyStates.get(key).pressed;
     }
 
     /**

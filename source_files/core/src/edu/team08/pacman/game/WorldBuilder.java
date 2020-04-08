@@ -259,7 +259,6 @@ public class WorldBuilder
     {
         if (level <= GameConstants.MAX_GAME_LEVELS)
         {
-            System.out.println(level);
             return MovementConstants.LEVEL_TO_PACMAN_SPEED_MAP.get(level);
         } else
         {

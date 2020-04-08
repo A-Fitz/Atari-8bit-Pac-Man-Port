@@ -1,23 +1,16 @@
 package edu.team08.pacman;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import edu.team08.pacman.game.PlayScreen;
+import com.badlogic.gdx.Gdx;
+import edu.team08.pacman.game.TitleScreen;
+import edu.team08.pacman.managers.InputManager;
 
 public class PacManGame extends Game
 {
-    private SpriteBatch batch;
-
     @Override
     public void create()
     {
-        batch = new SpriteBatch();
-        setScreen(new PlayScreen(batch));
-    }
-
-    @Override
-    public void dispose()
-    {
-        batch.dispose();
+        Gdx.input.setInputProcessor(InputManager.getInstance());
+        setScreen(new TitleScreen(this));
     }
 }

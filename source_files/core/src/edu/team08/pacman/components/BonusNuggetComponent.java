@@ -1,7 +1,7 @@
 package edu.team08.pacman.components;
 
 import com.badlogic.ashley.core.Component;
-import edu.team08.pacman.BonusNuggetType;
+import edu.team08.pacman.game.BonusNuggetType;
 import edu.team08.pacman.constants.DisplayConstants;
 
 public class BonusNuggetComponent implements Component

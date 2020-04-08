@@ -25,7 +25,6 @@ import edu.team08.pacman.constants.FilePathConstants;
 import edu.team08.pacman.managers.GameManager;
 import edu.team08.pacman.managers.InputManager;
 import edu.team08.pacman.states.EntityState;
-import edu.team08.pacman.states.GameState;
 import edu.team08.pacman.systems.*;
 
 import static edu.team08.pacman.constants.DisplayConstants.ASSET_SIZE;
@@ -44,11 +43,6 @@ public class PlayScreen implements Screen
     private World world;
     private Level level;
 
-    public PlayScreen(SpriteBatch batch)
-    {
-        this.batch = batch;
-    }
-
     @Override
     public void show()
     {
@@ -60,11 +54,7 @@ public class PlayScreen implements Screen
 
         stageViewport = new FitViewport(DisplayConstants.VIEWPORT_WIDTH * 20, DisplayConstants.VIEWPORT_HEIGHT * 20);
 
-        // create level
         newLevel();
-
-        // set input manager
-        Gdx.input.setInputProcessor(InputManager.getInstance());
     }
 
     private void newLevel()
@@ -102,7 +92,7 @@ public class PlayScreen implements Screen
     @Override
     public void render(float delta)
     {
-        // set background color, stop glitching on resize
+        // clears screen
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
