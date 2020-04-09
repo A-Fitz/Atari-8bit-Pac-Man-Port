@@ -1,3 +1,8 @@
+/**
+ * Class: Game
+ *
+ * Purpose: Manages the game's data
+ */
 package edu.team08.pacman.game;
 
 import edu.team08.pacman.constants.GameConstants;
@@ -12,6 +17,9 @@ public class Game
     private GameState gameState;
     private boolean extraLifeEarned;
 
+    /**
+     * Game() sets initial values
+     */
     public Game()
     {
         this.totalPills = 0;

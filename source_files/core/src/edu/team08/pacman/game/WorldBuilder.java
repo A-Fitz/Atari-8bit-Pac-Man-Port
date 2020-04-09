@@ -198,8 +198,7 @@ public class WorldBuilder
      */
     public void addPlayer()
     {
-        MapLayer playerLayer = this.mapLayers.get("player"); // player layer
-        for (MapObject mapObject : playerLayer.getObjects())
+        for (MapObject mapObject : this.mapLayers.get("player").getObjects())
         {
             Rectangle rectangle = ((RectangleMapObject) mapObject).getRectangle();
             Util.correctRectangle(rectangle);
@@ -336,101 +335,68 @@ public class WorldBuilder
     }
 
     /**
-     * createGhosts creates all the ghosts in PAC-MAN
+     * addGhosts creates all the ghosts in PAC-MAN
      */
-    public void createGhosts(){
-        MapLayer ghostLayer = mapLayers.get("Ghosts");
-        for(MapObject mapObject: ghostLayer.getObjects()){
+    public void addGhosts(){
+        for (MapObject mapObject : this.mapLayers.get("player").getObjects())
+        {
             Rectangle rectangle = ((RectangleMapObject) mapObject).getRectangle();
             Util.correctRectangle(rectangle);
-
-            //GameManager.getInstance().ghostSpwanPos.set(rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2);
-
-            for (int i = 0; i < 4; i++){
-                createGhost(rectangle.x + rectangle.width / 2, rectangle.y + rectangle.height / 2, i);
-            }
+            this.createGhost(rectangle);
         }
    }
 
     /**
      * createGhost creates a given ghost in PAC-MAN
      */
-   private void createGhost(float x, float y, int index) {
-       createGhostBody(x, y);
-       addGhostComponents();
-
-   }
-
-   private void addGhostComponents(){
-       Entity ghostEntity = new Entity();
-
+   private void createGhost(Rectangle rectangle) {
+       Entity playerEntity = new Entity();
+       // add components
        BodyComponent bodyComponent = new BodyComponent();
        TransformComponent transformComponent = new TransformComponent();
-       PlayerComponent ghostComponent = new PlayerComponent();
+       PlayerComponent playerComponent = new PlayerComponent();
        StateComponent stateComponent = new StateComponent();
        AnimationComponent animationComponent = new AnimationComponent();
        TextureComponent textureComponent = new TextureComponent();
 
-       ghostEntity.add(bodyComponent);
-       ghostEntity.add(transformComponent);
-       ghostEntity.add(ghostComponent);
-       ghostEntity.add(stateComponent);
-       ghostEntity.add(textureComponent);
-       createGhostAnimationKeyFrames(animationComponent, ghostEntity);
-   }
-
-   private void createGhostBody(float x, float y){
+       // create body
        BodyDef bodyDef = new BodyDef();
        bodyDef.type = BodyDef.BodyType.DynamicBody;
-       bodyDef.position.set(x, y);
-       Body body = world.createBody(bodyDef);
+       bodyDef.position.set(rectangle.x, rectangle.y);
+       Body playerBody = world.createBody(bodyDef);
        CircleShape circleShape = new CircleShape();
-       circleShape.setRadius(0.4f);
+       circleShape.setRadius(rectangle.width * DisplayConstants.MOVING_ENTITY_BODY_SCALE); // Player needs to be able to move, so the scale needs to be slightly smaller than the walls around it
        FixtureDef fixtureDef = new FixtureDef();
        fixtureDef.shape = circleShape;
-       fixtureDef.filter.maskBits = CategoryBitsConstants.GHOST_BITS;
-       fixtureDef.isSensor = true;
-       body.createFixture(fixtureDef);
+       fixtureDef.filter.categoryBits = CategoryBitsConstants.PLAYER_BITS;
+       playerBody.createFixture(fixtureDef);
        circleShape.dispose();
+
+       // set starting component values
+       textureComponent.setRegion(new TextureRegion(textureAtlas.findRegion("pacman"), 2 * ASSET_SIZE, 0, ASSET_SIZE, ASSET_SIZE));
+       bodyComponent.setBody(playerBody);
+       bodyComponent.setSpeed(getPlayerSpeedForLevel(GameManager.getInstance().getLevel()));
+       transformComponent.setPosition(rectangle.x, rectangle.y);
+       stateComponent.setState(EntityState.MOVING_LEFT);
+       bodyComponent.getBody().setLinearVelocity(MathUtils.lerp(bodyComponent.getBody().getLinearVelocity().x, -bodyComponent.getSpeed(), 1), 0);
+
+       // add components
+       playerEntity.add(bodyComponent);
+       playerEntity.add(transformComponent);
+       playerEntity.add(playerComponent);
+       playerEntity.add(stateComponent);
+       playerEntity.add(textureComponent);
+
+       // create and add animations
+       createPacManAnimationKeyFrames(animationComponent);
+       playerEntity.add(animationComponent);
+
+       // finish entity creation
+       bodyComponent.getBody().setUserData(playerEntity);
+       engine.addEntity(playerEntity);
    }
 
-   private void createGhostAnimationKeyFrames(AnimationComponent animationComponent, Entity ghostEntity){
-       Array<TextureRegion> keyFrames = new Array<>();
-       Animation<TextureRegion> animation;
-       float frameDuration = DisplayConstants.PACMAN_ANIMATION_TIME;
+   private void setGhostSpwanPoint(){
 
-       // move right
-       for (int i = 0; i < 2; i++) {
-           keyFrames.add(new TextureRegion(textureAtlas.findRegion("ghost"), 0, 0, ASSET_SIZE, ASSET_SIZE));
-       }
-       animation = new Animation<>(frameDuration, keyFrames, Animation.PlayMode.LOOP);
-       animationComponent.addAnimation(EntityState.MOVING_RIGHT, animation);
-       keyFrames.clear();
-
-       // move left
-       for (int i = 2; i < 4; i++) {
-           keyFrames.add(new TextureRegion(textureAtlas.findRegion("ghost"), 0, 0, ASSET_SIZE, ASSET_SIZE));
-       }
-       animation = new Animation<>(frameDuration, keyFrames, Animation.PlayMode.LOOP);
-       animationComponent.addAnimation(EntityState.MOVING_LEFT, animation);
-       keyFrames.clear();
-
-       // move up
-       for (int i = 4; i < 6; i++) {
-           keyFrames.add(new TextureRegion(textureAtlas.findRegion("ghost"), 0, 0, ASSET_SIZE, ASSET_SIZE));
-       }
-       animation = new Animation<>(frameDuration, keyFrames, Animation.PlayMode.LOOP);
-       animationComponent.addAnimation(EntityState.MOVING_UP, animation);
-       keyFrames.clear();
-
-       // move down
-       for (int i = 6; i < 8; i++) {
-           keyFrames.add(new TextureRegion(textureAtlas.findRegion("ghost"), 0, 0, ASSET_SIZE, ASSET_SIZE));
-       }
-       animation = new Animation<>(frameDuration, keyFrames, Animation.PlayMode.LOOP);
-       animationComponent.addAnimation(EntityState.MOVING_DOWN, animation);
-       keyFrames.clear();
-
-       ghostEntity.add(animationComponent);
-    }
+   }
 }

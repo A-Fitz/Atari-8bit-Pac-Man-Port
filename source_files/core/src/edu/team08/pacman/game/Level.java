@@ -1,3 +1,8 @@
+/**
+ * class: Level
+ *
+ * Purpose: Level contains all aspects of the game. (World and Game)
+ */
 package edu.team08.pacman.game;
 
 import com.badlogic.ashley.core.Engine;
@@ -127,12 +132,15 @@ public class Level
         }
     }
 
+    /**
+     * StartLevel: Adds the player and the ghosts to the world Along with some other stuff.
+     */
     private void startLevel()
     {
         readyActor.remove();
 
         this.worldBuilder.addPlayer();
-        //this.worldBuilder.createGhosts();
+        this.worldBuilder.addGhosts();
 
         GameInfoActor lastLifeActor = this.liveActorsList.get(this.liveActorsList.size()-1);
         this.liveActorsList.remove(lastLifeActor);
