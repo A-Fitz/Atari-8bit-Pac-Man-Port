@@ -33,10 +33,11 @@ public class PhysicsSystem extends IteratingSystem
     {
         super.update(deltaTime);
         // loop through entities and update positions
+        world.step(1 / 60f, 8, 3); // 60fps and recommended velocity/position iterations
         while (entityQueue.notEmpty())
         {
             Entity entity = entityQueue.removeFirst();
-            world.step(1 / 60f, 8, 3); // 60fps and recommended velocity/position iterations
+
             // get components
             TransformComponent transformComponent = transformComponentMapper.get(entity);
             BodyComponent bodyComponent = bodyComponentMapper.get(entity);
