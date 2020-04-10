@@ -53,7 +53,7 @@ public class TitleScreen implements Screen
 
         if (InputManager.getInstance().isKeyPressed(Input.Keys.SPACE))
         {
-            mainGame.setScreen(new PlayScreen());
+            mainGame.setScreen(new PlayScreen(mainGame));
         }
 
         camera.update();

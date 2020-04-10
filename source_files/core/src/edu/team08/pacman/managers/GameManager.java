@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.Disposable;
 import edu.team08.pacman.constants.FilePathConstants;
 import edu.team08.pacman.game.Game;
 import edu.team08.pacman.states.GameState;
+import edu.team08.pacman.states.PlayerState;
 
 /**
  * Maintains some resources and acts as an accessible interface for the Game class.
@@ -39,6 +40,11 @@ public class GameManager implements Disposable
     public static GameManager getInstance()
     {
         return instance;
+    }
+
+    public void newGame()
+    {
+        this.game = new Game();
     }
 
     public boolean isExtraLifeEarned()
@@ -91,15 +97,6 @@ public class GameManager implements Disposable
         this.game.setLevel(level);
     }
 
-    public void newLevel()
-    {
-        this.game.setTotalPills(0);
-        if (this.game.getGameState() == GameState.LEVEL_ENDED_PILLS_EATEN)
-        {
-            this.game.setLevel(this.game.getLevel() + 1);
-        }
-    }
-
     public AssetManager getAssetManager()
     {
         return this.assetManager;
@@ -128,18 +125,10 @@ public class GameManager implements Disposable
     /**
      * Happens when Pac-Man is killed.
      */
-    private void killPacMan()
+    public void killPacMan()
     {
-        int potentialLivesLeft = this.game.getLivesLeft() - 1;
-
-        if (potentialLivesLeft <= 0)
-        {
-            this.game.setLivesLeft(0);
-            this.game.setGameState(GameState.ENDED);
-        } else
-        {
-            this.game.setLivesLeft(potentialLivesLeft);
-        }
+        this.game.setLivesLeft(this.game.getLivesLeft() - 1);
+        this.game.setPlayerState(PlayerState.DEAD);
     }
 
     @Override
@@ -148,49 +137,33 @@ public class GameManager implements Disposable
         this.assetManager.dispose();
     }
 
-    public boolean isGameInProgress()
+    public void setGameState(GameState gameState)
     {
-        return (this.game.getGameState() == GameState.IN_PROGRESS_GHOST_FLASHING || this.game.getGameState() == GameState.IN_PROGRESS_NORMAL);
+        this.game.setGameState(gameState);
     }
 
-    public boolean isLevelEnded()
+    public void setPlayerState(PlayerState playerState)
     {
-        return (this.game.getGameState() == GameState.LEVEL_ENDED_PACMAN_DIED || this.game.getGameState() == GameState.LEVEL_ENDED_PILLS_EATEN);
+        this.game.setPlayerState(playerState);
     }
 
-    public boolean isPacManDead()
+    public GameState getGameState()
     {
-        return this.game.getGameState() == GameState.LEVEL_ENDED_PACMAN_DIED;
+        return this.game.getGameState();
     }
 
-    public boolean isGameEnded()
+    public PlayerState getPlayerState()
     {
-        return this.game.getGameState() == GameState.ENDED;
+        return this.game.getPlayerState();
     }
 
-    public boolean isGameStarting()
+    public boolean areGhostsFlashing()
     {
-        return this.game.getGameState() == GameState.STARTING;
+        return this.game.areGhostsFlashing();
     }
 
-    public void endLevelPillsEaten()
+    public void setGhostsFlashing(boolean ghostsFlashing)
     {
-        killPacMan();
-        this.game.setGameState(GameState.LEVEL_ENDED_PACMAN_DIED);
-    }
-
-    public void endLevelPacManDead()
-    {
-        this.game.setGameState(GameState.LEVEL_ENDED_PILLS_EATEN);
-    }
-
-    public void setGameInProgressNormal()
-    {
-        this.game.setGameState(GameState.IN_PROGRESS_NORMAL);
-    }
-
-    public void setGhostsFlashing()
-    {
-        this.game.setGameState(GameState.IN_PROGRESS_GHOST_FLASHING);
+        this.game.setGhostsFlashing(ghostsFlashing);
     }
 }

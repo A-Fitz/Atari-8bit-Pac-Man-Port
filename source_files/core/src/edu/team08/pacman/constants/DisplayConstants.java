@@ -5,13 +5,18 @@ import java.util.HashMap;
 public class DisplayConstants
 {
     public static final int MAX_BONUS_NUGGET_LEVEL_MARKERS_IN_STAGE = 6;
+
+    /* Start/End of level/game animation and text */
+    public static final int TEXT_ACTOR_FONT_SIZE = 30;
     public static final String READY_ACTOR_TEXT_COLOR = "#A18D34";
+    public static final String GAME_OVER_ACTOR_TEXT_COLOR = "#681B23";
     public static final float READY_ACTOR_DISPLAY_TIME = 3.0f; // in seconds
     public static final float END_LEVEL_DISPLAY_TIME = 4.0f; // in seconds
 
     /* Display Positions and Scale */
-    public static final float READY_ACTOR_X_POS = 148;
-    public static final float READY_ACTOR_Y_POS = 236.5f;
+    public static final float START_TEXT_ACTOR_X_POS = 148;
+    public static final float END_TEXT_ACTOR_X_POS = 128;
+    public static final float START_END_TEXT_ACTOR_Y_POS = 236.5f;
     public static final int GAME_INFO_ACTOR_RIGHT_X_POS = 352;
     public static final int GAME_INFO_ACTOR_LEFT_X_POS = 32;
     public static final int GAME_INFO_ACTOR_LOWER_Y_POS = 55;

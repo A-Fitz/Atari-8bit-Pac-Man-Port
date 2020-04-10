@@ -2,11 +2,9 @@ package edu.team08.pacman.game;
 
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
-import com.badlogic.ashley.core.Family;
-import com.badlogic.ashley.utils.ImmutableArray;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapLayers;
@@ -19,15 +17,14 @@ import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Timer.*;
 import edu.team08.pacman.GameContactListener;
 import edu.team08.pacman.Util;
-import edu.team08.pacman.actors.ReadyActor;
+import edu.team08.pacman.actors.TextActor;
 import edu.team08.pacman.components.*;
 import edu.team08.pacman.constants.*;
 import edu.team08.pacman.managers.GameManager;
 import edu.team08.pacman.actors.GameInfoActor;
 import edu.team08.pacman.actors.ScoreActor;
-import edu.team08.pacman.managers.InputManager;
-import edu.team08.pacman.states.EntityState;
 import edu.team08.pacman.states.GameState;
+import edu.team08.pacman.states.PlayerState;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
@@ -44,7 +41,7 @@ public class Level
     private WorldBuilder worldBuilder;
 
     private ScoreActor scoreActor;
-    private ReadyActor readyActor;
+    private TextActor readyActor;
 
     private List<GameInfoActor> liveActorsList;
 
@@ -98,11 +95,11 @@ public class Level
 
     private void startOfLevelAnimation()
     {
-        readyActor = new ReadyActor(DisplayConstants.READY_ACTOR_X_POS, DisplayConstants.READY_ACTOR_Y_POS);
+        readyActor = new TextActor(DisplayConstants.START_TEXT_ACTOR_X_POS, DisplayConstants.START_END_TEXT_ACTOR_Y_POS, "READY!", Color.valueOf(DisplayConstants.READY_ACTOR_TEXT_COLOR));
         stage.addActor(readyActor);
 
         // new level animation (includes new game music if applicable)
-        if(GameManager.getInstance().isGameStarting()) // new game
+        if(GameManager.getInstance().getLevel() == 1 && GameManager.getInstance().getLivesLeft() == GameConstants.STARTING_LIVES) // new game
         {
             // play game start music
             Music beginningMusic = GameManager.getInstance().getAssetManager().get(FilePathConstants.MUSIC_BEGINNING_PATH, Music.class);
@@ -141,7 +138,8 @@ public class Level
         long time = TimeUnit.MILLISECONDS.convert(DisplayConstants.BONUS_NUGGET_SPAWN_TIME, TimeUnit.SECONDS);
         new Timer().scheduleAtFixedRate(addBonusNuggetTask, time, time);
 
-        GameManager.getInstance().setGameInProgressNormal();
+        GameManager.getInstance().setPlayerState(PlayerState.ALIVE);
+        GameManager.getInstance().setGameState(GameState.IN_PROGRESS);
     }
 
     private void addLivesActors()
