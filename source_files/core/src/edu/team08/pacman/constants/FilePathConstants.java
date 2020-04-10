@@ -13,4 +13,5 @@ public class FilePathConstants {
     public static final String SOUND_EAT_FRUIT_PATH = "sounds/eatfruit.ogg";
     public static final String MUSIC_BEGINNING_PATH = "sounds/beginning.ogg";
     public static final String SOUND_EXTRA_LIFE_PATH = "sounds/extrapac.ogg";
+    public static final String SOUND_SIREN_PATH = "sounds/siren.ogg";
 }

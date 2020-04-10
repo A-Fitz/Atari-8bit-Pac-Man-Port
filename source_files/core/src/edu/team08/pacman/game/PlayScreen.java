@@ -46,7 +46,7 @@ public class PlayScreen implements Screen
     private Box2DDebugRenderer box2DDebugRenderer;
     private World world;
     private Level level;
-
+    private Music sirenMusic;
     private PacManGame mainGame;
 
     public PlayScreen(PacManGame mainGame)
@@ -74,7 +74,7 @@ public class PlayScreen implements Screen
         // setup SpriteBatch and camera
         batch = new SpriteBatch();
         batch.setProjectionMatrix(camera.combined);
-
+        sirenMusic = Gdx.audio.newMusic(Gdx.files.internal(FilePathConstants.SOUND_SIREN_PATH));
         // box2d
         world = new World(new Vector2(0, 0), true);
         stage = new Stage(stageViewport, batch);
@@ -114,6 +114,12 @@ public class PlayScreen implements Screen
         batch.setProjectionMatrix(camera.combined);
         engine.update(delta);
         stage.draw();
+
+        if (GameManager.getInstance().getGameState() == GameState.IN_PROGRESS && GameManager.getInstance().getPlayerState() == PlayerState.ALIVE)
+        {
+            sirenMusic.setLooping(true);
+            sirenMusic.play();
+        }
 
         if(GameManager.getInstance().getGameState() == GameState.IN_PROGRESS)
             checkEndOfLevelConditions();

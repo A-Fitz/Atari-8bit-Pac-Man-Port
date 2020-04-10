@@ -33,6 +33,7 @@ public class GameManager implements Disposable
         this.assetManager.load(FilePathConstants.SOUND_EAT_GHOST_PATH, Sound.class);
         this.assetManager.load(FilePathConstants.SOUND_EAT_PILL_PATH, Sound.class);
         this.assetManager.load(FilePathConstants.SOUND_EXTRA_LIFE_PATH, Sound.class);
+        this.assetManager.load(FilePathConstants.SOUND_SIREN_PATH, Sound.class);
         this.assetManager.finishLoading();
         this.textureAtlas = assetManager.get(FilePathConstants.SPRITES_PATH, TextureAtlas.class);
     }
