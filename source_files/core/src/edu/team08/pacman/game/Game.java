@@ -7,6 +7,7 @@ package edu.team08.pacman.game;
 
 import edu.team08.pacman.constants.GameConstants;
 import edu.team08.pacman.states.GameState;
+import edu.team08.pacman.states.PlayerState;
 
 public class Game
 {
@@ -15,7 +16,9 @@ public class Game
     private int level;
     private int livesLeft;
     private GameState gameState;
+    private PlayerState playerState;
     private boolean extraLifeEarned;
+    private boolean ghostsFlashing;
 
     /**
      * Game() sets initial values
@@ -26,8 +29,10 @@ public class Game
         this.score = 0;
         this.level = 1;
         this.livesLeft = GameConstants.STARTING_LIVES;
-        this.gameState = GameState.STARTING;
+        this.gameState = GameState.IN_TRANSITION;
+        this.playerState = PlayerState.ALIVE;
         this.extraLifeEarned = false;
+        this.ghostsFlashing = false;
     }
 
     public boolean isExtraLifeEarned()
@@ -88,5 +93,25 @@ public class Game
     public void setGameState(GameState gameState)
     {
         this.gameState = gameState;
+    }
+
+    public PlayerState getPlayerState()
+    {
+        return playerState;
+    }
+
+    public void setPlayerState(PlayerState playerState)
+    {
+        this.playerState = playerState;
+    }
+
+    public boolean areGhostsFlashing()
+    {
+        return ghostsFlashing;
+    }
+
+    public void setGhostsFlashing(boolean ghostsFlashing)
+    {
+        this.ghostsFlashing = ghostsFlashing;
     }
 }

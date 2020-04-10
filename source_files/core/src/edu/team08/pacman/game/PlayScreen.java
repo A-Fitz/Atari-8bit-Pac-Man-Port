@@ -6,6 +6,7 @@ import com.badlogic.ashley.core.Family;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.audio.Music;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -18,13 +19,16 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import edu.team08.pacman.PacManGame;
+import edu.team08.pacman.actors.TextActor;
 import edu.team08.pacman.components.PlayerComponent;
 import edu.team08.pacman.components.StateComponent;
 import edu.team08.pacman.constants.DisplayConstants;
 import edu.team08.pacman.constants.FilePathConstants;
 import edu.team08.pacman.managers.GameManager;
-import edu.team08.pacman.managers.InputManager;
 import edu.team08.pacman.states.EntityState;
+import edu.team08.pacman.states.GameState;
+import edu.team08.pacman.states.PlayerState;
 import edu.team08.pacman.systems.*;
 
 import static edu.team08.pacman.constants.DisplayConstants.ASSET_SIZE;
@@ -43,6 +47,14 @@ public class PlayScreen implements Screen
     private World world;
     private Level level;
 
+    private PacManGame mainGame;
+
+    public PlayScreen(PacManGame mainGame)
+    {
+        this.mainGame = mainGame;
+        GameManager.getInstance().newGame();
+    }
+
     @Override
     public void show()
     {
@@ -59,9 +71,6 @@ public class PlayScreen implements Screen
 
     private void newLevel()
     {
-
-        GameManager.getInstance().newLevel();
-
         // setup SpriteBatch and camera
         batch = new SpriteBatch();
         batch.setProjectionMatrix(camera.combined);
@@ -106,57 +115,60 @@ public class PlayScreen implements Screen
         engine.update(delta);
         stage.draw();
 
-        checkEndOfLevelConditions();
-
-        if (GameManager.getInstance().isGameEnded()) // end whole game
-        {
-            // TODO end game screen
-            System.exit(0);
-        }
-        else if (GameManager.getInstance().isLevelEnded()) // end level
-        {
-            endLevel();
-        }
+        if(GameManager.getInstance().getGameState() == GameState.IN_PROGRESS)
+            checkEndOfLevelConditions();
     }
 
-    public void endLevel()
-    {
-        // TODO remove ghost entities
 
-        if (GameManager.getInstance().isPacManDead())
+    private void checkEndOfLevelConditions()
+    {
+        if(GameManager.getInstance().getTotalPills() <= 0)
         {
+            GameManager.getInstance().setGameState(GameState.IN_TRANSITION);
+
+            // set player texture to full circle
+            Entity player = engine.getEntitiesFor(Family.all(PlayerComponent.class).get()).get(0);
+            player.getComponent(StateComponent.class).setState(EntityState.FROZEN);
+
+            // TODO flash the tiledmap somehow
+
+            com.badlogic.gdx.utils.Timer.schedule(new Timer.Task()
+            {
+                @Override
+                public void run()
+                {
+                    GameManager.getInstance().setLevel(GameManager.getInstance().getLevel() + 1);
+                    newLevel();
+                }
+            }, DisplayConstants.END_LEVEL_DISPLAY_TIME);
+        }
+        else if (GameManager.getInstance().getPlayerState() == PlayerState.DEAD)
+        {
+            GameManager.getInstance().setGameState(GameState.IN_TRANSITION);
+
             // start pac-man dying animation
             Entity player = engine.getEntitiesFor(Family.all(PlayerComponent.class).get()).get(0);
             player.getComponent(StateComponent.class).setState(EntityState.DYING);
             player.getComponent(PlayerComponent.class).setAlive(false); // TODO do this in contact listener for ghost/player contact
 
             GameManager.getInstance().getAssetManager().get(FilePathConstants.MUSIC_DEATH_PATH, Music.class).play();
-        }
-        else // pills all eaten
-        {
-            // set player texture to full circle
-            Entity player = engine.getEntitiesFor(Family.all(PlayerComponent.class).get()).get(0);
-            player.getComponent(StateComponent.class).setState(EntityState.FROZEN);
 
-            // TODO flash the tiledmap somehow
-        }
-
-        // wait time
-        com.badlogic.gdx.utils.Timer.schedule(new Timer.Task()
-        {
-            @Override
-            public void run()
+            // end game or make a new level
+            if(GameManager.getInstance().getLivesLeft() <= 0)
             {
-                newLevel();
+                stage.addActor(new TextActor(DisplayConstants.END_TEXT_ACTOR_X_POS, DisplayConstants.START_END_TEXT_ACTOR_Y_POS, "GAME OVER", Color.valueOf(DisplayConstants.GAME_OVER_ACTOR_TEXT_COLOR)));
             }
-        }, DisplayConstants.END_LEVEL_DISPLAY_TIME);
-    }
-
-    private void checkEndOfLevelConditions()
-    {
-        if (GameManager.getInstance().getTotalPills() <= 0)
-        {
-            GameManager.getInstance().endLevelPillsEaten();
+            else
+            {
+                com.badlogic.gdx.utils.Timer.schedule(new Timer.Task()
+                {
+                    @Override
+                    public void run()
+                    {
+                        newLevel();
+                    }
+                }, DisplayConstants.END_LEVEL_DISPLAY_TIME);
+            }
         }
     }
 
