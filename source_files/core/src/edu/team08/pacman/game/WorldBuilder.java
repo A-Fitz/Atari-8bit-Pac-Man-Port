@@ -338,7 +338,7 @@ public class WorldBuilder
      * addGhosts creates all the ghosts in PAC-MAN
      */
     public void addGhosts(){
-        for (MapObject mapObject : this.mapLayers.get("player").getObjects())
+        for (MapObject mapObject : this.mapLayers.get("ghost").getObjects())
         {
             Rectangle rectangle = ((RectangleMapObject) mapObject).getRectangle();
             Util.correctRectangle(rectangle);
@@ -354,7 +354,6 @@ public class WorldBuilder
        // add components
        BodyComponent bodyComponent = new BodyComponent();
        TransformComponent transformComponent = new TransformComponent();
-       PlayerComponent playerComponent = new PlayerComponent();
        StateComponent stateComponent = new StateComponent();
        AnimationComponent animationComponent = new AnimationComponent();
        TextureComponent textureComponent = new TextureComponent();
@@ -362,34 +361,29 @@ public class WorldBuilder
        // create body
        BodyDef bodyDef = new BodyDef();
        bodyDef.type = BodyDef.BodyType.DynamicBody;
-       bodyDef.position.set(rectangle.x, rectangle.y);
-       Body playerBody = world.createBody(bodyDef);
+       bodyDef.position.set(10.5f, 11.5f);
+       Body ghostBody = world.createBody(bodyDef);
        CircleShape circleShape = new CircleShape();
-       circleShape.setRadius(rectangle.width * DisplayConstants.MOVING_ENTITY_BODY_SCALE); // Player needs to be able to move, so the scale needs to be slightly smaller than the walls around it
        FixtureDef fixtureDef = new FixtureDef();
        fixtureDef.shape = circleShape;
-       fixtureDef.filter.categoryBits = CategoryBitsConstants.PLAYER_BITS;
-       playerBody.createFixture(fixtureDef);
+       fixtureDef.filter.categoryBits = CategoryBitsConstants.GHOST_BITS;
+       ghostBody.createFixture(fixtureDef);
        circleShape.dispose();
 
        // set starting component values
-       textureComponent.setRegion(new TextureRegion(textureAtlas.findRegion("pacman"), 2 * ASSET_SIZE, 0, ASSET_SIZE, ASSET_SIZE));
-       bodyComponent.setBody(playerBody);
-       bodyComponent.setSpeed(getPlayerSpeedForLevel(GameManager.getInstance().getLevel()));
-       transformComponent.setPosition(rectangle.x, rectangle.y);
-       stateComponent.setState(EntityState.MOVING_LEFT);
-       bodyComponent.getBody().setLinearVelocity(MathUtils.lerp(bodyComponent.getBody().getLinearVelocity().x, -bodyComponent.getSpeed(), 1), 0);
+       textureComponent.setRegion(new TextureRegion(textureAtlas.findRegion("ghost"), 2 * ASSET_SIZE, 0, ASSET_SIZE, ASSET_SIZE));
+       bodyComponent.setBody(ghostBody);
+       bodyComponent.setSpeed(this.getPlayerSpeedForLevel(GameManager.getInstance().getLevel()));
+       transformComponent.setPosition(10.5f, 11.5f);
+       stateComponent.setState(EntityState.IDLE_LEFT);
 
        // add components
        playerEntity.add(bodyComponent);
        playerEntity.add(transformComponent);
-       playerEntity.add(playerComponent);
        playerEntity.add(stateComponent);
        playerEntity.add(textureComponent);
 
        // create and add animations
-       createPacManAnimationKeyFrames(animationComponent);
-       playerEntity.add(animationComponent);
 
        // finish entity creation
        bodyComponent.getBody().setUserData(playerEntity);
