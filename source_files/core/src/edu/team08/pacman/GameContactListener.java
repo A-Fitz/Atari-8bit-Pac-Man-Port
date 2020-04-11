@@ -2,17 +2,20 @@ package edu.team08.pacman;
 
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.physics.box2d.*;
 import edu.team08.pacman.components.BonusNuggetComponent;
 import edu.team08.pacman.components.PillComponent;
 import edu.team08.pacman.constants.CategoryBitsConstants;
 import edu.team08.pacman.constants.GameConstants;
 import edu.team08.pacman.managers.GameManager;
+import edu.team08.pacman.managers.GhostMovementManager;
 
 public class GameContactListener implements ContactListener
 {
     private final ComponentMapper<PillComponent> pillComponentMapper;
     private final ComponentMapper<BonusNuggetComponent> bonusNuggetComponentMapper;
+    private GhostMovementManager gmm = new GhostMovementManager();
 
     public GameContactListener()
     {
@@ -31,10 +34,10 @@ public class GameContactListener implements ContactListener
         {
             if (fixtureA.getFilterData().categoryBits == CategoryBitsConstants.PLAYER_BITS)
             {
-                eatBonusNugget(fixtureB);
+                this.eatBonusNugget(fixtureB);
             } else if (fixtureB.getFilterData().categoryBits == CategoryBitsConstants.PLAYER_BITS)
             {
-                eatBonusNugget(fixtureA);
+                this.eatBonusNugget(fixtureA);
             }
         }
 
@@ -43,11 +46,19 @@ public class GameContactListener implements ContactListener
         {
             if (fixtureA.getFilterData().categoryBits == CategoryBitsConstants.PLAYER_BITS)
             {
-                eatPill(fixtureB);
+                this.eatPill(fixtureB);
             } else if (fixtureB.getFilterData().categoryBits == CategoryBitsConstants.PLAYER_BITS)
             {
-                eatPill(fixtureA);
+                this.eatPill(fixtureA);
             }
+        }
+
+        if (fixtureA.getFilterData().categoryBits == CategoryBitsConstants.GHOST_BITS && fixtureB.getBody().getType() == BodyDef.BodyType.StaticBody) {
+            this.ChangeGhostDirections(fixtureA.getBody());
+        }
+
+        if (fixtureB.getFilterData().categoryBits == CategoryBitsConstants.GHOST_BITS && fixtureA.getBody().getType() == BodyDef.BodyType.StaticBody){
+            this.ChangeGhostDirections(fixtureB.getBody());
         }
     }
 
@@ -86,5 +97,14 @@ public class GameContactListener implements ContactListener
     public void postSolve(Contact contact, ContactImpulse impulse)
     {
 
+    }
+
+    /**
+     * changes the direction of the body that is tied to the ghost.
+     * @param body ghost's body
+     */
+    private void ChangeGhostDirections(Body body){
+        int speed = 2;
+        this.gmm.setDirections(body, speed);
     }
 }

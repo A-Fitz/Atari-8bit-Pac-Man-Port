@@ -21,6 +21,7 @@ import edu.team08.pacman.constants.DisplayConstants;
 import edu.team08.pacman.constants.GameConstants;
 import edu.team08.pacman.constants.MovementConstants;
 import edu.team08.pacman.managers.GameManager;
+import edu.team08.pacman.managers.GhostMovementManager;
 import edu.team08.pacman.states.EntityState;
 
 import static edu.team08.pacman.constants.DisplayConstants.ASSET_SIZE;
@@ -350,7 +351,7 @@ public class WorldBuilder
      * createGhost creates a given ghost in PAC-MAN
      */
    private void createGhost(Rectangle rectangle) {
-       Entity playerEntity = new Entity();
+       Entity ghostEntity = new Entity();
        // add components
        BodyComponent bodyComponent = new BodyComponent();
        TransformComponent transformComponent = new TransformComponent();
@@ -362,10 +363,11 @@ public class WorldBuilder
        BodyDef bodyDef = new BodyDef();
        bodyDef.type = BodyDef.BodyType.DynamicBody;
        bodyDef.position.set(10.5f, 11.5f);
-       Body ghostBody = world.createBody(bodyDef);
+       Body ghostBody = this.world.createBody(bodyDef);
        CircleShape circleShape = new CircleShape();
        FixtureDef fixtureDef = new FixtureDef();
        fixtureDef.shape = circleShape;
+       circleShape.setRadius(rectangle.width * DisplayConstants.MOVING_ENTITY_BODY_SCALE);
        fixtureDef.filter.categoryBits = CategoryBitsConstants.GHOST_BITS;
        ghostBody.createFixture(fixtureDef);
        circleShape.dispose();
@@ -376,21 +378,19 @@ public class WorldBuilder
        bodyComponent.setSpeed(this.getPlayerSpeedForLevel(GameManager.getInstance().getLevel()));
        transformComponent.setPosition(10.5f, 11.5f);
        stateComponent.setState(EntityState.IDLE_LEFT);
+       bodyComponent.getBody().setLinearVelocity(MathUtils.lerp(bodyComponent.getBody().getLinearVelocity().x, bodyComponent.getSpeed(), 1), 0);
 
        // add components
-       playerEntity.add(bodyComponent);
-       playerEntity.add(transformComponent);
-       playerEntity.add(stateComponent);
-       playerEntity.add(textureComponent);
+       ghostEntity.add(bodyComponent);
+       ghostEntity.add(transformComponent);
+       ghostEntity.add(stateComponent);
+       ghostEntity.add(textureComponent);
 
        // create and add animations
 
        // finish entity creation
-       bodyComponent.getBody().setUserData(playerEntity);
-       engine.addEntity(playerEntity);
+       bodyComponent.getBody().setUserData(ghostEntity);
+       this.engine.addEntity(ghostEntity);
    }
 
-   private void setGhostSpwanPoint(){
-
-   }
 }
