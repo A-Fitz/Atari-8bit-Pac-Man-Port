@@ -120,6 +120,10 @@ public class PlayScreen implements Screen
             sirenMusic.setLooping(true);
             sirenMusic.play();
         }
+        else{
+            sirenMusic.setLooping(false);
+            sirenMusic.dispose();
+        }
 
         if(GameManager.getInstance().getGameState() == GameState.IN_PROGRESS)
             checkEndOfLevelConditions();

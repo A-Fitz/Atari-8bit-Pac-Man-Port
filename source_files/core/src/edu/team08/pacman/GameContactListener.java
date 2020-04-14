@@ -5,7 +5,9 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.physics.box2d.*;
 import edu.team08.pacman.components.BonusNuggetComponent;
+import edu.team08.pacman.components.GhostComponent;
 import edu.team08.pacman.components.PillComponent;
+import edu.team08.pacman.components.PlayerComponent;
 import edu.team08.pacman.constants.CategoryBitsConstants;
 import edu.team08.pacman.constants.GameConstants;
 import edu.team08.pacman.managers.GameManager;
@@ -15,12 +17,17 @@ public class GameContactListener implements ContactListener
 {
     private final ComponentMapper<PillComponent> pillComponentMapper;
     private final ComponentMapper<BonusNuggetComponent> bonusNuggetComponentMapper;
+    private final ComponentMapper<GhostComponent> ghostComponentMapper;
+    private final ComponentMapper<PlayerComponent> playerComponentMapper;
+
     private GhostMovementManager gmm = new GhostMovementManager();
 
     public GameContactListener()
     {
+        this.ghostComponentMapper = ComponentMapper.getFor(GhostComponent.class);
         this.pillComponentMapper = ComponentMapper.getFor(PillComponent.class);
         this.bonusNuggetComponentMapper = ComponentMapper.getFor(BonusNuggetComponent.class);
+        this.playerComponentMapper = ComponentMapper.getFor(PlayerComponent.class);
     }
 
     @Override
@@ -42,7 +49,7 @@ public class GameContactListener implements ContactListener
         }
 
         // if a Pac-Man and a Pill contact, then the Pac-Man eats the Pill
-        if (fixtureA.getFilterData().categoryBits == CategoryBitsConstants.PILL_BITS || fixtureB.getFilterData().categoryBits == CategoryBitsConstants.PILL_BITS)
+        else if (fixtureA.getFilterData().categoryBits == CategoryBitsConstants.PILL_BITS || fixtureB.getFilterData().categoryBits == CategoryBitsConstants.PILL_BITS)
         {
             if (fixtureA.getFilterData().categoryBits == CategoryBitsConstants.PLAYER_BITS)
             {
@@ -53,14 +60,43 @@ public class GameContactListener implements ContactListener
             }
         }
 
-        if (fixtureA.getFilterData().categoryBits == CategoryBitsConstants.GHOST_BITS && fixtureB.getBody().getType() == BodyDef.BodyType.StaticBody) {
-            this.ChangeGhostDirections(fixtureA.getBody());
+        // if a Pac-Man and a ghost contact
+        if (fixtureA.getFilterData().categoryBits == CategoryBitsConstants.GHOST_BITS || fixtureB.getFilterData().categoryBits == CategoryBitsConstants.GHOST_BITS)
+        {
+            if (fixtureB.getBody().getType() == BodyDef.BodyType.StaticBody) {
+                this.ChangeGhostDirections(fixtureA.getBody());
+            } else if (fixtureA.getBody().getType() == BodyDef.BodyType.StaticBody) {
+                this.ChangeGhostDirections(fixtureB.getBody());
+            } else if (fixtureA.getFilterData().categoryBits == CategoryBitsConstants.PLAYER_BITS) {
+                this.getGhostContact(fixtureB, fixtureA);
+            } else if (fixtureB.getFilterData().categoryBits == CategoryBitsConstants.PLAYER_BITS) {
+                this.getGhostContact(fixtureA, fixtureB);
+            }
         }
 
-        if (fixtureB.getFilterData().categoryBits == CategoryBitsConstants.GHOST_BITS && fixtureA.getBody().getType() == BodyDef.BodyType.StaticBody){
-            this.ChangeGhostDirections(fixtureB.getBody());
+    }
+
+    private void getGhostContact(Fixture ghostFixture, Fixture playerFixture )
+    {
+        Body body = ghostFixture.getBody();
+        Entity entity = (Entity) body.getUserData();
+        GhostComponent ghostComponent = ghostComponentMapper.get(entity);
+
+        Body playerBody = playerFixture.getBody();
+        Entity playerEntity = (Entity) playerBody.getUserData();
+        PlayerComponent playerComponent = playerComponentMapper.get(playerEntity);
+
+        if(ghostComponent.isWeaken())
+        {
+            ghostComponent.setAlive(false);
+        }
+        else
+        {
+            //playerComponent.setAlive(false);
+            GameManager.getInstance().killPacMan();
         }
     }
+
 
     private void eatBonusNugget(Fixture bonusNuggetFixture)
     {

@@ -358,6 +358,7 @@ public class WorldBuilder
        StateComponent stateComponent = new StateComponent();
        AnimationComponent animationComponent = new AnimationComponent();
        TextureComponent textureComponent = new TextureComponent();
+       GhostComponent ghostComponent = new GhostComponent();
 
        // create body
        BodyDef bodyDef = new BodyDef();
@@ -385,6 +386,7 @@ public class WorldBuilder
        ghostEntity.add(transformComponent);
        ghostEntity.add(stateComponent);
        ghostEntity.add(textureComponent);
+       ghostEntity.add(ghostComponent);
 
        // create and add animations
 
