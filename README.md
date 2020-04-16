@@ -39,3 +39,4 @@ FROM SOURCE:
 
 FROM EXECUTABLE:
  1.  Navigate to the gradle window in Intellij. Run the task at /desktop/Tasks/other/dist
+
