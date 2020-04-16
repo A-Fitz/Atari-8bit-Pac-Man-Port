@@ -14,3 +14,5 @@ Folder Structure:
  - /source_files
 	 - Contains the source files and assets for the project
 	 - .gitignore will stop most everything we don't want committed, if you find something new to be added to .gitignore then please do so
+	 - resources https://www.classicgaming.cc/classics/pac-man/sounds
+	 - https://www.urbanfonts.com/fonts/pixel-fonts.htm
